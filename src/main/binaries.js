@@ -7,7 +7,7 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 
 const binariesPath =
   IS_PROD && isPackaged // the path to a bundled electron app.
-    ? path.join(root, './bin')
+    ? path.join(process.resourcesPath, './bin')
     : path.join(root, './build', './bin');
 
 // eslint-disable-next-line import/prefer-default-export

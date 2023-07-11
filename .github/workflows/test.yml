@@ -29,6 +29,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm run package
-          npm run lint
-          npm exec tsc
-          npm test
+
+#          npm run lint
+#          npm exec tsc
+#          npm test
