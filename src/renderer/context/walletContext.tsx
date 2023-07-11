@@ -56,6 +56,7 @@ export function WalletContextProvider({
     if (privateKey) {
       loadWallet();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [privateKey]);
 
   useEffect(() => {

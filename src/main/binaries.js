@@ -10,6 +10,7 @@ const binariesPath =
     ? path.join(root, './bin')
     : path.join(root, './build', './bin');
 
+// eslint-disable-next-line import/prefer-default-export
 export const execPath = path.resolve(
   path.join(binariesPath, getPlatform() === 'win' ? './main.exe' : './main.bin')
 );

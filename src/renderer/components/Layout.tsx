@@ -1,4 +1,4 @@
-import { Box, Main } from 'grommet';
+import { Box } from 'grommet';
 import React from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
