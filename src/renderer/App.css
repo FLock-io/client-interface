@@ -1,0 +1,14 @@
+@import url("https://gistcdn.githack.com/mfd/09b70eb47474836f25a21660282ce0fd/raw/e06a670afcb2b861ed2ac4a1ef752d062ef6b46b/Gilroy.css");
+
+body, html {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #F8FAFB;
+}
+
+
+.App {
+  font-family: "Gilroy";
+  text-align: center;
+}
