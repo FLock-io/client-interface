@@ -244,8 +244,7 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "FLock-io",
-      "repo": "client-interface"
+      "owner": "FLock-io"
     },
     "extraFiles": [
       {
