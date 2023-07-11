@@ -30,6 +30,16 @@ jobs:
         run: |
           npm run package
 
-#          npm run lint
-#          npm exec tsc
-#          npm test
+      #          npm run lint
+      #          npm exec tsc
+      #          npm test
+
+      # Uploads artifacts
+      - name: 'Upload Artifacts'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ runner.os }} Build
+          path: |
+            release/build/*.exe
+            release/build/*.AppImage
+            release/build/*.dmg
