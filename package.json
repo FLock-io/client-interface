@@ -210,7 +210,10 @@
       "signIgnore": [
         "main.bin",
         "main.exe"
-      ]
+      ],
+      "notarize": {
+        "tool": "notarytool"
+      }
     },
     "dmg": {
       "contents": [
