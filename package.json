@@ -211,7 +211,7 @@
         "main.bin",
         "main.exe"
       ],
-      "notarize": "notarytool"
+      "notarize": "false"
     },
     "dmg": {
       "contents": [
