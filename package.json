@@ -206,11 +206,7 @@
       "hardenedRuntime": true,
       "entitlements": "assets/entitlements.mac.plist",
       "entitlementsInherit": "assets/entitlements.mac.plist",
-      "gatekeeperAssess": false,
-      "signIgnore": [
-        "main.bin",
-        "main.exe"
-      ]
+      "gatekeeperAssess": false
     },
     "dmg": {
       "contents": [
