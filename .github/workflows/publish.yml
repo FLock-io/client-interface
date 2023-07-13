@@ -30,7 +30,6 @@ jobs:
           npm install --force
           npm run postinstall
           npm run build
-          chmod +x build/bin/main.bin
 
       - name: Publish releases
         env:

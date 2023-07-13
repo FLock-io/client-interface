@@ -207,7 +207,10 @@
       "entitlements": "assets/entitlements.mac.plist",
       "entitlementsInherit": "assets/entitlements.mac.plist",
       "gatekeeperAssess": false,
-      "strictVerify": false
+      "signIgnore": [
+        "main.bin",
+        "main.exe"
+      ]
     },
     "dmg": {
       "contents": [
