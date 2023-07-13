@@ -211,7 +211,9 @@
         "main.bin",
         "main.exe"
       ],
-      "notarize": "false"
+      "notarize": {
+        "teamId": "35H5QAYP2F"
+      }
     },
     "dmg": {
       "contents": [
