@@ -193,6 +193,7 @@
       "node_modules",
       "package.json"
     ],
+    "afterSign": ".erb/scripts/notarize.js",
     "mac": {
       "target": {
         "target": "default",
@@ -210,9 +211,7 @@
         "main.bin",
         "main.exe"
       ],
-      "notarize": {
-        "teamId": "35H5QAYP2F"
-      }
+      "notarize": "false"
     },
     "dmg": {
       "contents": [
