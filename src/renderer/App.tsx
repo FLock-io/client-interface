@@ -10,7 +10,7 @@ import { Web3Auth } from '@web3auth/modal';
 import Dashboard from './pages/Dashboard';
 import Train from './pages/Train';
 import { WalletContextProvider } from './context/walletContext';
-import Faucet from './pages/faucet';
+import Faucet from './pages/Faucet';
 import { CONFIG } from './config';
 
 export default function App() {
@@ -65,6 +65,7 @@ export default function App() {
 
   const web3AuthInstance = new Web3Auth({
     clientId: CONFIG.WEB3_AUTH_CLIENT_ID,
+    web3AuthNetwork: 'cyan',
     chainConfig: {
       chainNamespace: 'eip155',
       chainId: `0x${chains[0].id.toString(16)}`,
