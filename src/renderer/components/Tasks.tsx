@@ -100,16 +100,18 @@ function Tasks() {
             height="medium"
           >
             <Box align="center" justify="center">
-              <Heading level="2" margin="0">
+              <Heading level="3" margin="0">
                 {task.name}
               </Heading>
-              <Text size="small">{task.description}</Text>
+              <Text size="small" truncate>
+                {task.description}
+              </Text>
             </Box>
             <Box
               direction="row"
               align="center"
               justify="center"
-              pad={{ vertical: 'large' }}
+              pad={{ vertical: 'medium' }}
               width="100%"
               gap="medium"
             >

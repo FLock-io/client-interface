@@ -1,6 +1,6 @@
 {
   "description": "FLock Client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords": [
     "electron",
     "boilerplate",
@@ -98,6 +98,8 @@
   "dependencies": {
     "@patternfly/react-log-viewer": "^4.87.100",
     "@rehooks/local-storage": "^2.4.4",
+    "@web3auth/modal": "^6.1.4",
+    "@web3auth/web3auth-wagmi-connector": "^4.0.1",
     "electron-debug": "^3.2.0",
     "electron-is-packaged": "^1.0.2",
     "electron-log": "^4.4.8",
@@ -163,6 +165,7 @@
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "mini-css-extract-plugin": "^2.7.6",
+    "node-polyfill-webpack-plugin": "^2.0.1",
     "prettier": "^2.8.8",
     "react-refresh": "^0.14.0",
     "react-test-renderer": "^18.2.0",
@@ -249,7 +252,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "FLock-io"
+      "owner": "FLock-io",
+      "repo": "client-interface"
     },
     "extraFiles": [
       {

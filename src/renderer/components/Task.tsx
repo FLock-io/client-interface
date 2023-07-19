@@ -87,6 +87,9 @@ function Task({ task, goBack }: TaskProps) {
                 </Text>
               </Box>
             </Box>
+            <Box width="large">
+              <Text size="small">{task.description}</Text>
+            </Box>
           </Box>
           <Box direction="row">
             <Box background="#F8FAFB" round="small" pad="medium" align="center">

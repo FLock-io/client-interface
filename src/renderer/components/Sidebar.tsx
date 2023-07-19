@@ -1,5 +1,5 @@
 import { Box, Button, Sidebar as GrommetSidebar, Image, Nav } from 'grommet';
-import { Home, Tools } from 'grommet-icons';
+import { Home, Money, Tools } from 'grommet-icons';
 import { useNavigate } from 'react-router-dom';
 import logo from './logo.png';
 
@@ -33,6 +33,13 @@ function Sidebar() {
           plain
           label="Train"
           icon={<Tools size="medium" />}
+          hoverIndicator="#F2F6FF"
+        />
+        <Button
+          onClick={() => navigate('/faucet')}
+          plain
+          label="Faucet"
+          icon={<Money size="medium" />}
           hoverIndicator="#F2F6FF"
         />
       </Nav>
