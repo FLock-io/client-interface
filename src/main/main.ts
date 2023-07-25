@@ -55,15 +55,27 @@ ipcMain.on('ipc', async (event, arg) => {
 
     main.stdout.on('data', (data) => {
       console.log(`stdout: ${data}`);
-      event.reply('ipc', data.toString());
+      event.reply('ipc', [arg[1], data.toString()]);
     });
 
     main.stderr.on('data', (data) => {
       console.error(`stderr: ${data}`);
+      if (
+        data.toString().includes('insufficient funds for gas * price + value')
+      ) {
+        event.reply('ipc', [
+          arg[1],
+          'insufficient funds for gas * price + value',
+        ]);
+      }
     });
 
     main.on('close', (code) => {
       console.log(`child process exited with code ${code}`);
+      event.reply('ipc', [
+        arg[1],
+        `client exited with code ${code} (0 is success)`,
+      ]);
     });
   } else if (arg[0] === 'leave') {
     // @ts-ignore
@@ -111,8 +123,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 1920,
+    height: 1080,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged

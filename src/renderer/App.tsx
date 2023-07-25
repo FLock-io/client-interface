@@ -12,6 +12,7 @@ import Train from './pages/Train';
 import { WalletContextProvider } from './context/walletContext';
 import Faucet from './pages/Faucet';
 import { CONFIG } from './config';
+import { RunnerContextProvider } from './context/runnerContext';
 
 export default function App() {
   const flockTheme = {
@@ -103,13 +104,15 @@ export default function App() {
     <Grommet theme={flockTheme}>
       <WagmiConfig config={config}>
         <WalletContextProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/train" element={<Train />} />
-              <Route path="/faucet" element={<Faucet />} />
-            </Routes>
-          </Router>
+          <RunnerContextProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/train" element={<Train />} />
+                <Route path="/faucet" element={<Faucet />} />
+              </Routes>
+            </Router>
+          </RunnerContextProvider>
         </WalletContextProvider>
       </WagmiConfig>
     </Grommet>

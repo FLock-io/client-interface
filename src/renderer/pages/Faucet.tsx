@@ -87,7 +87,7 @@ export default function Faucet() {
                 id="amount"
                 name="amount"
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </FormField>
             <Box direction="row" align="end" justify="end">

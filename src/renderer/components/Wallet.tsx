@@ -1,16 +1,16 @@
 import { Box, Button, Heading, Layer, Text } from 'grommet';
 import { useContext, useState } from 'react';
 import { WalletContext } from 'renderer/context/walletContext';
-import { FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import truncateEthAddress from 'truncate-eth-address';
-import { useAccount, useBalance, useConnect, useDisconnect } from 'wagmi';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 
 function Wallet() {
   const { address } = useAccount();
   const [showWalletSettings, setShowWalletSettings] = useState(false);
   const { connectAsync, connectors } = useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
-  const { setPrivateKey, disconnect } = useContext(WalletContext);
+  const { setPrivateKey, disconnect, nativeTokenBalance, flockTokenBalance } =
+    useContext(WalletContext);
 
   const handleConnect = async () => {
     await connectAsync({
@@ -27,17 +27,6 @@ function Wallet() {
     wagmiDisconnect();
     disconnect();
   };
-
-  const { data: nativeTokenBalance } = useBalance({
-    address: address as `0x${string}`,
-    watch: true,
-  });
-
-  const { data: flockTokenBalance } = useBalance({
-    address: address as `0x${string}`,
-    token: FLOCK_ADDRESS,
-    watch: true,
-  });
 
   if (showWalletSettings) {
     return (
