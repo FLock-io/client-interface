@@ -9,23 +9,16 @@ function Wallet() {
   const [showWalletSettings, setShowWalletSettings] = useState(false);
   const { connectAsync, connectors } = useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
-  const { setPrivateKey, disconnect, nativeTokenBalance, flockTokenBalance } =
-    useContext(WalletContext);
+  const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
 
   const handleConnect = async () => {
     await connectAsync({
       connector: connectors[0],
     });
-    // @ts-ignore
-    const privateKey = await connectors[0].web3AuthInstance.provider?.request({
-      method: 'eth_private_key',
-    });
-    setPrivateKey(privateKey as string);
   };
 
   const handleDisconnect = async () => {
     wagmiDisconnect();
-    disconnect();
   };
 
   if (showWalletSettings) {
