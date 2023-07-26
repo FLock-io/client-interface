@@ -1,5 +1,6 @@
 import {
   Anchor,
+  Avatar,
   Box,
   Button,
   FileInput,
@@ -8,6 +9,7 @@ import {
   Spinner,
   Text,
   TextInput,
+  Meter,
 } from 'grommet';
 import {
   Alert,
@@ -16,6 +18,7 @@ import {
   FormPrevious,
   InProgress,
   Share,
+  UserFemale,
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
@@ -309,96 +312,240 @@ function Task({ task, goBack }: TaskProps) {
               label="Back to train"
               onClick={goBack}
             />
-            <Button icon={<Share size="small" />} label="Share" />
+            <Box pad="small" round="small">
+              <Button icon={<Share size="small" />} label="Share" primary />
+            </Box>
           </Box>
           <Box direction="row" justify="between">
-            <Box gap="small">
+            <Box direction="row" gap="small">
               <Box>
-                <Box
-                  direction="row"
-                  gap="small"
-                  align="center"
-                  justify="center"
-                >
-                  <Heading level="3" margin="0">
-                    {task.name}
-                  </Heading>
-                  {isRunning && (
-                    <Box
-                      round
-                      background="#76CA66"
-                      pad={{ vertical: 'xxsmall', horizontal: 'small' }}
-                      align="center"
-                      justify="center"
-                    >
-                      <Box
-                        direction="row"
-                        align="center"
-                        justify="center"
-                        gap="xsmall"
-                      >
-                        <InProgress size="small" color="white" />
-                        <Text size="xsmall" color="white">
-                          In Progress
-                        </Text>
-                      </Box>
-                    </Box>
-                  )}
-                  {isTrainingCompleted && (
-                    <Box
-                      round
-                      background="#70A4FF"
-                      pad={{ vertical: 'xxsmall', horizontal: 'small' }}
-                      align="center"
-                      justify="center"
-                    >
-                      <Box
-                        direction="row"
-                        align="center"
-                        justify="center"
-                        gap="xsmall"
-                      >
-                        <Checkmark size="small" color="white" />
-                        <Text size="xsmall" color="white">
-                          Finished
-                        </Text>
-                      </Box>
-                    </Box>
-                  )}
-                </Box>
-                <Text size="xsmall">Task Creator: 0xdB5a...30Bce8</Text>
+                <Avatar background="brand">
+                  <UserFemale color="text-strong" />
+                </Avatar>
               </Box>
-              <Box direction="row" gap="small">
-                <Box background="#F5F5F5" round="small" pad="xsmall">
-                  <Text size="xsmall">
-                    Reward Pool: <b>$F {task.rewardPool}</b>
-                  </Text>
+              <Box gap="small">
+                <Box>
+                  <Box
+                    direction="row"
+                    gap="small"
+                    align="center"
+                    justify="center"
+                  >
+                    <Heading level="3" margin="0">
+                      {task.name}
+                    </Heading>
+                    {isRunning && (
+                      <Box
+                        round
+                        background="#76CA66"
+                        pad={{ vertical: 'xxsmall', horizontal: 'small' }}
+                        align="center"
+                        justify="center"
+                      >
+                        <Box
+                          direction="row"
+                          align="center"
+                          justify="center"
+                          gap="xsmall"
+                        >
+                          <InProgress size="small" color="white" />
+                          <Text size="xsmall" color="white">
+                            In Progress
+                          </Text>
+                        </Box>
+                      </Box>
+                    )}
+                    {isTrainingCompleted && (
+                      <Box
+                        round
+                        background="#70A4FF"
+                        pad={{ vertical: 'xxsmall', horizontal: 'small' }}
+                        align="center"
+                        justify="center"
+                      >
+                        <Box
+                          direction="row"
+                          align="center"
+                          justify="center"
+                          gap="xsmall"
+                        >
+                          <Checkmark size="small" color="white" />
+                          <Text size="xsmall" color="white">
+                            Finished
+                          </Text>
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
+                  <Text size="xsmall">Task Creator: 0xdB5a...30Bce8</Text>
                 </Box>
-                <Box background="#F2F6FF" round="small" pad="xsmall">
-                  <Text size="xsmall">
-                    Initial Stake: <b>$F {task.stake}</b>
-                  </Text>
+                <Box direction="row" gap="small">
+                  <Box background="#F5F5F5" round="small" pad="xsmall">
+                    <Text size="xsmall">
+                      Reward Pool: <b>$F {task.rewardPool}</b>
+                    </Text>
+                  </Box>
+                  <Box background="#F2F6FF" round="small" pad="xsmall">
+                    <Text size="xsmall">
+                      Initial Stake: <b>$F {task.stake}</b>
+                    </Text>
+                  </Box>
+                </Box>
+                <Box background="#F8FAFB" round="small" pad="medium">
+                  <Box direction="row" justify="between" align="center">
+                    <Box direction="row" align="center" gap="xsmall">
+                      <Text color="brand" size="2xl" weight="bold">
+                        20
+                      </Text>
+                      <Text weight="bold">
+                        participants have joined the task
+                      </Text>
+                    </Box>
+                    <Box direction="row" align="center">
+                      <Avatar background="brand">
+                        <UserFemale color="text-strong" />
+                      </Avatar>
+                      <Avatar background="brand">
+                        <UserFemale color="text-strong" />
+                      </Avatar>
+                      <Avatar background="brand">
+                        <UserFemale color="text-strong" />
+                      </Avatar>
+                      <Text>+5</Text>
+                    </Box>
+                  </Box>
+                  <Box
+                    margin={{ top: 'medium' }}
+                    border={{
+                      color: 'grey',
+                      size: 'xsmall',
+                      style: 'solid',
+                      side: 'all',
+                    }}
+                    round="small"
+                  >
+                    <Meter
+                      values={[
+                        {
+                          value: 20,
+                          color: 'brand',
+                          onClick: () => {},
+                          label: 'min 20',
+                          highlight: true,
+                        },
+                        {
+                          value: 300,
+                          color: '#A0F2FF',
+                          onClick: () => {},
+                          label: 'Max 300',
+                          highlight: true,
+                        },
+                      ]}
+                      aria-label="meter"
+                      max={300}
+                      round
+                      size="full"
+                      thickness="small"
+                    />
+                  </Box>
                 </Box>
               </Box>
             </Box>
-            <Box direction="row">
+            <Box direction="row" gap="large">
               <Box
                 background="#F8FAFB"
                 round="small"
                 pad="medium"
                 align="center"
+                width="210px"
               >
-                <Heading level="5" margin="0">
+                <Heading level="5" margin="0" alignSelf="start" weight="bold">
                   Learning Rounds
                 </Heading>
                 <Heading level="2" color="#6C94EC">
                   0
                 </Heading>
-                <Box align="start">
-                  <Text size="xsmall">Completion Percentage 0%</Text>
-                  <Heading level="6" margin="0">
-                    Total Rounds {task.rounds}
-                  </Heading>
+                <Box alignSelf="stretch">
+                  <Box direction="row" justify="between" border="bottom">
+                    <Text size="xsmall" alignSelf="start">
+                      Completion Percentage
+                    </Text>
+                    <Text size="xsmall" alignSelf="end">
+                      5%
+                    </Text>
+                  </Box>
+                  <Box direction="row" justify="between">
+                    <Heading level="6" margin="0">
+                      Total Rounds
+                    </Heading>
+                    <Heading level="6" margin="0">
+                      {task.rounds}
+                    </Heading>
+                  </Box>
+                </Box>
+              </Box>
+              <Box
+                background="#F8FAFB"
+                round="small"
+                pad="medium"
+                align="center"
+                width="210px"
+              >
+                <Heading level="5" margin="0" alignSelf="start" weight="bold">
+                  Model Accuracy
+                </Heading>
+                <Heading level="2" color="#6C94EC">
+                  0
+                </Heading>
+                <Box alignSelf="stretch">
+                  <Box direction="row" justify="between" border="bottom">
+                    <Text size="xsmall" alignSelf="start">
+                      Completion Percentage
+                    </Text>
+                    <Text size="xsmall" alignSelf="end">
+                      5%
+                    </Text>
+                  </Box>
+                  <Box direction="row" justify="between">
+                    <Heading level="6" margin="0">
+                      Target Accuracy
+                    </Heading>
+                    <Heading level="6" margin="0">
+                      {task.rounds}
+                    </Heading>
+                  </Box>
+                </Box>
+              </Box>
+              <Box
+                background="#F8FAFB"
+                round="small"
+                pad="medium"
+                align="center"
+                width="210px"
+              >
+                <Heading level="5" margin="0" alignSelf="start" weight="bold">
+                  Balance
+                </Heading>
+                <Heading level="2" color="#6C94EC">
+                  0
+                </Heading>
+                <Box alignSelf="stretch">
+                  <Box direction="row" justify="between" border="bottom">
+                    <Text size="xsmall" alignSelf="start">
+                      Return Rate
+                    </Text>
+                    <Text size="xsmall" alignSelf="end">
+                      5%
+                    </Text>
+                  </Box>
+                  <Box direction="row" justify="between">
+                    <Heading level="6" margin="0">
+                      Stake Amount
+                    </Heading>
+                    <Heading level="6" margin="0">
+                      {task.rounds}
+                    </Heading>
+                  </Box>
                 </Box>
               </Box>
             </Box>
