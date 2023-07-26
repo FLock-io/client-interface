@@ -7,6 +7,8 @@ import { publicProvider } from 'wagmi/providers/public';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { Web3AuthConnector } from '@web3auth/web3auth-wagmi-connector';
 import { Web3Auth } from '@web3auth/modal';
+import { EthereumPrivateKeyProvider } from '@web3auth/ethereum-provider';
+import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
 import Dashboard from './pages/Dashboard';
 import Train from './pages/Train';
 import { WalletContextProvider } from './context/walletContext';
@@ -63,20 +65,22 @@ export default function App() {
       publicProvider(),
     ]
   );
+  const chainConfig = {
+    chainNamespace: 'eip155',
+    chainId: `0x${chains[0].id.toString(16)}`,
+    // @ts-ignore
+    rpcTarget: CONFIG.WEB3_AUTH_RPC,
+    displayName: chains[0].name,
+    tickerName: chains[0].nativeCurrency?.name,
+    ticker: chains[0].nativeCurrency?.symbol,
+    blockExplorer: chains[0]?.blockExplorers.default?.url,
+  };
 
   const web3AuthInstance = new Web3Auth({
     clientId: CONFIG.WEB3_AUTH_CLIENT_ID,
     web3AuthNetwork: 'cyan',
-    chainConfig: {
-      chainNamespace: 'eip155',
-      chainId: `0x${chains[0].id.toString(16)}`,
-      // @ts-ignore
-      rpcTarget: CONFIG.WEB3_AUTH_RPC,
-      displayName: chains[0].name,
-      tickerName: chains[0].nativeCurrency?.name,
-      ticker: chains[0].nativeCurrency?.symbol,
-      blockExplorer: chains[0]?.blockExplorers.default?.url,
-    },
+    // @ts-ignore
+    chainConfig,
     authMode: 'WALLET',
     uiConfig: {
       theme: 'light',
@@ -85,6 +89,18 @@ export default function App() {
         'https://drive.google.com/uc?export=download&id=1Pm_naD3LlamhxkEVv-i2VBVG2RC4DYaZ',
     },
   });
+
+  const privateKeyProvider = new EthereumPrivateKeyProvider({
+    config: { chainConfig },
+  });
+  const openloginAdapterInstance = new OpenloginAdapter({
+    privateKeyProvider,
+    adapterSettings: {
+      network: 'cyan',
+      uxMode: 'redirect',
+    },
+  });
+  web3AuthInstance.configureAdapter(openloginAdapterInstance);
 
   const config = createConfig({
     autoConnect: true,

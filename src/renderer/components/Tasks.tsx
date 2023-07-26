@@ -1,9 +1,8 @@
-import { useContractRead } from 'wagmi';
+import { useAccount, useContractRead } from 'wagmi';
 import { Avatar, Box, Button, Heading, Spinner, Stack, Text } from 'grommet';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { readContract } from '@wagmi/core';
 import { UserFemale } from 'grommet-icons';
-import { WalletContext } from 'renderer/context/walletContext';
 import {
   FLOCK_TASK_MANAGER_ABI,
   FLOCK_TASK_MANAGER_ADDRESS,
@@ -13,7 +12,7 @@ import { TaskType } from './types';
 import Task from './Task';
 
 function Tasks() {
-  const { address } = useContext(WalletContext);
+  const { address } = useAccount();
   const [tasks, setTasks] = useState<TaskType[]>([] as TaskType[]);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
 

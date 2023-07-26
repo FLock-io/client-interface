@@ -21,6 +21,7 @@ import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
 import {
+  useAccount,
   useContractRead,
   useContractWrite,
   useWaitForTransaction,
@@ -60,9 +61,9 @@ function StepItem({ text, disabled }: { text: string; disabled?: boolean }) {
 
 function Task({ task, goBack }: TaskProps) {
   const navigate = useNavigate();
+  const { address } = useAccount();
 
-  const { address, nativeTokenBalance, flockTokenBalance } =
-    useContext(WalletContext);
+  const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
   const { runningTasks, runTask, logs } = useContext(RunnerContext);
   const [file, setFile] = useState<File>({} as File);
   const [step, setStep] = useState<STEP>('DETAIL');
@@ -230,7 +231,7 @@ function Task({ task, goBack }: TaskProps) {
 
   return (
     <>
-      {Number(nativeTokenBalance.value) === 0 && (
+      {Number(nativeTokenBalance?.value) === 0 && (
         <Layer modal onEsc={goBack} onClickOutside={goBack}>
           <Box pad="large" align="center" gap="medium">
             <Alert size="large" />
@@ -245,8 +246,8 @@ function Task({ task, goBack }: TaskProps) {
           </Box>
         </Layer>
       )}
-      {Number(nativeTokenBalance.value) !== 0 &&
-        Number(flockTokenBalance.value) === 0 && (
+      {Number(nativeTokenBalance?.value) !== 0 &&
+        Number(flockTokenBalance?.value) === 0 && (
           <Layer modal onEsc={goBack} onClickOutside={goBack}>
             <Box pad="large" align="center" gap="medium">
               <Alert size="large" />
