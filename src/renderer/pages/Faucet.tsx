@@ -7,14 +7,13 @@ import {
   Paragraph,
   TextInput,
 } from 'grommet';
-import { useContractWrite, useWaitForTransaction } from 'wagmi';
-import { useContext, useEffect, useState } from 'react';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
+import { useEffect, useState } from 'react';
 import Layout from 'renderer/components/Layout';
-import { WalletContext } from 'renderer/context/walletContext';
 import { FLOCK_ABI, FLOCK_ADDRESS } from '../contracts/flock';
 
 export default function Faucet() {
-  const { address } = useContext(WalletContext);
+  const { address } = useAccount();
   const [amount, setAmount] = useState(0);
   const [errors, setErrors] = useState<any>({});
 
