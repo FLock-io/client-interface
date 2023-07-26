@@ -69,8 +69,18 @@ function Task({ task, goBack }: TaskProps) {
   const [step, setStep] = useState<STEP>('DETAIL');
   const [stake, setStake] = useState<number>(task.stake);
   const [isStaking, setIsStaking] = useState<boolean>(false);
+  const [showCompletedModal, setShowCompletedModal] = useState<boolean>(false);
 
   const isRunning = runningTasks?.includes(task.address);
+
+  const { data: dataCurrentRound } = useContractRead({
+    address: task.address as `0x${string}`,
+    abi: FLOCK_TASK_ABI,
+    functionName: 'currentRound',
+    watch: true,
+  }) as { data: number };
+
+  const isTrainingCompleted = Number(dataCurrentRound) === task.rounds - 1; // Training client starts from 0
 
   const { data: dataStakedBalance, refetch } = useContractRead({
     address: task.address as `0x${string}`,
@@ -229,8 +239,52 @@ function Task({ task, goBack }: TaskProps) {
     }
   }, [isRunning]);
 
+  useEffect(() => {
+    if (isTrainingCompleted) {
+      setShowCompletedModal(true);
+      setStep('REPORT');
+    }
+  }, [isTrainingCompleted]);
+
   return (
     <>
+      {showCompletedModal && (
+        <Layer
+          modal
+          onEsc={() => setShowCompletedModal(false)}
+          onClickOutside={() => setShowCompletedModal(false)}
+        >
+          <Box
+            pad="medium"
+            align="center"
+            gap="small"
+            width="medium"
+            height="medium"
+          >
+            <Box
+              round="full"
+              border={{
+                color: '#6E96EC',
+                size: 'large',
+                side: 'all',
+              }}
+              pad="large"
+              align="center"
+              justify="center"
+            >
+              <Heading level="2" margin="0">
+                {Number(dataCurrentRound)}
+              </Heading>
+              <Text size="medium">Rounds</Text>
+            </Box>
+            <Heading level="3">Training Complete!</Heading>
+            {/*
+            <Text size="medium">FLock Reward: </Text>
+            <Text size="medium">Final Accuracy: </Text>
+            */}
+          </Box>
+        </Layer>
+      )}
       {Number(nativeTokenBalance?.value) === 0 && (
         <Layer modal onEsc={goBack} onClickOutside={goBack}>
           <Box pad="large" align="center" gap="medium">
@@ -297,6 +351,27 @@ function Task({ task, goBack }: TaskProps) {
                         <InProgress size="small" color="white" />
                         <Text size="xsmall" color="white">
                           In Progress
+                        </Text>
+                      </Box>
+                    </Box>
+                  )}
+                  {isTrainingCompleted && (
+                    <Box
+                      round
+                      background="#70A4FF"
+                      pad={{ vertical: 'xxsmall', horizontal: 'small' }}
+                      align="center"
+                      justify="center"
+                    >
+                      <Box
+                        direction="row"
+                        align="center"
+                        justify="center"
+                        gap="xsmall"
+                      >
+                        <Checkmark size="small" color="white" />
+                        <Text size="xsmall" color="white">
+                          Finished
                         </Text>
                       </Box>
                     </Box>
@@ -369,18 +444,20 @@ function Task({ task, goBack }: TaskProps) {
             />
           </Box>
           {currentStep()}
-          <Box direction="row" justify="end" height="xxsmall">
-            <Button
-              label={step === 'MONITOR' && !isRunning ? 'Restart' : 'Next'}
-              primary
-              disabled={
-                (step === 'LOCAL_DATA' && !file.path) ||
-                isRunning ||
-                (step === 'STAKE' && dataStakedBalance < stake * 10 ** 18)
-              }
-              onClick={nextStep}
-            />
-          </Box>
+          {!isTrainingCompleted && (
+            <Box direction="row" justify="end" height="xxsmall">
+              <Button
+                label={step === 'MONITOR' && !isRunning ? 'Restart' : 'Next'}
+                primary
+                disabled={
+                  (step === 'LOCAL_DATA' && !file.path) ||
+                  isRunning ||
+                  (step === 'STAKE' && dataStakedBalance < stake * 10 ** 18)
+                }
+                onClick={nextStep}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
     </>
