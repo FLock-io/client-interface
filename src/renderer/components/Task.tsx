@@ -82,6 +82,13 @@ function Task({ task, goBack }: TaskProps) {
     participantAddress: address,
   });
 
+  const { data: dataInitialStake } = useContractRead({
+    address: task.address as `0x${string}`,
+    abi: FLOCK_TASK_ABI,
+    functionName: 'roundStakedTokens',
+    args: [0, address],
+  }) as { data: number; refetch: () => void };
+
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
       address: FLOCK_ADDRESS as `0x${string}`,
@@ -502,7 +509,7 @@ function Task({ task, goBack }: TaskProps) {
                   Model Accuracy
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {Number(task.accuracy)}
+                  0
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -518,7 +525,7 @@ function Task({ task, goBack }: TaskProps) {
                       Target Accuracy
                     </Heading>
                     <Heading level="6" margin="0">
-                      {task.rounds}
+                      {Number(task.accuracy)}
                     </Heading>
                   </Box>
                 </Box>
@@ -534,7 +541,7 @@ function Task({ task, goBack }: TaskProps) {
                   Balance
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  0
+                  {Number(dataStakedBalance)}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -550,7 +557,7 @@ function Task({ task, goBack }: TaskProps) {
                       Stake Amount
                     </Heading>
                     <Heading level="6" margin="0">
-                      $F {Number(task.stake)}
+                      $F {Number(dataInitialStake)}
                     </Heading>
                   </Box>
                 </Box>
