@@ -324,7 +324,7 @@ function Task({ task, goBack }: TaskProps) {
               <Button icon={<Share size="small" />} label="Share" primary />
             </Box>
           </Box>
-          <Box direction="row" justify="between">
+          <Box direction="row" justify="between" gap="medium">
             <Box direction="row" gap="small">
               <Box>
                 <Avatar background="brand">
@@ -524,6 +524,7 @@ function Task({ task, goBack }: TaskProps) {
                 pad="medium"
                 align="center"
                 width="230px"
+                justify="between"
               >
                 <Heading level="4" margin="0" alignSelf="start" weight="bold">
                   Model Accuracy
@@ -556,6 +557,7 @@ function Task({ task, goBack }: TaskProps) {
                 pad="medium"
                 align="center"
                 width="230px"
+                justify="between"
               >
                 <Heading level="4" margin="0" alignSelf="start" weight="bold">
                   Balance
