@@ -31,6 +31,7 @@ import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { WalletContext } from 'renderer/context/walletContext';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
+import { useTaskData } from 'renderer/hooks/useTaskData';
 import { TaskType } from './types';
 
 interface TaskProps {
@@ -73,21 +74,18 @@ function Task({ task, goBack }: TaskProps) {
 
   const isRunning = runningTasks?.includes(task.address);
 
-  const { data: dataCurrentRound } = useContractRead({
-    address: task.address as `0x${string}`,
-    abi: FLOCK_TASK_ABI,
-    functionName: 'currentRound',
-    watch: true,
-  }) as { data: number };
-
-  const isTrainingCompleted = Number(dataCurrentRound) === task.rounds - 1; // Training client starts from 0
+  const { dataCurrentRound, isTrainingCompleted, totalRewardedAmount } =
+    useTaskData({
+      task,
+      participantAddress: address,
+    });
 
   const { data: dataStakedBalance, refetch } = useContractRead({
     address: task.address as `0x${string}`,
     abi: FLOCK_TASK_ABI,
     functionName: 'stakedTokens',
     args: [address],
-  }) as { data: number; refetch: () => void };
+  }) as { data: bigint; refetch: () => void };
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
@@ -278,10 +276,10 @@ function Task({ task, goBack }: TaskProps) {
               <Text size="medium">Rounds</Text>
             </Box>
             <Heading level="3">Training Complete!</Heading>
-            {/*
-            <Text size="medium">FLock Reward: </Text>
-            <Text size="medium">Final Accuracy: </Text>
-            */}
+            <Box align="start">
+              <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
+              <Text size="medium">Final Accuracy: </Text>
+            </Box>
           </Box>
         </Layer>
       )}
@@ -452,7 +450,8 @@ function Task({ task, goBack }: TaskProps) {
                 disabled={
                   (step === 'LOCAL_DATA' && !file.path) ||
                   isRunning ||
-                  (step === 'STAKE' && dataStakedBalance < stake * 10 ** 18)
+                  (step === 'STAKE' &&
+                    Number(dataStakedBalance) < stake * 10 ** 18)
                 }
                 onClick={nextStep}
               />
