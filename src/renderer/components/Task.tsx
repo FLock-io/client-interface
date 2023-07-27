@@ -74,6 +74,15 @@ function Task({ task, goBack }: TaskProps) {
 
   const isRunning = runningTasks?.includes(task.address);
 
+  const { data: dataCurrentRound } = useContractRead({
+    address: task.address as `0x${string}`,
+    abi: FLOCK_TASK_ABI,
+    functionName: 'currentRound',
+    watch: true,
+  }) as { data: number };
+
+  const isTrainingCompleted = Number(dataCurrentRound) === task.rounds - 1; // Training client starts from 0
+
   const { data: dataStakedBalance, refetch } = useContractRead({
     address: task.address as `0x${string}`,
     abi: FLOCK_TASK_ABI,
@@ -342,13 +351,7 @@ function Task({ task, goBack }: TaskProps) {
                       <Avatar background="brand" size="36px">
                         <UserFemale color="text-strong" />
                       </Avatar>
-                      <Avatar background="brand" size="36px">
-                        <UserFemale color="text-strong" />
-                      </Avatar>
-                      <Avatar background="brand" size="36px">
-                        <UserFemale color="text-strong" />
-                      </Avatar>
-                      <Text>+5</Text>
+                      {/* <Text>+5</Text> */}
                     </Box>
                   </Box>
                   <Box
@@ -408,7 +411,7 @@ function Task({ task, goBack }: TaskProps) {
                   Learning Rounds
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  0
+                  {Number(dataCurrentRound)}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -416,7 +419,10 @@ function Task({ task, goBack }: TaskProps) {
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      5%
+                      {Math.round(
+                        (Number(dataCurrentRound) / Number(task.rounds)) * 1000
+                      ) / 10}
+                      %
                     </Text>
                   </Box>
                   <Box direction="row" justify="between">
