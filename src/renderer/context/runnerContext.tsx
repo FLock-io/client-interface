@@ -1,6 +1,5 @@
-import { ReactNode, createContext, useContext, useMemo, useState } from 'react';
+import { ReactNode, createContext, useMemo, useState } from 'react';
 import { TaskType } from 'renderer/components/types';
-import { WalletContext } from './walletContext';
 import { useConnect } from 'wagmi';
 
 interface RunnerContextProviderProps {
