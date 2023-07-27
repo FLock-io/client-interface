@@ -325,12 +325,7 @@ function Task({ task, goBack }: TaskProps) {
               </Box>
               <Box gap="small">
                 <Box>
-                  <Box
-                    direction="row"
-                    gap="small"
-                    align="center"
-                    justify="center"
-                  >
+                  <Box direction="row" gap="small" align="center">
                     <Heading level="3" margin="0">
                       {task.name}
                     </Heading>
@@ -380,42 +375,53 @@ function Task({ task, goBack }: TaskProps) {
                   <Text size="xsmall">Task Creator: 0xdB5a...30Bce8</Text>
                 </Box>
                 <Box direction="row" gap="small">
-                  <Box background="#F5F5F5" round="small" pad="xsmall">
+                  <Box background="#F5F5F5" round="medium" pad="xsmall">
                     <Text size="xsmall">
                       Reward Pool: <b>$F {task.rewardPool}</b>
                     </Text>
                   </Box>
-                  <Box background="#F2F6FF" round="small" pad="xsmall">
+                  <Box background="#F2F6FF" round="medium" pad="xsmall">
                     <Text size="xsmall">
                       Initial Stake: <b>$F {task.stake}</b>
                     </Text>
                   </Box>
                 </Box>
-                <Box background="#F8FAFB" round="small" pad="medium">
+                <Box
+                  background="#F8FAFB"
+                  round="small"
+                  pad="medium"
+                  width="598px"
+                >
                   <Box direction="row" justify="between" align="center">
                     <Box direction="row" align="center" gap="xsmall">
                       <Text color="brand" size="2xl" weight="bold">
-                        20
+                        {Number(task.numberOfParticipants)}
                       </Text>
                       <Text weight="bold">
-                        participants have joined the task
+                        participant
+                        {Number(task.numberOfParticipants) !== 1 && 's'} have
+                        joined the task
                       </Text>
                     </Box>
                     <Box direction="row" align="center">
-                      <Avatar background="brand">
+                      <Avatar background="brand" size="36px">
                         <UserFemale color="text-strong" />
                       </Avatar>
-                      <Avatar background="brand">
+                      <Avatar background="brand" size="36px">
                         <UserFemale color="text-strong" />
                       </Avatar>
-                      <Avatar background="brand">
+                      <Avatar background="brand" size="36px">
                         <UserFemale color="text-strong" />
                       </Avatar>
                       <Text>+5</Text>
                     </Box>
                   </Box>
+                  <Box margin={{ top: 'small' }}>
+                    <Text alignSelf="end" size="small">
+                      Max: {task.maxParticipants}
+                    </Text>
+                  </Box>
                   <Box
-                    margin={{ top: 'medium' }}
                     border={{
                       color: 'grey',
                       size: 'xsmall',
@@ -427,22 +433,22 @@ function Task({ task, goBack }: TaskProps) {
                     <Meter
                       values={[
                         {
-                          value: 20,
+                          value: Number(task.numberOfParticipants),
                           color: 'brand',
                           onClick: () => {},
-                          label: 'min 20',
+                          label: `Min: ${task.minParticipants}`,
                           highlight: true,
                         },
                         {
-                          value: 300,
+                          value: Number(task.maxParticipants),
                           color: '#A0F2FF',
                           onClick: () => {},
-                          label: 'Max 300',
+                          label: `Max: ${task.maxParticipants}`,
                           highlight: true,
                         },
                       ]}
                       aria-label="meter"
-                      max={300}
+                      max={Number(task.maxParticipants)}
                       round
                       size="full"
                       thickness="small"
@@ -451,18 +457,19 @@ function Task({ task, goBack }: TaskProps) {
                 </Box>
               </Box>
             </Box>
-            <Box direction="row" gap="large">
+            <Box direction="row" gap="medium">
               <Box
                 background="#F8FAFB"
                 round="small"
                 pad="medium"
                 align="center"
-                width="210px"
+                width="230px"
+                justify="between"
               >
-                <Heading level="5" margin="0" alignSelf="start" weight="bold">
+                <Heading level="4" margin="0" alignSelf="start" weight="bold">
                   Learning Rounds
                 </Heading>
-                <Heading level="2" color="#6C94EC">
+                <Heading level="1" color="#6C94EC" weight="bold">
                   0
                 </Heading>
                 <Box alignSelf="stretch">
@@ -489,13 +496,13 @@ function Task({ task, goBack }: TaskProps) {
                 round="small"
                 pad="medium"
                 align="center"
-                width="210px"
+                width="230px"
               >
-                <Heading level="5" margin="0" alignSelf="start" weight="bold">
+                <Heading level="4" margin="0" alignSelf="start" weight="bold">
                   Model Accuracy
                 </Heading>
-                <Heading level="2" color="#6C94EC">
-                  0
+                <Heading level="1" color="#6C94EC" weight="bold">
+                  {Number(task.accuracy)}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -521,12 +528,12 @@ function Task({ task, goBack }: TaskProps) {
                 round="small"
                 pad="medium"
                 align="center"
-                width="210px"
+                width="230px"
               >
-                <Heading level="5" margin="0" alignSelf="start" weight="bold">
+                <Heading level="4" margin="0" alignSelf="start" weight="bold">
                   Balance
                 </Heading>
-                <Heading level="2" color="#6C94EC">
+                <Heading level="1" color="#6C94EC" weight="bold">
                   0
                 </Heading>
                 <Box alignSelf="stretch">
@@ -543,7 +550,7 @@ function Task({ task, goBack }: TaskProps) {
                       Stake Amount
                     </Heading>
                     <Heading level="6" margin="0">
-                      {task.rounds}
+                      $F {Number(task.stake)}
                     </Heading>
                   </Box>
                 </Box>
