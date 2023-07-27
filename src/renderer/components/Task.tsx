@@ -217,6 +217,12 @@ function Task({ task, goBack }: TaskProps) {
       default:
         return (
           <Box width="large">
+              <LogViewer
+                hasLineNumbers={false}
+                height={460}
+                data={logs.get(task.address)}
+              />
+              
             <Text size="small">{task.description}</Text>
           </Box>
         );
