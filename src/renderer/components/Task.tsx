@@ -416,10 +416,13 @@ function Task({ task, goBack }: TaskProps) {
                       <Text>+5</Text>
                     </Box>
                   </Box>
-                  <Box margin={{ top: 'small' }}>
-                    <Text alignSelf="end" size="small">
-                      Max: {task.maxParticipants}
-                    </Text>
+                  <Box
+                    direction="row"
+                    justify="between"
+                    margin={{ top: 'small' }}
+                  >
+                    <Text size="small">Min: {task.minParticipants}</Text>
+                    <Text size="small">Max: {task.maxParticipants}</Text>
                   </Box>
                   <Box
                     border={{
