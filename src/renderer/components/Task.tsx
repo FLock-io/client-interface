@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
   Meter,
+  Stack,
 } from 'grommet';
 import {
   Alert,
@@ -355,10 +356,29 @@ function Task({ task, goBack }: TaskProps) {
                       </Text>
                     </Box>
                     <Box direction="row" align="center">
-                      <Avatar background="brand" size="36px">
-                        <UserFemale color="text-strong" />
-                      </Avatar>
-                      {/* <Text>+5</Text> */}
+                      <Stack anchor="right">
+                        {
+                          Array.from(
+                            { length: Math.min(Number(task.numberOfParticipants), 7) },
+                            (_, i) => 
+                            <Box key={i} direction="row">
+                              <Avatar background="brand" size="small">
+                                <UserFemale size="small" />
+                              </Avatar>
+                              {
+                                Array.from(
+                                  { length: Number(task.numberOfParticipants) - (i+1) },
+                                  (_, j) =>
+                                  <Box key={j} pad="xsmall" />
+                                )
+                              }
+                            </Box>
+                          )
+                        }
+                      </Stack>
+                      {Number(task.numberOfParticipants) > 7 && (
+                        <Text>+{Number(task.numberOfParticipants) - 7}</Text>
+                      )}
                     </Box>
                   </Box>
                   <Box
@@ -494,7 +514,12 @@ function Task({ task, goBack }: TaskProps) {
                       Return Rate
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      5%
+                      {Number(dataInitialStake) === 0
+                        ? '0'
+                        : Math.round(
+                            (Number(dataStakedBalance) / Number(dataInitialStake)) * 1000) / 10
+                      }
+                      %
                     </Text>
                   </Box>
                   <Box direction="row" justify="between">
