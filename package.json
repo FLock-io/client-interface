@@ -97,11 +97,13 @@
     }
   },
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@patternfly/react-log-viewer": "^4.87.100",
     "@rehooks/local-storage": "^2.4.4",
     "@web3auth/modal": "^6.1.4",
     "@web3auth/openlogin-adapter": "^6.1.4",
     "@web3auth/web3auth-wagmi-connector": "^4.0.1",
+    "chart.js": "^4.3.2",
     "electron-debug": "^3.2.0",
     "electron-is-packaged": "^1.0.2",
     "electron-log": "^4.4.8",
@@ -112,6 +114,7 @@
     "grommet-icons": "^4.11.0",
     "polished": "^4.2.2",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
     "styled-components": "^5.3.11",

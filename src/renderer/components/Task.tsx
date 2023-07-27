@@ -32,6 +32,7 @@ import { WalletContext } from 'renderer/context/walletContext';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { TaskType } from './types';
+import Chart from './Chart';
 
 interface TaskProps {
   task: TaskType;
@@ -167,6 +168,7 @@ function Task({ task, goBack }: TaskProps) {
         return (
           <Box gap="medium">
             <Box>
+              <Chart />
               <Heading level="3" margin={{ bottom: '0' }}>
                 Stake $F
               </Heading>
@@ -213,8 +215,7 @@ function Task({ task, goBack }: TaskProps) {
             )}
           </Box>
         );
-      case 'DETAIL':
-      default:
+      case 'REPORT':
         return (
           <Box width="large">
               <LogViewer
@@ -222,7 +223,13 @@ function Task({ task, goBack }: TaskProps) {
                 height={460}
                 data={logs.get(task.address)}
               />
-              
+            <Text size="small">{task.description}</Text>
+          </Box>
+        );
+      case 'DETAIL':
+      default:
+        return (
+          <Box width="large">
             <Text size="small">{task.description}</Text>
           </Box>
         );
