@@ -83,17 +83,11 @@ function Task({ task, goBack }: TaskProps) {
     isTrainingCompleted,
     totalRewardedAmount,
     dataStakedBalance,
+    dataInitialStake,
   } = useTaskData({
     task,
     participantAddress: address,
   });
-
-  const { data: dataInitialStake } = useContractRead({
-    address: task.address as `0x${string}`,
-    abi: FLOCK_TASK_ABI,
-    functionName: 'roundStakedTokens',
-    args: [0, address],
-  }) as { data: bigint; refetch: () => void };
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {

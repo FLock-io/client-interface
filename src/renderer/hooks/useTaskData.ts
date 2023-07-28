@@ -38,6 +38,13 @@ export const useTaskData = ({
     watch: true,
   }) as { data: bigint };
 
+  const { data: dataInitialStake } = useContractRead({
+    address: task.address as `0x${string}`,
+    abi: FLOCK_TASK_ABI,
+    functionName: 'roundStakedTokens',
+    args: [0, participantAddress],
+  }) as { data: bigint; refetch: () => void };
+
   const isTrainingCompleted =
     dataHasRoundFinished && Number(dataCurrentRound) === task.rounds - 1; // Training client starts from 0
 
@@ -71,6 +78,7 @@ export const useTaskData = ({
     isTrainingCompleted,
     participantRewardedAmounts,
     totalRewardedAmount,
+    dataInitialStake,
   };
 };
 
