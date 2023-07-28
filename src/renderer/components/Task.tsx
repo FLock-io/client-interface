@@ -586,7 +586,7 @@ function Task({ task, goBack }: TaskProps) {
                       {Number(dataInitialStake) === 0
                         ? '0'
                         : Math.round(
-                            (Number(dataStakedBalance) /
+                            (Number(dataStakedBalance) - Number(dataInitialStake) /
                               Number(dataInitialStake)) *
                               1000
                           ) / 10}
