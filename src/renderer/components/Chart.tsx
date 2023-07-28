@@ -41,7 +41,7 @@ const options = {
     },
   };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+//const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
 // const data = {
 //     labels,
@@ -57,7 +57,7 @@ const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
 function Chart({accuracy, rounds}: dataProps) {
     let data = {
-        labels,
+        rounds,
         datasets: [
             {
                 label: 'Accuracy',

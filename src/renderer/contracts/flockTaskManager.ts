@@ -1,90 +1,158 @@
 export const FLOCK_TASK_MANAGER_ADDRESS =
-  '0x2E839F8042f0C74A4a61056d83aD0ccE8A0D4e67';
+  '0x16bf093AFCD7B1066842563eeB7C00F9aD2d39BD';
 export const FLOCK_TASK_MANAGER_ABI = [
   {
-    inputs: [
-      { internalType: 'address', name: '_flockTokenAddress', type: 'address' },
-      { internalType: 'address', name: '_coordinatorAddress', type: 'address' },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
-    inputs: [],
-    name: 'coordinatorAddress',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'string', name: '_metadata', type: 'string' },
-      { internalType: 'uint256', name: '_secondsPerRound', type: 'uint256' },
-      { internalType: 'string', name: '_modelDefinitionHash', type: 'string' },
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: '_totalNumberOfRounds',
-        type: 'uint256',
+        "internalType": "address",
+        "name": "_flockTokenAddress",
+        "type": "address"
       },
       {
-        internalType: 'uint256',
-        name: '_minNumberOfParticipants',
-        type: 'uint256',
+        "internalType": "address",
+        "name": "_coordinatorAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "coordinatorAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_metadata",
+        "type": "string"
       },
       {
-        internalType: 'uint256',
-        name: '_maxNumberOfParticipants',
-        type: 'uint256',
+        "internalType": "uint256",
+        "name": "_secondsPerRound",
+        "type": "uint256"
       },
-      { internalType: 'uint256', name: '_minStakeThreshold', type: 'uint256' },
       {
-        internalType: 'uint256',
-        name: '_initialRewardPoolSize',
-        type: 'uint256',
+        "internalType": "string",
+        "name": "_modelDefinitionHash",
+        "type": "string"
       },
+      {
+        "internalType": "uint256",
+        "name": "_totalNumberOfRounds",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minNumberOfParticipants",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_maxNumberOfParticipants",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minStakeThreshold",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_initialRewardPoolSize",
+        "type": "uint256"
+      }
     ],
-    name: 'createTask',
-    outputs: [
-      { internalType: 'address', name: 'newContract', type: 'address' },
+    "name": "createTask",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "newContract",
+        "type": "address"
+      }
     ],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'flockToken',
-    outputs: [
-      { internalType: 'contract FlockToken', name: '', type: 'address' },
+    "inputs": [],
+    "name": "flockToken",
+    "outputs": [
+      {
+        "internalType": "contract FlockToken",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'flockTokenAddress',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
+    "inputs": [],
+    "name": "flockTokenAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'getTasks',
-    outputs: [{ internalType: 'address[]', name: '', type: 'address[]' }],
-    stateMutability: 'view',
-    type: 'function',
+    "inputs": [],
+    "name": "getTasks",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'subscriptionId',
-    outputs: [{ internalType: 'uint64', name: '', type: 'uint64' }],
-    stateMutability: 'view',
-    type: 'function',
+    "inputs": [],
+    "name": "subscriptionId",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'tasks',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tasks",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ];

@@ -120,24 +120,17 @@ function Task({ task, goBack }: TaskProps) {
     }
   }, [isSuccessStake]);
 
-  const accuracy = [1,2,3,4,5,6,7];
-  const rounds = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  //const accuracy = [1,2,3,4,5,6,7];
+  //const rounds = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
   //get list of accuracy data from contract 
   const { data: accuracyData } = useContractRead({
     address: task.address as `0x${string}`,
     abi: FLOCK_TASK_ABI,
-    functionName: 'getAccuracyData',
-    args: [address],
+    functionName: 'totalScoreAllRounds',
   }) as { data: number[]; refetch: () => void };
 
-  //get list of rounds from contract 
-  // const { data: roundsData } = useContractRead({
-  //   address: task.address as `0x${string}`,
-  //   abi: FLOCK_TASK_ABI,
-  //   functionName: 'getRoundsData',
-  //   args: [address],
-  // }) as { data: number[]; refetch: () => void };
+  const rounds = [...Array(accuracyData.length).keys()].map(String);
 
   const nextStep = () => {
     switch (step) {
@@ -188,7 +181,7 @@ function Task({ task, goBack }: TaskProps) {
           <Box gap="medium">
             <Box>
               <Chart 
-                accuracy={accuracy}
+                accuracy={accuracyData}
                 rounds={rounds}
               />
               <Heading level="3" margin={{ bottom: '0' }}>
