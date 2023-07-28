@@ -93,7 +93,7 @@ function Task({ task, goBack }: TaskProps) {
     abi: FLOCK_TASK_ABI,
     functionName: 'roundStakedTokens',
     args: [0, address],
-  }) as { data: number; refetch: () => void };
+  }) as { data: bigint; refetch: () => void };
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
@@ -207,7 +207,8 @@ function Task({ task, goBack }: TaskProps) {
             </Box>
             <Box>
               <Heading level="5" margin={{ bottom: '0' }}>
-                Your staked balance: {formatUnits(dataStakedBalance, 18)} $F
+                Your staked balance:{' '}
+                {dataStakedBalance ? formatUnits(dataStakedBalance, 18) : 0} $F
               </Heading>
             </Box>
           </Box>
@@ -278,7 +279,7 @@ function Task({ task, goBack }: TaskProps) {
               justify="center"
             >
               <Heading level="2" margin="0">
-                {Number(dataCurrentRound)}
+                {Number(dataCurrentRound) + 1}
               </Heading>
               <Text size="medium">Rounds</Text>
             </Box>
@@ -574,7 +575,7 @@ function Task({ task, goBack }: TaskProps) {
                   Balance
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {formatUnits(dataStakedBalance, 18)}
+                  {dataStakedBalance ? formatUnits(dataStakedBalance, 18) : 0}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -597,7 +598,8 @@ function Task({ task, goBack }: TaskProps) {
                       Stake Amount
                     </Heading>
                     <Heading level="6" margin="0">
-                      $F {formatUnits(dataInitialStake, 18)}
+                      $F
+                      {dataInitialStake ? formatUnits(dataInitialStake, 18) : 0}
                     </Heading>
                   </Box>
                 </Box>
