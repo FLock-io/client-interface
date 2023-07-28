@@ -20,12 +20,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
-import {
-  useAccount,
-  useContractRead,
-  useContractWrite,
-  useWaitForTransaction,
-} from 'wagmi';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { WalletContext } from 'renderer/context/walletContext';
@@ -74,18 +69,15 @@ function Task({ task, goBack }: TaskProps) {
 
   const isRunning = runningTasks?.includes(task.address);
 
-  const { dataCurrentRound, isTrainingCompleted, totalRewardedAmount } =
-    useTaskData({
-      task,
-      participantAddress: address,
-    });
-
-  const { data: dataStakedBalance, refetch } = useContractRead({
-    address: task.address as `0x${string}`,
-    abi: FLOCK_TASK_ABI,
-    functionName: 'stakedTokens',
-    args: [address],
-  }) as { data: bigint; refetch: () => void };
+  const {
+    dataCurrentRound,
+    isTrainingCompleted,
+    totalRewardedAmount,
+    dataStakedBalance,
+  } = useTaskData({
+    task,
+    participantAddress: address,
+  });
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
@@ -123,7 +115,6 @@ function Task({ task, goBack }: TaskProps) {
   useEffect(() => {
     if (isSuccessStake) {
       setIsStaking(false);
-      refetch?.();
     }
   }, [isSuccessStake]);
 
