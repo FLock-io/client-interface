@@ -24,7 +24,12 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
-import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  useWaitForTransaction,
+} from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { WalletContext } from 'renderer/context/walletContext';
@@ -413,24 +418,30 @@ function Task({ task, goBack }: TaskProps) {
                     </Box>
                     <Box direction="row" align="center">
                       <Stack anchor="right">
-                        {
-                          Array.from(
-                            { length: Math.min(Number(task.numberOfParticipants), 7) },
-                            (_, i) => 
+                        {Array.from(
+                          {
+                            length: Math.min(
+                              Number(task.numberOfParticipants),
+                              7
+                            ),
+                          },
+                          (_, i) => (
                             <Box key={i} direction="row">
                               <Avatar background="brand" size="small">
                                 <UserFemale size="small" />
                               </Avatar>
-                              {
-                                Array.from(
-                                  { length: Number(task.numberOfParticipants) - (i+1) },
-                                  (_, j) =>
+                              {Array.from(
+                                {
+                                  length:
+                                    Number(task.numberOfParticipants) - (i + 1),
+                                },
+                                (_, j) => (
                                   <Box key={j} pad="xsmall" />
                                 )
-                              }
+                              )}
                             </Box>
                           )
-                        }
+                        )}
                       </Stack>
                       {Number(task.numberOfParticipants) > 7 && (
                         <Text>+{Number(task.numberOfParticipants) - 7}</Text>
@@ -563,7 +574,7 @@ function Task({ task, goBack }: TaskProps) {
                   Balance
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {Number(dataStakedBalance)}
+                  {formatUnits(dataStakedBalance, 18)}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -574,8 +585,10 @@ function Task({ task, goBack }: TaskProps) {
                       {Number(dataInitialStake) === 0
                         ? '0'
                         : Math.round(
-                            (Number(dataStakedBalance) / Number(dataInitialStake)) * 1000) / 10
-                      }
+                            (Number(dataStakedBalance) /
+                              Number(dataInitialStake)) *
+                              1000
+                          ) / 10}
                       %
                     </Text>
                   </Box>
@@ -584,7 +597,7 @@ function Task({ task, goBack }: TaskProps) {
                       Stake Amount
                     </Heading>
                     <Heading level="6" margin="0">
-                      $F {Number(dataInitialStake)}
+                      $F {formatUnits(dataInitialStake, 18)}
                     </Heading>
                   </Box>
                 </Box>
