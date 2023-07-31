@@ -235,43 +235,37 @@ function Task({ task, goBack }: TaskProps) {
       //   )
       case 'DETAIL':
       default:
-
-        const renderFinalDataForReport = () => {
-          return (
-            <table>
-              <thead>
-                <tr>
-                  <th>Round</th>
-                  <th>Token</th>
-                  <th>Balance</th>
-                  <th>Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                {finalDataForReport.map((data, index) => (
-                  <tr key={index}>
-                    <td>{data.round}</td>
-                    <td>{data.token.toString()}</td>
-                    <td>{data.balance.toString()}</td>
-                    <td>{data.role.toString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          );
-        };
-      
         return (
           <Box width="large">
-            <div>participantRewardedAmounts:
-              {participantRewardedAmounts.map((rewardedAmount, index) => (
-                <Text key={index}>{rewardedAmount.toString()}</Text>
-              ))}
-            </div>
-            <div>length of finalDataForReport is : {finalDataForReport.length}</div>
-            <div> final data:
-              {renderFinalDataForReport()}
-            </div>
+            <DataTable
+              columns={[
+                {
+                  align: 'center',
+                  property: 'round',
+                  header: 'Round',
+                  primary: true,
+                },
+                {
+                  align: 'center',
+                  property: 'role',
+                  header: 'Role',
+                  render: (datum) => (
+                    <Text>{datum.role === '1' ? 'Voter': 'Proposer' } </Text>
+                  ),
+                },
+                {
+                  align: 'center',
+                  property: 'token',
+                  header: 'Token Change',
+                },
+                {
+                  align: 'center',
+                  property: 'balance',
+                  header: 'Round Balance',
+                },
+              ]}
+              data={finalDataForReport}
+            />
           </Box>
         );
     }

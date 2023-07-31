@@ -119,9 +119,9 @@ const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
   const finalDataForReport = participantRewardedAmounts.map((element, index) => {
     return {
       round: index,
-      role: participantRoundRole[index],
-      token: element,
-      balance: participantRoundBalance[index],
+      role: participantRoundRole[index].toString(),
+      token: element.toString(),
+      balance: participantRoundBalance[index].toString(),
     };
   });
 
