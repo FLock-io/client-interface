@@ -84,6 +84,7 @@ function Task({ task, goBack }: TaskProps) {
     totalRewardedAmount,
     dataStakedBalance,
     dataInitialStake,
+    participantRewardedAmounts
   } = useTaskData({
     task,
     participantAddress: address,
@@ -223,11 +224,19 @@ function Task({ task, goBack }: TaskProps) {
             )}
           </Box>
         );
+      // case 'REPORT':
+      //   return (
+      //     <>
+      //       <Heading>Rounds and Balance Record</Heading>
+      //       <Text>{Number(participantRewardedAmounts)}</Text>
+      //     </>
+      //   )
       case 'DETAIL':
       default:
         return (
           <Box width="large">
             <Text size="small">{task.description}</Text>
+            <Text>{Number(participantRewardedAmounts)}</Text>
           </Box>
         );
     }
