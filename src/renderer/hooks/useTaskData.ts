@@ -15,6 +15,10 @@ export const useTaskData = ({
     bigint[]
   >([]);
 
+  const [participantRoundBalance, setParticipantRoundBalance] = useState<
+  bigint[]
+>([]);
+
   const { data: dataCurrentRound } = useContractRead({
     address: task.address as `0x${string}`,
     abi: FLOCK_TASK_ABI,
@@ -72,13 +76,36 @@ export const useTaskData = ({
     0
   );
 
+  const loadRoundParticipantBalance = async () => {
+    if (participantAddress === undefined) return;
+    const result: Promise<bigint>[] = [];
+    for (let i = 0; i < dataCurrentRound; i += 1) {
+      const data = readContract({
+        address: task.address as `0x${string}`,
+        abi: FLOCK_TASK_ABI,
+        functionName: 'roundStakedTokens',
+        args: [i, participantAddress],
+      }) as Promise<bigint>;
+      result.push(data);
+    }
+    setParticipantRoundBalance(await Promise.all(result));
+  };
+
+  useEffect(() => {
+    loadRoundParticipantBalance();
+  }, [dataCurrentRound]);
+
   return {
     dataCurrentRound,
     dataStakedBalance,
     isTrainingCompleted,
     participantRewardedAmounts,
     totalRewardedAmount,
+<<<<<<< HEAD
     dataInitialStake,
+=======
+    participantRoundBalance,
+>>>>>>> 103fc7c (add participantRoundBalance)
   };
 };
 
