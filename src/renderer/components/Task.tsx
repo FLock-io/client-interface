@@ -11,6 +11,7 @@ import {
   TextInput,
   Meter,
   Stack,
+  DataTable,
 } from 'grommet';
 import {
   Alert,
@@ -20,6 +21,7 @@ import {
   InProgress,
   Share,
   UserFemale,
+  Document
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
@@ -226,17 +228,22 @@ function Task({ task, goBack }: TaskProps) {
             )}
           </Box>
         );
-      // case 'REPORT':
-      //   return (
-      //     <>
-      //       <Heading>Rounds and Balance Record</Heading>
-      //       <Text>{Number(participantRewardedAmounts)}</Text>
-      //     </>
-      //   )
+      case 'REPORT':
+        return (
+          <>
+            <Heading>Rounds and Balance Record</Heading>
+            <Text>{Number(participantRewardedAmounts)}</Text>
+          </>
+        )
       case 'DETAIL':
       default:
         return (
           <Box width="large">
+            <Box direction="row" align="center"  gap="medium" gridArea="nav">
+              <Document />
+              <Heading level={4}>Rounds and Balance Record</Heading>
+            </Box>
+
             <DataTable
               columns={[
                 {
