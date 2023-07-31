@@ -11,6 +11,7 @@ import {
   TextInput,
   Meter,
   Stack,
+  DataTable,
 } from 'grommet';
 import {
   Alert,
@@ -241,6 +242,31 @@ function Task({ task, goBack }: TaskProps) {
             <Text>participantRewardedAmounts is: {Number(participantRewardedAmounts)}</Text>
             <Text>participantRoundBalance is: {Number(participantRoundBalance)}</Text>
             <Text>participantRoundRole is: {Number(participantRoundRole)}</Text>
+            <DataTable
+              columns={[
+              {
+                property: 'round',
+                header: <Text>Round</Text>,
+                primary: true,
+              },
+              {
+                property: 'role',
+                header: <Text>Role</Text>,
+              },
+              {
+                property: 'token',
+                header: <Text>Token change</Text>,
+              },
+              {
+                property: 'balance',
+                header: <Text>Round balance</Text>,
+              },
+              ]}
+              data={[
+                { round: 1, role: "Porposer", token:  -10, balance: 63.35},
+                { round: 2, role: "Voter", token: 10, balance: 69.69},
+              ]}
+            />
           </Box>
         );
     }
