@@ -230,14 +230,6 @@ function Task({ task, goBack }: TaskProps) {
         );
       case 'REPORT':
         return (
-          <>
-            <Heading>Rounds and Balance Record</Heading>
-            <Text>{Number(participantRewardedAmounts)}</Text>
-          </>
-        )
-      case 'DETAIL':
-      default:
-        return (
           <Box width="large">
             <Box direction="row" align="center"  gap="medium" gridArea="nav">
               <Document />
@@ -273,6 +265,12 @@ function Task({ task, goBack }: TaskProps) {
               ]}
               data={finalDataForReport}
             />
+          </Box>
+        )
+      case 'DETAIL':
+      default:
+        return (
+          <Box width="large">
           </Box>
         );
     }
