@@ -500,7 +500,9 @@ function Task({ task, goBack }: TaskProps) {
                   Learning Rounds
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {Number(dataCurrentRound)}
+                  {isTrainingCompleted
+                    ? Number(task.rounds)
+                    : Number(dataCurrentRound)}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -508,9 +510,11 @@ function Task({ task, goBack }: TaskProps) {
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      {Math.round(
-                        (Number(dataCurrentRound) / Number(task.rounds)) * 1000
-                      ) / 10}
+                      {isTrainingCompleted
+                        ? '100'
+                        : Math.round(
+                            (Number(dataCurrentRound) / Number(task.rounds)) * 1000
+                          ) / 10}
                       %
                     </Text>
                   </Box>
