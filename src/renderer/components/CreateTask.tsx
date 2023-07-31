@@ -384,10 +384,19 @@ export function CreateTask({
     hash: approveTx?.hash,
   });
 
-  const { isSuccess, writeAsync, isError, error } = useContractWrite({
+  const {
+    data: createTaskTx,
+    writeAsync,
+    isError,
+    error,
+  } = useContractWrite({
     address: FLOCK_TASK_MANAGER_ADDRESS as `0x${string}`,
     abi: FLOCK_TASK_MANAGER_ABI,
     functionName: 'createTask',
+  });
+
+  const { isSuccess: isSuccessCreateTask } = useWaitForTransaction({
+    hash: createTaskTx?.hash,
   });
 
   const handleCreate = async () => {
@@ -439,11 +448,11 @@ export function CreateTask({
   }, [isErrorApprove]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccessCreateTask) {
       setIsProcessing(false);
       setShowCreateTask(false);
     }
-  }, [isSuccess]);
+  }, [isSuccessCreateTask]);
 
   const hasNoValues =
     (step === 1 && Object.keys(value).length < 9) ||
