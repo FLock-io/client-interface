@@ -116,6 +116,15 @@ const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
     loadRoundParticipantRole();
   }, [dataCurrentRound]);
 
+  const finalDataForReport = participantRewardedAmounts.map((element, index) => {
+    return {
+      round: index,
+      token: element,
+      balance: participantRoundBalance[index],
+      role: participantRoundRole[index],
+    };
+  });
+
   return {
     dataCurrentRound,
     dataStakedBalance,
@@ -125,7 +134,7 @@ const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
     dataInitialStake,
     participantRoundBalance,
     participantRoundRole,
-  };
+    finalDataForReport,};
 };
 
 export default useTaskData;

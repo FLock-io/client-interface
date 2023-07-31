@@ -87,7 +87,8 @@ function Task({ task, goBack }: TaskProps) {
     dataInitialStake,
     participantRewardedAmounts,
     participantRoundBalance,
-    participantRoundRole
+    participantRoundRole,
+    finalDataForReport
   } = useTaskData({
     task,
     participantAddress: address,
@@ -242,6 +243,7 @@ function Task({ task, goBack }: TaskProps) {
             <Text>participantRewardedAmounts is: {Number(participantRewardedAmounts)}</Text>
             <Text>participantRoundBalance is: {Number(participantRoundBalance)}</Text>
             <Text>participantRoundRole is: {Number(participantRoundRole)}</Text>
+            <Text>final data: {Number(finalDataForReport)}</Text>
             <DataTable
               columns={[
               {
