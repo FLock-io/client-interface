@@ -83,13 +83,10 @@ function Task({ task, goBack }: TaskProps) {
     isTrainingCompleted,
     totalRewardedAmount,
     dataStakedBalance,
-<<<<<<< HEAD
     dataInitialStake,
-    participantRewardedAmounts
-=======
     participantRewardedAmounts,
     participantRoundBalance,
->>>>>>> 103fc7c (add participantRoundBalance)
+    participantRoundRole
   } = useTaskData({
     task,
     participantAddress: address,
@@ -243,6 +240,7 @@ function Task({ task, goBack }: TaskProps) {
             <Text size="small">{task.description}</Text>
             <Text>participantRewardedAmounts is: {Number(participantRewardedAmounts)}</Text>
             <Text>participantRoundBalance is: {Number(participantRoundBalance)}</Text>
+            <Text>participantRoundRole is: {Number(participantRoundRole)}</Text>
           </Box>
         );
     }
