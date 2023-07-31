@@ -11,7 +11,6 @@ import {
   TextInput,
   Meter,
   Stack,
-  DataTable,
 } from 'grommet';
 import {
   Alert,
@@ -27,7 +26,6 @@ import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
 import {
   useAccount,
-  useContractRead,
   useContractWrite,
   useWaitForTransaction,
 } from 'wagmi';
@@ -237,38 +235,43 @@ function Task({ task, goBack }: TaskProps) {
       //   )
       case 'DETAIL':
       default:
+
+        const renderFinalDataForReport = () => {
+          return (
+            <table>
+              <thead>
+                <tr>
+                  <th>Round</th>
+                  <th>Token</th>
+                  <th>Balance</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                {finalDataForReport.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.round}</td>
+                    <td>{data.token.toString()}</td>
+                    <td>{data.balance.toString()}</td>
+                    <td>{data.role.toString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          );
+        };
+      
         return (
           <Box width="large">
-            <Text size="small">{task.description}</Text>
-            <Text>participantRewardedAmounts is: {Number(participantRewardedAmounts)}</Text>
-            <Text>participantRoundBalance is: {Number(participantRoundBalance)}</Text>
-            <Text>participantRoundRole is: {Number(participantRoundRole)}</Text>
-            <Text>final data: {Number(finalDataForReport)}</Text>
-            <DataTable
-              columns={[
-              {
-                property: 'round',
-                header: <Text>Round</Text>,
-                primary: true,
-              },
-              {
-                property: 'role',
-                header: <Text>Role</Text>,
-              },
-              {
-                property: 'token',
-                header: <Text>Token change</Text>,
-              },
-              {
-                property: 'balance',
-                header: <Text>Round balance</Text>,
-              },
-              ]}
-              data={[
-                { round: 1, role: "Porposer", token:  -10, balance: 63.35},
-                { round: 2, role: "Voter", token: 10, balance: 69.69},
-              ]}
-            />
+            <div>participantRewardedAmounts:
+              {participantRewardedAmounts.map((rewardedAmount, index) => (
+                <Text key={index}>{rewardedAmount.toString()}</Text>
+              ))}
+            </div>
+            <div>length of finalDataForReport is : {finalDataForReport.length}</div>
+            <div> final data:
+              {renderFinalDataForReport()}
+            </div>
           </Box>
         );
     }
