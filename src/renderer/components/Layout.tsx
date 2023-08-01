@@ -11,7 +11,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Box>
       <Box pad="medium" width="100%" height="100%">
         <Header />
-        <Box overflow="scroll" height="100%">
+        <Box overflow="auto" height="100%">
           {children}
         </Box>
       </Box>

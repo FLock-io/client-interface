@@ -1,4 +1,5 @@
 export interface TaskType {
+  isTrainingCompleted: boolean;
   address: string;
   name: string;
   description: string;
