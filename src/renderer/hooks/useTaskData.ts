@@ -116,15 +116,29 @@ const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
     loadRoundParticipantRole();
   }, [dataCurrentRound]);
 
-  const finalDataForReport = participantRewardedAmounts.map((element, index) => {
-    return {
+  const finalDataForReport = [];
+
+  for (let index = 0; index < participantRewardedAmounts.length; index++) {
+    const element = participantRewardedAmounts[index];
+    let tokenChangePercentage = '0%'; // Default value for the first element and when previous "token" is zero
+    let currentToken = element;
+    let prevToken = 0n;
+    (index > 0) ? prevToken = participantRewardedAmounts[index - 1] : prevToken = participantRewardedAmounts[index]
+
+    if (prevToken !== 0n) {
+      const tokenChange = ((currentToken - prevToken) / prevToken) * 100n;
+      tokenChangePercentage = tokenChange.toString() + '%';
+    }
+    
+    finalDataForReport.push({
       round: index,
       role: participantRoundRole[index].toString(),
-      token: element.toString(),
+      token: tokenChangePercentage,
       balance: participantRoundBalance[index].toString(),
-    };
-  });
-
+    });
+  }
+  
+  
   return {
     dataCurrentRound,
     dataStakedBalance,
