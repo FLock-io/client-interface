@@ -11,6 +11,7 @@ import {
   TextInput,
   Meter,
   Stack,
+  DataTable,
 } from 'grommet';
 import {
   Alert,
@@ -20,13 +21,13 @@ import {
   InProgress,
   Share,
   UserFemale,
+  Document
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
 import {
   useAccount,
-  useContractRead,
   useContractWrite,
   useWaitForTransaction,
 } from 'wagmi';
@@ -84,6 +85,7 @@ function Task({ task, goBack }: TaskProps) {
     totalRewardedAmount,
     dataStakedBalance,
     dataInitialStake,
+    finalDataForReport
   } = useTaskData({
     task,
     participantAddress: address,
@@ -223,11 +225,49 @@ function Task({ task, goBack }: TaskProps) {
             )}
           </Box>
         );
+      case 'REPORT':
+        return (
+          <Box width="large">
+            <Box direction="row" align="center"  gap="medium" gridArea="nav">
+              <Document />
+              <Heading level={4}>Rounds and Balance Record</Heading>
+            </Box>
+
+            <DataTable
+              columns={[
+                {
+                  align: 'center',
+                  property: 'round',
+                  header: 'Round',
+                  primary: true,
+                },
+                {
+                  align: 'center',
+                  property: 'role',
+                  header: 'Role',
+                  render: (datum) => (
+                    <Text>{datum.role === '1' ? 'Voter': 'Proposer' } </Text>
+                  ),
+                },
+                {
+                  align: 'center',
+                  property: 'token',
+                  header: 'Token Change',
+                },
+                {
+                  align: 'center',
+                  property: 'balance',
+                  header: 'Round Balance',
+                },
+              ]}
+              data={finalDataForReport}
+            />
+          </Box>
+        )
       case 'DETAIL':
       default:
         return (
           <Box width="large">
-            <Text size="small">{task.description}</Text>
           </Box>
         );
     }

@@ -3,6 +3,7 @@ import { TaskType } from 'renderer/components/types';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { useContractRead } from 'wagmi';
 import { readContract } from '@wagmi/core';
+import { formatUnits } from 'ethers';
 
 export const useTaskData = ({
   task,
@@ -14,6 +15,12 @@ export const useTaskData = ({
   const [participantRewardedAmounts, setParticipantRewardedAmounts] = useState<
     bigint[]
   >([]);
+
+  const [participantRoundBalance, setParticipantRoundBalance] = useState<
+  bigint[]
+>([]);
+
+const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
 
   const { data: dataCurrentRound } = useContractRead({
     address: task.address as `0x${string}`,
@@ -72,6 +79,66 @@ export const useTaskData = ({
     0
   );
 
+  const loadRoundParticipantBalance = async () => {
+    if (participantAddress === undefined) return;
+    const result: Promise<bigint>[] = [];
+    for (let i = 0; i < dataCurrentRound; i += 1) {
+      const data = readContract({
+        address: task.address as `0x${string}`,
+        abi: FLOCK_TASK_ABI,
+        functionName: 'roundStakedTokens',
+        args: [i, participantAddress],
+      }) as Promise<bigint>;
+      result.push(data);
+    }
+    setParticipantRoundBalance(await Promise.all(result));
+  };
+
+  useEffect(() => {
+    loadRoundParticipantBalance();
+  }, [dataCurrentRound]);
+
+  const loadRoundParticipantRole = async () => {
+    if (participantAddress === undefined) return;
+    const result: Promise<bigint>[] = [];
+    for (let i = 0; i < dataCurrentRound; i += 1) {
+      const data = readContract({
+        address: task.address as `0x${string}`,
+        abi: FLOCK_TASK_ABI,
+        functionName: 'participantRoles',
+        args: [i, participantAddress],
+      }) as Promise<bigint>;
+      result.push(data);
+    }
+    setParticipantRoundRole(await Promise.all(result));
+  };
+
+  useEffect(() => {
+    loadRoundParticipantRole();
+  }, [dataCurrentRound]);
+
+  const finalDataForReport = [];
+
+  for (let index = 0; index < participantRewardedAmounts.length; index++) {
+    const element = participantRewardedAmounts[index];
+    let tokenChangePercentage = '0%'; // Default value for the first element and when previous "token" is zero
+    let currentToken = element;
+    let prevToken = 0n;
+    (index > 0) ? prevToken = participantRewardedAmounts[index - 1] : prevToken = participantRewardedAmounts[index]
+
+    if (prevToken !== 0n) {
+      const tokenChange = ((currentToken - prevToken) / prevToken) * 100n;
+      tokenChangePercentage = tokenChange.toString() + '%';
+    }
+    
+    finalDataForReport.push({
+      round: index,
+      role: participantRoundRole[index].toString(),
+      token: tokenChangePercentage,
+      balance: formatUnits(participantRoundBalance[index], 18).toString(),
+    });
+  }
+  
   return {
     dataCurrentRound,
     dataStakedBalance,
@@ -79,7 +146,9 @@ export const useTaskData = ({
     participantRewardedAmounts,
     totalRewardedAmount,
     dataInitialStake,
-  };
+    participantRoundBalance,
+    participantRoundRole,
+    finalDataForReport,};
 };
 
 export default useTaskData;
