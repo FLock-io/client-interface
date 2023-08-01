@@ -3,6 +3,7 @@ import { TaskType } from 'renderer/components/types';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { useContractRead } from 'wagmi';
 import { readContract } from '@wagmi/core';
+import { formatUnits } from 'ethers';
 
 export const useTaskData = ({
   task,
@@ -134,10 +135,9 @@ const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
       round: index,
       role: participantRoundRole[index].toString(),
       token: tokenChangePercentage,
-      balance: participantRoundBalance[index].toString(),
+      balance: formatUnits(participantRoundBalance[index], 18).toString(),
     });
   }
-  
   
   return {
     dataCurrentRound,

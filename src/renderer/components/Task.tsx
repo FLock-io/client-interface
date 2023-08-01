@@ -85,9 +85,6 @@ function Task({ task, goBack }: TaskProps) {
     totalRewardedAmount,
     dataStakedBalance,
     dataInitialStake,
-    participantRewardedAmounts,
-    participantRoundBalance,
-    participantRoundRole,
     finalDataForReport
   } = useTaskData({
     task,
