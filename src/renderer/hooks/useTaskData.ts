@@ -52,6 +52,13 @@ const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
     args: [0, participantAddress],
   }) as { data: bigint; refetch: () => void };
 
+  const { data: dataCurrentAccuracy } = useContractRead({
+    address: task.address as `0x${string}`,
+    abi: FLOCK_TASK_ABI,
+    functionName: 'roundAccuracy',
+    args: [dataCurrentRound],
+  }) as { data: number };
+
   const isTrainingCompleted =
     dataHasRoundFinished && Number(dataCurrentRound) === task.rounds - 1; // Training client starts from 0
 
@@ -148,7 +155,9 @@ const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
     dataInitialStake,
     participantRoundBalance,
     participantRoundRole,
-    finalDataForReport,};
+    finalDataForReport,
+    dataCurrentAccuracy,
+  };
 };
 
 export default useTaskData;
