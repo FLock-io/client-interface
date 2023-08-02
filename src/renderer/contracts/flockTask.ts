@@ -494,6 +494,19 @@ export const FLOCK_TASK_ABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'getTotalScoreAllRounds',
+    outputs: [
+      {
+        internalType: 'int256[]',
+        name: '',
+        type: 'int256[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'uint256',
@@ -867,6 +880,25 @@ export const FLOCK_TASK_ABI = [
   {
     inputs: [],
     name: 'rewardPool',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'roundAccuracy',
     outputs: [
       {
         internalType: 'uint256',
@@ -1387,6 +1419,11 @@ export const FLOCK_TASK_ABI = [
         internalType: 'int8',
         name: '_score',
         type: 'int8',
+      },
+      {
+        internalType: 'uint256',
+        name: '_accuracy',
+        type: 'uint256',
       },
     ],
     name: 'vote',
