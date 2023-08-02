@@ -590,9 +590,7 @@ function Task({ task, goBack }: TaskProps) {
                   Model Accuracy
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {dataCurrentRound === 0
-                    ? 0
-                    : Number(dataCurrentAccuracy) / 100}
+                  {!dataCurrentAccuracy ? 0 : Number(dataCurrentAccuracy) / 100}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -600,12 +598,14 @@ function Task({ task, goBack }: TaskProps) {
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      {
-                        Math.round(
-                          ((Number(dataCurrentAccuracy) / 100) / Number(task.accuracy)) *
-                            1000
-                        ) / 10
-                      }
+                      {dataCurrentAccuracy
+                        ? Math.round(
+                            (Number(dataCurrentAccuracy) /
+                              100 /
+                              Number(task.accuracy)) *
+                              1000
+                          ) / 10
+                        : 0}
                       %
                     </Text>
                   </Box>
