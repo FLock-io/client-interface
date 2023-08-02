@@ -500,6 +500,7 @@ function Task({ task, goBack }: TaskProps) {
                       side: 'all',
                     }}
                     round="small"
+                    margin={{ top: 'xsmall' }}
                   >
                     <Meter
                       values={[
@@ -547,7 +548,7 @@ function Task({ task, goBack }: TaskProps) {
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
-                    <Text size="xsmall" alignSelf="start">
+                    <Text size="xsmall" alignSelf="end">
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
@@ -585,7 +586,7 @@ function Task({ task, goBack }: TaskProps) {
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
-                    <Text size="xsmall" alignSelf="start">
+                    <Text size="xsmall" alignSelf="end">
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
@@ -624,7 +625,7 @@ function Task({ task, goBack }: TaskProps) {
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
-                    <Text size="xsmall" alignSelf="start">
+                    <Text size="xsmall" alignSelf="end">
                       Return Rate
                     </Text>
                     <Text size="xsmall" alignSelf="end">
