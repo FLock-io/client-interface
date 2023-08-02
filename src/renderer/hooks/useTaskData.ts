@@ -17,10 +17,12 @@ export const useTaskData = ({
   >([]);
 
   const [participantRoundBalance, setParticipantRoundBalance] = useState<
-  bigint[]
->([]);
+    bigint[]
+  >([]);
 
-const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
+  const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>(
+    []
+  );
 
   const { data: dataCurrentRound } = useContractRead({
     address: task.address as `0x${string}`,
@@ -131,21 +133,27 @@ const [participantRoundRole, setParticipantRoundRole] = useState<bigint[]>([]);
     let tokenChangePercentage = '0%'; // Default value for the first element and when previous "token" is zero
     let currentToken = element;
     let prevToken = 0n;
-    (index > 0) ? prevToken = participantRewardedAmounts[index - 1] : prevToken = participantRewardedAmounts[index]
+    index > 0
+      ? (prevToken = participantRewardedAmounts[index - 1])
+      : (prevToken = participantRewardedAmounts[index]);
 
     if (prevToken !== 0n) {
       const tokenChange = ((currentToken - prevToken) / prevToken) * 100n;
       tokenChangePercentage = tokenChange.toString() + '%';
     }
-    
+
     finalDataForReport.push({
       round: index,
-      role: participantRoundRole[index].toString(),
+      role: participantRoundRole[index]
+        ? participantRoundRole[index].toString()
+        : '',
       token: tokenChangePercentage,
-      balance: formatUnits(participantRoundBalance[index], 18).toString(),
+      balance: participantRoundBalance[index]
+        ? formatUnits(participantRoundBalance[index], 18)
+        : '',
     });
   }
-  
+
   return {
     dataCurrentRound,
     dataStakedBalance,
