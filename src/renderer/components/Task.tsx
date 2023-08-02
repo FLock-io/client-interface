@@ -85,7 +85,8 @@ function Task({ task, goBack }: TaskProps) {
     totalRewardedAmount,
     dataStakedBalance,
     dataInitialStake,
-    finalDataForReport
+    finalDataForReport,
+    dataCurrentAccuracy,
   } = useTaskData({
     task,
     participantAddress: address,
@@ -580,7 +581,7 @@ function Task({ task, goBack }: TaskProps) {
                   Model Accuracy
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  0
+                  {Number(dataCurrentAccuracy) / 100}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -588,7 +589,13 @@ function Task({ task, goBack }: TaskProps) {
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      5%
+                      {
+                        Math.round(
+                          ((Number(dataCurrentAccuracy) / 100) / Number(task.accuracy)) *
+                            1000
+                        ) / 10
+                      }
+                      %
                     </Text>
                   </Box>
                   <Box direction="row" justify="between">
