@@ -590,7 +590,9 @@ function Task({ task, goBack }: TaskProps) {
                   Model Accuracy
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {Number(dataCurrentAccuracy) / 100}
+                  {dataCurrentRound === 0
+                    ? 0
+                    : Number(dataCurrentAccuracy) / 100}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
