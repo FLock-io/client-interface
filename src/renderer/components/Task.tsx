@@ -287,7 +287,7 @@ function Task({ task, goBack }: TaskProps) {
                       property: 'accuracy',
                       type: 'line',
                       opacity: 'medium',
-                      thickness: 'small',
+                      thickness: 'xsmall',
                       color: '#6C94EC',
                     },
                   ]}
