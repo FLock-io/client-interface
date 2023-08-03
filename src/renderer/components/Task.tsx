@@ -84,13 +84,21 @@ function Task({ task, goBack }: TaskProps) {
     isTrainingCompleted,
     totalRewardedAmount,
     dataStakedBalance,
-    dataInitialStake,
     finalDataForReport,
     dataCurrentAccuracy,
   } = useTaskData({
     task,
     participantAddress: address,
   });
+
+  const scaledDataStakedBalance = dataStakedBalance
+    ? Number(formatUnits(dataStakedBalance, 18))
+    : 0;
+
+  const returnRate =
+    scaledDataStakedBalance !== 0
+      ? Math.round((totalRewardedAmount / scaledDataStakedBalance) * 1000) / 10
+      : 0;
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
@@ -500,6 +508,7 @@ function Task({ task, goBack }: TaskProps) {
                       side: 'all',
                     }}
                     round="small"
+                    margin={{ top: 'xsmall' }}
                   >
                     <Meter
                       values={[
@@ -547,7 +556,7 @@ function Task({ task, goBack }: TaskProps) {
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
-                    <Text size="xsmall" alignSelf="start">
+                    <Text size="xsmall" alignSelf="end">
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
@@ -581,20 +590,22 @@ function Task({ task, goBack }: TaskProps) {
                   Model Accuracy
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {Number(dataCurrentAccuracy) / 100}
+                  {!dataCurrentAccuracy ? 0 : Number(dataCurrentAccuracy) / 100}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
-                    <Text size="xsmall" alignSelf="start">
+                    <Text size="xsmall" alignSelf="end">
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      {
-                        Math.round(
-                          ((Number(dataCurrentAccuracy) / 100) / Number(task.accuracy)) *
-                            1000
-                        ) / 10
-                      }
+                      {dataCurrentAccuracy
+                        ? Math.round(
+                            (Number(dataCurrentAccuracy) /
+                              100 /
+                              Number(task.accuracy)) *
+                              1000
+                          ) / 10
+                        : 0}
                       %
                     </Text>
                   </Box>
@@ -620,22 +631,15 @@ function Task({ task, goBack }: TaskProps) {
                   Balance
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {dataStakedBalance ? formatUnits(dataStakedBalance, 18) : 0}
+                  {scaledDataStakedBalance}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
-                    <Text size="xsmall" alignSelf="start">
+                    <Text size="xsmall" alignSelf="end">
                       Return Rate
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      {Number(dataInitialStake) === 0
-                        ? '0'
-                        : Math.round(
-                            (Number(dataStakedBalance) - Number(dataInitialStake) /
-                              Number(dataInitialStake)) *
-                              1000
-                          ) / 10}
-                      %
+                      {returnRate}%
                     </Text>
                   </Box>
                   <Box direction="row" justify="between">
@@ -644,7 +648,7 @@ function Task({ task, goBack }: TaskProps) {
                     </Heading>
                     <Heading level="6" margin="0">
                       $F
-                      {dataInitialStake ? formatUnits(dataInitialStake, 18) : 0}
+                      {scaledDataStakedBalance - totalRewardedAmount}
                     </Heading>
                   </Box>
                 </Box>

@@ -47,13 +47,6 @@ export const useTaskData = ({
     watch: true,
   }) as { data: bigint };
 
-  const { data: dataInitialStake } = useContractRead({
-    address: task.address as `0x${string}`,
-    abi: FLOCK_TASK_ABI,
-    functionName: 'roundStakedTokens',
-    args: [0, participantAddress],
-  }) as { data: bigint; refetch: () => void };
-
   const { data: dataCurrentAccuracy } = useContractRead({
     address: task.address as `0x${string}`,
     abi: FLOCK_TASK_ABI,
@@ -160,7 +153,6 @@ export const useTaskData = ({
     isTrainingCompleted,
     participantRewardedAmounts,
     totalRewardedAmount,
-    dataInitialStake,
     participantRoundBalance,
     participantRoundRole,
     finalDataForReport,
