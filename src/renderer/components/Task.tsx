@@ -12,6 +12,7 @@ import {
   Meter,
   Stack,
   DataTable,
+  DataChart,
 } from 'grommet';
 import {
   Alert,
@@ -21,16 +22,12 @@ import {
   InProgress,
   Share,
   UserFemale,
-  Document
+  Document,
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
-import {
-  useAccount,
-  useContractWrite,
-  useWaitForTransaction,
-} from 'wagmi';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { WalletContext } from 'renderer/context/walletContext';
@@ -86,6 +83,7 @@ function Task({ task, goBack }: TaskProps) {
     dataStakedBalance,
     finalDataForReport,
     dataCurrentAccuracy,
+    accuracies,
   } = useTaskData({
     task,
     participantAddress: address,
@@ -236,49 +234,77 @@ function Task({ task, goBack }: TaskProps) {
         );
       case 'REPORT':
         return (
-          <Box width="large">
-            <Box direction="row" align="center"  gap="medium" gridArea="nav">
-              <Document />
-              <Heading level={4}>Rounds and Balance Record</Heading>
-            </Box>
+          <Box direction="row" align="start" justify="between">
+            <Box>
+              <Box direction="row" align="center" gap="medium" gridArea="nav">
+                <Document />
+                <Heading level={4}>Rounds and Balance Record</Heading>
+              </Box>
 
-            <DataTable
-              columns={[
-                {
-                  align: 'center',
-                  property: 'round',
-                  header: 'Round',
-                  primary: true,
-                },
-                {
-                  align: 'center',
-                  property: 'role',
-                  header: 'Role',
-                  render: (datum) => (
-                    <Text>{datum.role === '1' ? 'Voter': 'Proposer' } </Text>
-                  ),
-                },
-                {
-                  align: 'center',
-                  property: 'token',
-                  header: 'Token Change',
-                },
-                {
-                  align: 'center',
-                  property: 'balance',
-                  header: 'Round Balance',
-                },
-              ]}
-              data={finalDataForReport}
-            />
-          </Box>
-        )
-      case 'DETAIL':
-      default:
-        return (
-          <Box width="large">
+              <DataTable
+                columns={[
+                  {
+                    align: 'center',
+                    property: 'round',
+                    header: 'Round',
+                    primary: true,
+                  },
+                  {
+                    align: 'center',
+                    property: 'role',
+                    header: 'Role',
+                    render: (datum) => (
+                      <Text>{datum.role === '1' ? 'Voter' : 'Proposer'} </Text>
+                    ),
+                  },
+                  {
+                    align: 'center',
+                    property: 'token',
+                    header: 'Token Change',
+                  },
+                  {
+                    align: 'center',
+                    property: 'balance',
+                    header: 'Round Balance',
+                  },
+                ]}
+                data={finalDataForReport}
+              />
+            </Box>
+            <Box gap="medium">
+              <Box>
+                <Heading level={4}>Acurracy</Heading>
+              </Box>
+              <Box>
+                <DataChart
+                  data={accuracies}
+                  series={['round', 'accuracy']}
+                  bounds="align"
+                  legend
+                  detail
+                  chart={[
+                    {
+                      property: 'accuracy',
+                      type: 'line',
+                      opacity: 'medium',
+                      thickness: 'xsmall',
+                      color: '#6C94EC',
+                    },
+                  ]}
+                  gap="xsmall"
+                  pad="small"
+                  axis={{
+                    x: 'round',
+                    y: { property: 'accuracy', granularity: 'medium' },
+                  }}
+                />
+              </Box>
+            </Box>
           </Box>
         );
+      case 'DETAIL':
+      default:
+        return <Box width="large">{task.description}</Box>;
     }
   };
 
@@ -563,7 +589,8 @@ function Task({ task, goBack }: TaskProps) {
                       {isTrainingCompleted
                         ? '100'
                         : Math.round(
-                            (Number(dataCurrentRound) / Number(task.rounds)) * 1000
+                            (Number(dataCurrentRound) / Number(task.rounds)) *
+                              1000
                           ) / 10}
                       %
                     </Text>
