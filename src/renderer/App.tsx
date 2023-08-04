@@ -97,7 +97,6 @@ export default function App() {
     privateKeyProvider,
     adapterSettings: {
       network: 'cyan',
-      uxMode: 'redirect',
     },
   });
   web3AuthInstance.configureAdapter(openloginAdapterInstance);
