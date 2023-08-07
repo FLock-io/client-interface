@@ -96,7 +96,7 @@ This new FLock client interface boasts a state-of-the-art graphical user interfa
 
 You may download the desktop client of the lastest version [here](https://github.com/FLock-io/client-interface/releases/tag/v0.0.3).
 
-For more detailed technical explanation of the FLock client, see [here] (https://docs.flock.io/core-technologies/flock-client/client-deepdown).
+For more detailed technical explanation of the FLock client, see [here](https://docs.flock.io/core-technologies/flock-client/client-deepdown).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
