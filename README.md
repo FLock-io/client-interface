@@ -81,7 +81,22 @@
 
 ## About The Project
 
+![client-flow][client-flow]
+
 [![Product Name Screen Shot][product-screenshot]](https://www.flock.io)
+
+This new FLock client interface boasts a state-of-the-art graphical user interface (GUI), offering a seamless and user-friendly platform for our esteemed users. The client, elegantly wrapped in ```Electron```, enables users to effortlessly engage with FLock's diverse features and functionalities through a visually appealing and intuitive interface. These features include:
+
+- Communicate with a smart contract on a blockchain
+- Interact with IPFS for uploading and downloading model parameters
+- Automatically stake of tokens based on the current threshold
+- Participate in a federated learning system with a clear voting and proposing mechanism
+- Flexible with any model that implements the required interface
+- Handle training and evaluation of the models
+
+You may download the desktop client of the lastest version [here](https://github.com/FLock-io/client-interface/releases/tag/v0.0.3).
+
+For more detailed technical explanation of the FLock client, see [here](https://docs.flock.io/core-technologies/flock-client/client-deepdown).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -197,6 +212,7 @@ Use this space to list resources you find helpful and would like to give credit 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
+[client-flow]: client-flow.png
 [contributors-shield]: https://img.shields.io/github/contributors/flock-io/client-interface.svg?style=for-the-badge
 [contributors-url]: https://github.com/flock-io/client-interface/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/flock-io/client-interface.svg?style=for-the-badge
