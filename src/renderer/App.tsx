@@ -15,6 +15,8 @@ import { WalletContextProvider } from './context/walletContext';
 import Faucet from './pages/Faucet';
 import { CONFIG } from './config';
 import { RunnerContextProvider } from './context/runnerContext';
+import { useEffect, useState } from 'react';
+import { web3AuthInstance } from './Web3AuthInstance'
 
 export default function App() {
   const flockTheme = {
@@ -76,19 +78,54 @@ export default function App() {
     blockExplorer: chains[0]?.blockExplorers.default?.url,
   };
 
-  const web3AuthInstance = new Web3Auth({
-    clientId: CONFIG.WEB3_AUTH_CLIENT_ID,
-    web3AuthNetwork: 'cyan',
-    // @ts-ignore
-    chainConfig,
-    authMode: 'WALLET',
-    uiConfig: {
-      theme: 'light',
-      appName: 'FLock Client',
-      appLogo:
-        'https://drive.google.com/uc?export=download&id=1Pm_naD3LlamhxkEVv-i2VBVG2RC4DYaZ',
-    },
-  });
+  // const web3AuthInstance = new Web3Auth({
+  //   clientId: CONFIG.WEB3_AUTH_CLIENT_ID,
+  //   web3AuthNetwork: 'cyan',
+  //   // @ts-ignore
+  //   chainConfig,
+  //   authMode: 'WALLET',
+  //   uiConfig: {
+  //     theme: 'light',
+  //     appName: 'FLock Client',
+  //     appLogo:
+  //       'https://drive.google.com/uc?export=download&id=1Pm_naD3LlamhxkEVv-i2VBVG2RC4DYaZ',
+  //   },
+  // });
+
+  // interface UserInfo {
+  //   email: string;
+  //   name?: string;
+  //   profileImage?: string;
+  //   aggregateVerifier?: string;
+  //   verifier?: string;
+  //   verifierId?: string;
+  //   typeOfLogin?: string;
+  //   dappShare?: string;
+  //   idToken?: string;
+  //   oAuthIdToken?: string;
+  //   oAuthAccessToken?: string;
+  // }
+
+  // const [userInfo, setUserInfo] = useState<UserInfo | undefined>();
+
+  // const loadUserInfo = async () => {
+  //   try {
+  //     const result = await web3AuthInstance.getUserInfo();
+
+  //     const filteredUserInfo: UserInfo = {
+  //       email: result.email || '', 
+  //     };
+
+  //     setUserInfo(filteredUserInfo);
+  //     console.log(filteredUserInfo.email)
+  //   } catch (error) {
+  //     console.error('Error loading user info:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   loadUserInfo();
+  // }, []);
 
   const privateKeyProvider = new EthereumPrivateKeyProvider({
     config: { chainConfig },
