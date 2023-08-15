@@ -1,8 +1,9 @@
 import { Box, Button, Heading, Layer, Text } from 'grommet';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { WalletContext } from 'renderer/context/walletContext';
 import truncateEthAddress from 'truncate-eth-address';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { web3AuthInstance } from '../Web3AuthInstance'
 
 function Wallet() {
   const { address } = useAccount();
@@ -20,6 +21,43 @@ function Wallet() {
   const handleDisconnect = async () => {
     wagmiDisconnect();
   };
+
+  interface UserInfo {
+    email: string;
+    name?: string;
+    profileImage?: string;
+    aggregateVerifier?: string;
+    verifier?: string;
+    verifierId?: string;
+    typeOfLogin?: string;
+    dappShare?: string;
+    idToken?: string;
+    oAuthIdToken?: string;
+    oAuthAccessToken?: string;
+  }
+
+  const [userInfo, setUserInfo] = useState<UserInfo | undefined>();
+
+  const loadUserInfo = async () => {
+      try {
+        const result = await web3AuthInstance.getUserInfo();
+  
+        const filteredUserInfo: UserInfo = {
+          email: result.email || '', 
+        };
+  
+        setUserInfo(filteredUserInfo);
+        console.log(filteredUserInfo.email)
+      } catch (error) {
+        console.error('Error loading user info:', error);
+      }
+  };
+  
+  useEffect(() => {
+    if (address) {
+      loadUserInfo(); 
+    }
+  }, [address]);
 
   if (showWalletSettings) {
     return (
