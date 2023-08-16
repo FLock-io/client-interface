@@ -137,6 +137,34 @@ function Task({ task, goBack }: TaskProps) {
     }
   }, [isSuccessStake]);
 
+  const isEligibleForOAT = async(address: string, task: { address: string }) => {
+    console.log(address)
+    console.log(task.address)
+    try {
+      const queryString = new URLSearchParams({
+        wallet: address,
+        taskId: task.address,
+      }).toString();
+
+      const url = `https://us-central1-flock-demo-design.cloudfunctions.net/getOATEligibility?${queryString}`; //check this URL
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      } else {
+        throw new Error("Error fetching data");
+      }
+    } catch (error) {
+      return error;
+    }
+  };
+
   const nextStep = () => {
     switch (step) {
       case 'LOCAL_DATA':
@@ -315,12 +343,13 @@ function Task({ task, goBack }: TaskProps) {
   }, [isRunning]);
 
   useEffect(() => {
-    if (isTrainingCompleted) {
+    if (isTrainingCompleted && address && task && task.address) {
       setShowCompletedModal(true);
       setStep('REPORT');
+      isEligibleForOAT(address, task);
     }
-  }, [isTrainingCompleted]);
-
+  }, [isTrainingCompleted, address, task]);
+  
   return (
     <>
       {showCompletedModal && (
