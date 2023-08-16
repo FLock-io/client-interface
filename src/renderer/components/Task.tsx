@@ -35,6 +35,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { useTaskData } from 'renderer/hooks/useTaskData';
 import { TaskType } from './types';
+import { web3AuthInstance } from '../Web3AuthInstance';
 
 interface TaskProps {
   task: TaskType;
@@ -138,16 +139,15 @@ function Task({ task, goBack }: TaskProps) {
   }, [isSuccessStake]);
 
   const isEligibleForOAT = async(address: string, task: { address: string }) => {
-    console.log(address)
-    console.log(task.address)
     try {
+      const user = await web3AuthInstance.getUserInfo();
+
       const queryString = new URLSearchParams({
-        wallet: address,
+        address: user.email as string,
         taskId: task.address,
       }).toString();
 
-      const url = `https://us-central1-flock-demo-design.cloudfunctions.net/getOATEligibility?${queryString}`; //check this URL
-
+      const url = `https://us-central1-flock-demo-design.cloudfunctions.net/getOATEligibility?${queryString}`; 
       const res = await fetch(url, {
         method: "GET",
         headers: {
@@ -156,7 +156,7 @@ function Task({ task, goBack }: TaskProps) {
       });
       if (res.ok) {
         const data = await res.json();
-        return data;
+        console.log(data);
       } else {
         throw new Error("Error fetching data");
       }
