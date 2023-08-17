@@ -56,7 +56,6 @@ function Wallet() {
           body: JSON.stringify({ pubKey: publicKey, email: user.email, wallet: address }),
         });
 
-        console.log(res, "success!")
         return res.json();
       
       } catch (error) {

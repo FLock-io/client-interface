@@ -85,6 +85,7 @@ function Task({ task, goBack }: TaskProps) {
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
+    isEligibleForOAT
   } = useTaskData({
     task,
     participantAddress: address,
@@ -137,33 +138,6 @@ function Task({ task, goBack }: TaskProps) {
       setIsStaking(false);
     }
   }, [isSuccessStake]);
-
-  const isEligibleForOAT = async(address: string, task: { address: string }) => {
-    try {
-      const user = await web3AuthInstance.getUserInfo();
-
-      const queryString = new URLSearchParams({
-        address: user.email as string,
-        taskId: task.address,
-      }).toString();
-
-      const url = `https://us-central1-flock-demo-design.cloudfunctions.net/getOATEligibility?${queryString}`; 
-      const res = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        console.log(data);
-      } else {
-        throw new Error("Error fetching data");
-      }
-    } catch (error) {
-      return error;
-    }
-  };
 
   const nextStep = () => {
     switch (step) {
@@ -346,7 +320,7 @@ function Task({ task, goBack }: TaskProps) {
     if (isTrainingCompleted && address && task && task.address) {
       setShowCompletedModal(true);
       setStep('REPORT');
-      isEligibleForOAT(address, task);
+      // isEligibleForOAT(address, task);
     }
   }, [isTrainingCompleted, address, task]);
   
@@ -362,7 +336,7 @@ function Task({ task, goBack }: TaskProps) {
             pad="medium"
             align="center"
             gap="small"
-            width="medium"
+            width="large"
             height="medium"
           >
             <Box
@@ -385,6 +359,9 @@ function Task({ task, goBack }: TaskProps) {
             <Box align="start">
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
               <Text size="medium">Final Accuracy: </Text>
+              {isEligibleForOAT && ( 
+                  <Text size='medium'>You are eligible for an OAT on Galxe! Claim it here:</Text>
+                  )}
             </Box>
           </Box>
         </Layer>

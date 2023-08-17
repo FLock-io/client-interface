@@ -161,6 +161,14 @@ export const useTaskData = ({
     });
   }
 
+  const { data: isEligibleForOAT } = useContractRead({
+    address: task.address as `0x${string}`,
+    abi: FLOCK_TASK_ABI,
+    functionName: 'isEligibleForOAT',
+    args: [participantAddress],
+    watch: true,
+  }) as { data: boolean };
+
   return {
     dataCurrentRound,
     dataStakedBalance,
@@ -172,6 +180,7 @@ export const useTaskData = ({
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
+    isEligibleForOAT
   };
 };
 
