@@ -15,6 +15,8 @@ import { WalletContextProvider } from './context/walletContext';
 import Faucet from './pages/Faucet';
 import { CONFIG } from './config';
 import { RunnerContextProvider } from './context/runnerContext';
+import { useEffect, useState } from 'react';
+import { web3AuthInstance } from './Web3AuthInstance'
 
 export default function App() {
   const flockTheme = {
@@ -75,20 +77,6 @@ export default function App() {
     ticker: chains[0].nativeCurrency?.symbol,
     blockExplorer: chains[0]?.blockExplorers.default?.url,
   };
-
-  const web3AuthInstance = new Web3Auth({
-    clientId: CONFIG.WEB3_AUTH_CLIENT_ID,
-    web3AuthNetwork: 'cyan',
-    // @ts-ignore
-    chainConfig,
-    authMode: 'WALLET',
-    uiConfig: {
-      theme: 'light',
-      appName: 'FLock Client',
-      appLogo:
-        'https://drive.google.com/uc?export=download&id=1Pm_naD3LlamhxkEVv-i2VBVG2RC4DYaZ',
-    },
-  });
 
   const privateKeyProvider = new EthereumPrivateKeyProvider({
     config: { chainConfig },
