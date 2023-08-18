@@ -84,6 +84,7 @@ function Task({ task, goBack }: TaskProps) {
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
+    numberOfParticipants,
   } = useTaskData({
     task,
     participantAddress: address,
@@ -478,11 +479,11 @@ function Task({ task, goBack }: TaskProps) {
                   <Box direction="row" justify="between" align="center">
                     <Box direction="row" align="center" gap="xsmall">
                       <Text color="brand" size="2xl" weight="bold">
-                        {Number(task.numberOfParticipants)}
+                        {Number(numberOfParticipants)}
                       </Text>
                       <Text weight="bold">
                         participant
-                        {Number(task.numberOfParticipants) !== 1 && 's'} have
+                        {Number(numberOfParticipants) !== 1 && 's'} have
                         joined the task
                       </Text>
                     </Box>
@@ -491,7 +492,7 @@ function Task({ task, goBack }: TaskProps) {
                         {Array.from(
                           {
                             length: Math.min(
-                              Number(task.numberOfParticipants),
+                              Number(numberOfParticipants),
                               7
                             ),
                           },
@@ -503,7 +504,7 @@ function Task({ task, goBack }: TaskProps) {
                               {Array.from(
                                 {
                                   length:
-                                    Number(task.numberOfParticipants) - (i + 1),
+                                    Number(numberOfParticipants) - (i + 1),
                                 },
                                 (_, j) => (
                                   <Box key={j} pad="xsmall" />
@@ -513,8 +514,8 @@ function Task({ task, goBack }: TaskProps) {
                           )
                         )}
                       </Stack>
-                      {Number(task.numberOfParticipants) > 7 && (
-                        <Text>+{Number(task.numberOfParticipants) - 7}</Text>
+                      {Number(numberOfParticipants) > 7 && (
+                        <Text>+{Number(numberOfParticipants) - 7}</Text>
                       )}
                     </Box>
                   </Box>
@@ -539,7 +540,7 @@ function Task({ task, goBack }: TaskProps) {
                     <Meter
                       values={[
                         {
-                          value: Number(task.numberOfParticipants),
+                          value: Number(numberOfParticipants),
                           color: 'brand',
                           onClick: () => {},
                           label: `Min: ${task.minParticipants}`,
