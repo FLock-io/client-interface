@@ -504,7 +504,7 @@ function Task({ task, goBack }: TaskProps) {
                               {Array.from(
                                 {
                                   length:
-                                    Number(task.numberOfParticipants) - (i + 1),
+                                    Number(numberOfParticipants) - (i + 1),
                                 },
                                 (_, j) => (
                                   <Box key={j} pad="xsmall" />
@@ -514,8 +514,8 @@ function Task({ task, goBack }: TaskProps) {
                           )
                         )}
                       </Stack>
-                      {Number(task.numberOfParticipants) > 7 && (
-                        <Text>+{Number(task.numberOfParticipants) - 7}</Text>
+                      {Number(numberOfParticipants) > 7 && (
+                        <Text>+{Number(numberOfParticipants) - 7}</Text>
                       )}
                     </Box>
                   </Box>
@@ -540,7 +540,7 @@ function Task({ task, goBack }: TaskProps) {
                     <Meter
                       values={[
                         {
-                          value: Number(task.numberOfParticipants),
+                          value: Number(numberOfParticipants),
                           color: 'brand',
                           onClick: () => {},
                           label: `Min: ${task.minParticipants}`,
