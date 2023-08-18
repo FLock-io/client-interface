@@ -28,6 +28,8 @@ export const useTaskData = ({
     { round: number; accuracy: number }[]
   >([]);
 
+  const [numberOfParticipants, setNumberOfParticipants] = useState<bigint>();
+
   const { data: dataCurrentRound } = useContractRead({
     address: task.address as `0x${string}`,
     abi: FLOCK_TASK_ABI,
@@ -126,11 +128,21 @@ export const useTaskData = ({
     setAccuracies(result);
   };
 
+  const loadRoundParticipants = async () => {
+    const participantsData = readContract({
+      address: task.address as `0x${string}`,
+      abi: FLOCK_TASK_ABI,
+      functionName: 'getNumberOfParticipants',
+    }) as Promise<bigint>;
+    setNumberOfParticipants(await participantsData);
+  };
+
   useEffect(() => {
     loadRoundParticipantRewardedAmount();
     loadRoundParticipantBalance();
     loadRoundParticipantRole();
     loadAccuracies();
+    loadRoundParticipants();
   }, [dataCurrentRound]);
 
   const finalDataForReport = [];
@@ -172,6 +184,7 @@ export const useTaskData = ({
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
+    numberOfParticipants,
   };
 };
 

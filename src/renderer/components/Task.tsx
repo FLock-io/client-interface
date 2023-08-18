@@ -84,6 +84,7 @@ function Task({ task, goBack }: TaskProps) {
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
+    numberOfParticipants,
   } = useTaskData({
     task,
     participantAddress: address,
@@ -478,11 +479,11 @@ function Task({ task, goBack }: TaskProps) {
                   <Box direction="row" justify="between" align="center">
                     <Box direction="row" align="center" gap="xsmall">
                       <Text color="brand" size="2xl" weight="bold">
-                        {Number(task.numberOfParticipants)}
+                        {Number(numberOfParticipants)}
                       </Text>
                       <Text weight="bold">
                         participant
-                        {Number(task.numberOfParticipants) !== 1 && 's'} have
+                        {Number(numberOfParticipants) !== 1 && 's'} have
                         joined the task
                       </Text>
                     </Box>
@@ -491,7 +492,7 @@ function Task({ task, goBack }: TaskProps) {
                         {Array.from(
                           {
                             length: Math.min(
-                              Number(task.numberOfParticipants),
+                              Number(numberOfParticipants),
                               7
                             ),
                           },
