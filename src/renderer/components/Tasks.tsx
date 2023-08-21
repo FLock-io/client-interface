@@ -92,13 +92,6 @@ function Tasks() {
     return <Task task={taskToShow} goBack={goBack} />;
   }
 
-  function truncateDescription(description: string, maxLength: number): string {
-    if (description.length > maxLength) {
-      return description.split(' ').slice(0, maxLength).join(' ') + '...';
-    }
-    return description;
-  }
-
   return (
     <>
       {showCreateTask && (
