@@ -85,7 +85,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://www.flock.io)
 
-This new FLock client interface boasts a state-of-the-art graphical user interface (GUI), offering a seamless and user-friendly platform for our esteemed users. The client, elegantly wrapped in ```Electron```, enables users to effortlessly engage with FLock's diverse features and functionalities through a visually appealing and intuitive interface. These features include:
+This new FLock client interface boasts a state-of-the-art graphical user interface (GUI), offering a seamless and user-friendly platform for our esteemed users. The client, elegantly wrapped in `Electron`, enables users to effortlessly engage with FLock's diverse features and functionalities through a visually appealing and intuitive interface. These features include:
 
 - Communicate with a smart contract on a blockchain
 - Interact with IPFS for uploading and downloading model parameters
@@ -94,7 +94,7 @@ This new FLock client interface boasts a state-of-the-art graphical user interfa
 - Flexible with any model that implements the required interface
 - Handle training and evaluation of the models
 
-You may download the desktop client of the lastest version [here](https://github.com/FLock-io/client-interface/releases/tag/v0.0.3).
+You may download the desktop client of the lastest version [here](https://github.com/FLock-io/client-interface/releases/tag/v0.0.4).
 
 For more detailed technical explanation of the FLock client, see [here](https://docs.flock.io/core-technologies/flock-client/client-deepdown).
 
