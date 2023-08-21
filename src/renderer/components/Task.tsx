@@ -227,7 +227,7 @@ function Task({ task, goBack }: TaskProps) {
             ) : (
               <LogViewer
                 hasLineNumbers={false}
-                height={460}
+                height={390}
                 data={logs.get(task.address)}
               />
             )}
