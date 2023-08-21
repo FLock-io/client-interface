@@ -79,7 +79,8 @@ export const useTaskData = ({
   };
 
   const totalRewardedAmount = participantRewardedAmounts.reduce(
-    (partialSum, a) => Number(partialSum) + Number(a),
+    (partialSum, a) =>
+      Number(formatUnits(partialSum, 18)) + Number(formatUnits(a, 18)),
     0
   );
 
