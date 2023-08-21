@@ -101,25 +101,6 @@ export const FLOCK_TASK_ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'OwnershipTransferred',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
         indexed: false,
         internalType: 'uint256',
         name: 'requestId',
@@ -345,25 +326,6 @@ export const FLOCK_TASK_ABI = [
     inputs: [
       {
         internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    name: 'balances',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
         name: '_address',
         type: 'address',
       },
@@ -528,6 +490,25 @@ export const FLOCK_TASK_ABI = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'hasBeenSlashed',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint256',
         name: '_round',
         type: 'uint256',
@@ -579,6 +560,25 @@ export const FLOCK_TASK_ABI = [
     name: 'initializeRewardPool',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_participant',
+        type: 'address',
+      },
+    ],
+    name: 'isEligibleForOAT',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -747,19 +747,6 @@ export const FLOCK_TASK_ABI = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'owner',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'uint256',
@@ -834,13 +821,6 @@ export const FLOCK_TASK_ABI = [
       },
     ],
     name: 'rawFulfillRandomWords',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'renounceOwnership',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1165,71 +1145,6 @@ export const FLOCK_TASK_ABI = [
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'uint32',
-        name: '_callbackGasLimit',
-        type: 'uint32',
-      },
-    ],
-    name: 'setGasLimit',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_numberOfParticipants',
-        type: 'uint256',
-      },
-    ],
-    name: 'setMaxNumberOfParticipants',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_numberOfParticipants',
-        type: 'uint256',
-      },
-    ],
-    name: 'setMinNumberOfParticipants',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_secondsPerRound',
-        type: 'uint256',
-      },
-    ],
-    name: 'setSecondsPerRound',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_stakeThreshold',
-        type: 'uint256',
-      },
-    ],
-    name: 'setStakeThreshold',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'slash',
     outputs: [],
@@ -1393,19 +1308,6 @@ export const FLOCK_TASK_ABI = [
       },
     ],
     stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'transferOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function',
   },
   {

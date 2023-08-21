@@ -128,6 +128,11 @@ function Tasks() {
                 {
                   property: 'description',
                   header: 'Description',
+                  render: (datum) => (
+                    <Box width="300px">
+                      <Text truncate={true}>{datum.description}</Text>
+                    </Box>
+                  ),
                 },
                 {
                   property: 'minParticipants',
