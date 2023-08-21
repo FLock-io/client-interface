@@ -136,9 +136,9 @@ function Tasks() {
                   property: 'description',
                   header: 'Description',
                   render: (datum) => (
-                    <Text>
-                      {truncateDescription(datum.description, 35)}
-                    </Text>
+                    <Box width="300px">
+                      <Text truncate={true}>{datum.description}</Text>
+                    </Box>
                   ),
                 },
                 {
