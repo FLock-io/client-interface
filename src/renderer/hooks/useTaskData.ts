@@ -124,7 +124,7 @@ export const useTaskData = ({
         args: [i],
       }) as Promise<bigint>;
       // eslint-disable-next-line no-await-in-loop
-      result.push({ round: i, accuracy: Number(await data) });
+      result.push({ round: i + 1, accuracy: Number(await data) / 10000 });
     }
     setAccuracies(result);
   };
