@@ -92,6 +92,13 @@ function Tasks() {
     return <Task task={taskToShow} goBack={goBack} />;
   }
 
+  function truncateDescription(description: string, maxLength: number): string {
+    if (description.length > maxLength) {
+      return description.split(' ').slice(0, maxLength).join(' ') + '...';
+    }
+    return description;
+  }
+
   return (
     <>
       {showCreateTask && (
@@ -128,6 +135,11 @@ function Tasks() {
                 {
                   property: 'description',
                   header: 'Description',
+                  render: (datum) => (
+                    <Text>
+                      {truncateDescription(datum.description, 35)}
+                    </Text>
+                  ),
                 },
                 {
                   property: 'minParticipants',
