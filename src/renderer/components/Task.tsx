@@ -356,7 +356,7 @@ function Task({ task, goBack }: TaskProps) {
             <Heading level="3">Training Complete!</Heading>
             <Box align="start">
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
-              <Text size="medium">Final Accuracy: </Text>
+              <Text size="medium">Final Accuracy: {Number(dataCurrentAccuracy)} </Text>
             </Box>
           </Box>
         </Layer>
