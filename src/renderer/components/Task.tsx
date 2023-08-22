@@ -27,7 +27,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
-import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
+import { useAccount, useContractWrite, useWaitForTransaction, useContractRead } from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { WalletContext } from 'renderer/context/walletContext';
@@ -73,6 +73,8 @@ function Task({ task, goBack }: TaskProps) {
   const [stake, setStake] = useState<number>(task.stake);
   const [isStaking, setIsStaking] = useState<boolean>(false);
   const [showCompletedModal, setShowCompletedModal] = useState<boolean>(false);
+  const [showPrevParticipants, setShowPrevParticipants] = useState<number>(0);
+  const [numberOfParticipants, setNumberOfParticipants] = useState<number>(0);
 
   const isRunning = runningTasks?.includes(task.address);
 
@@ -84,11 +86,18 @@ function Task({ task, goBack }: TaskProps) {
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
-    numberOfParticipants,
+    currentNumberOfParticipants,
   } = useTaskData({
     task,
     participantAddress: address,
   });
+
+  useEffect(() => {
+    if (Number(currentNumberOfParticipants)) {
+      setShowPrevParticipants(Number(currentNumberOfParticipants));
+    }
+    setNumberOfParticipants(showPrevParticipants);
+  }, [currentNumberOfParticipants]);
 
   const scaledDataStakedBalance = dataStakedBalance
     ? Number(formatUnits(dataStakedBalance, 18))
