@@ -96,8 +96,11 @@ function Task({ task, goBack }: TaskProps) {
     if (Number(currentNumberOfParticipants)) {
       setShowPrevParticipants(Number(currentNumberOfParticipants));
     }
-    setNumberOfParticipants(showPrevParticipants);
   }, [currentNumberOfParticipants]);
+
+  useEffect(() => {
+    setNumberOfParticipants(showPrevParticipants);
+  }, [showPrevParticipants]);
 
   const scaledDataStakedBalance = dataStakedBalance
     ? Number(formatUnits(dataStakedBalance, 18))
