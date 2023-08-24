@@ -315,7 +315,7 @@ function TaskDefinitionForm({
           <Select
             id="taskType"
             name="taskType"
-            options={['Time series prediction', 'Classification']}
+            options={['NLP', 'Finance', 'Computer Vision']}
           />
         </FormField>
       </Box>

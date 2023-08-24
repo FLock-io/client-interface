@@ -58,6 +58,13 @@ export const useTaskData = ({
     args: [dataCurrentRound],
   }) as { data: number };
 
+  const { data: currentNumberOfParticipants } = useContractRead({
+    address: task.address as `0x${string}`,
+    abi: FLOCK_TASK_ABI,
+    functionName: 'getNumberOfParticipants',
+    watch: true,
+  }) as { data: number };
+
   const isTrainingCompleted =
     dataHasRoundFinished && Number(dataCurrentRound) === task.rounds - 1; // Training client starts from 0
 
@@ -181,6 +188,7 @@ export const useTaskData = ({
     dataCurrentAccuracy,
     accuracies,
     isEligibleForOAT
+    currentNumberOfParticipants,
   };
 };
 

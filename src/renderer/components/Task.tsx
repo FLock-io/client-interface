@@ -27,7 +27,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
-import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
+import { useAccount, useContractWrite, useWaitForTransaction, useContractRead } from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { WalletContext } from 'renderer/context/walletContext';
@@ -74,6 +74,8 @@ function Task({ task, goBack }: TaskProps) {
   const [stake, setStake] = useState<number>(task.stake);
   const [isStaking, setIsStaking] = useState<boolean>(false);
   const [showCompletedModal, setShowCompletedModal] = useState<boolean>(false);
+  const [showPrevParticipants, setShowPrevParticipants] = useState<number>(0);
+  const [numberOfParticipants, setNumberOfParticipants] = useState<number>(0);
 
   const isRunning = runningTasks?.includes(task.address);
 
@@ -86,10 +88,21 @@ function Task({ task, goBack }: TaskProps) {
     dataCurrentAccuracy,
     accuracies,
     isEligibleForOAT
+    currentNumberOfParticipants,
   } = useTaskData({
     task,
     participantAddress: address,
   });
+
+  useEffect(() => {
+    if (Number(currentNumberOfParticipants)) {
+      setShowPrevParticipants(Number(currentNumberOfParticipants));
+    }
+  }, [currentNumberOfParticipants]);
+
+  useEffect(() => {
+    setNumberOfParticipants(showPrevParticipants);
+  }, [showPrevParticipants]);
 
   const scaledDataStakedBalance = dataStakedBalance
     ? Number(formatUnits(dataStakedBalance, 18))
@@ -358,7 +371,7 @@ function Task({ task, goBack }: TaskProps) {
             <Heading level="3">Training Complete!</Heading>
             <Box align="start">
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
-              <Text size="medium">Final Accuracy: </Text>
+              <Text size="medium">Final Accuracy: {Number(dataCurrentAccuracy)} </Text>
               {isEligibleForOAT && ( 
                   <Text size='medium'>You are eligible for an OAT on Galxe! 
                   Claim <a href="https://galxe.com/flock/" target="_blank" rel="noopener noreferrer"> here</a>.
@@ -486,11 +499,11 @@ function Task({ task, goBack }: TaskProps) {
                   <Box direction="row" justify="between" align="center">
                     <Box direction="row" align="center" gap="xsmall">
                       <Text color="brand" size="2xl" weight="bold">
-                        {Number(task.numberOfParticipants)}
+                        {Number(numberOfParticipants)}
                       </Text>
                       <Text weight="bold">
                         participant
-                        {Number(task.numberOfParticipants) !== 1 && 's'} have
+                        {Number(numberOfParticipants) !== 1 && 's'} have
                         joined the task
                       </Text>
                     </Box>
@@ -499,7 +512,7 @@ function Task({ task, goBack }: TaskProps) {
                         {Array.from(
                           {
                             length: Math.min(
-                              Number(task.numberOfParticipants),
+                              Number(numberOfParticipants),
                               7
                             ),
                           },
@@ -511,7 +524,7 @@ function Task({ task, goBack }: TaskProps) {
                               {Array.from(
                                 {
                                   length:
-                                    Number(task.numberOfParticipants) - (i + 1),
+                                    Number(numberOfParticipants) - (i + 1),
                                 },
                                 (_, j) => (
                                   <Box key={j} pad="xsmall" />
@@ -521,8 +534,8 @@ function Task({ task, goBack }: TaskProps) {
                           )
                         )}
                       </Stack>
-                      {Number(task.numberOfParticipants) > 7 && (
-                        <Text>+{Number(task.numberOfParticipants) - 7}</Text>
+                      {Number(numberOfParticipants) > 7 && (
+                        <Text>+{Number(numberOfParticipants) - 7}</Text>
                       )}
                     </Box>
                   </Box>
@@ -547,7 +560,7 @@ function Task({ task, goBack }: TaskProps) {
                     <Meter
                       values={[
                         {
-                          value: Number(task.numberOfParticipants),
+                          value: Number(numberOfParticipants),
                           color: 'brand',
                           onClick: () => {},
                           label: `Min: ${task.minParticipants}`,
