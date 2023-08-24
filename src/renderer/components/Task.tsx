@@ -333,7 +333,6 @@ function Task({ task, goBack }: TaskProps) {
     if (isTrainingCompleted && address && task && task.address) {
       setShowCompletedModal(true);
       setStep('REPORT');
-      // isEligibleForOAT(address, task);
     }
   }, [isTrainingCompleted, address, task]);
   
