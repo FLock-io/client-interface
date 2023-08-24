@@ -360,7 +360,9 @@ function Task({ task, goBack }: TaskProps) {
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
               <Text size="medium">Final Accuracy: </Text>
               {isEligibleForOAT && ( 
-                  <Text size='medium'>You are eligible for an OAT on Galxe! Claim it here:</Text>
+                  <Text size='medium'>You are eligible for an OAT on Galxe! 
+                  Claim <a href="https://galxe.com/flock/" target="_blank" rel="noopener noreferrer"> here</a>.
+                  </Text>
                   )}
             </Box>
           </Box>
