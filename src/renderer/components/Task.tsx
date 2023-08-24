@@ -35,6 +35,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { useTaskData } from 'renderer/hooks/useTaskData';
 import { TaskType } from './types';
+import { web3AuthInstance } from '../Web3AuthInstance';
 
 interface TaskProps {
   task: TaskType;
@@ -86,6 +87,7 @@ function Task({ task, goBack }: TaskProps) {
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
+    isEligibleForOAT
     currentNumberOfParticipants,
   } = useTaskData({
     task,
@@ -328,12 +330,12 @@ function Task({ task, goBack }: TaskProps) {
   }, [isRunning]);
 
   useEffect(() => {
-    if (isTrainingCompleted) {
+    if (isTrainingCompleted && address && task && task.address) {
       setShowCompletedModal(true);
       setStep('REPORT');
     }
-  }, [isTrainingCompleted]);
-
+  }, [isTrainingCompleted, address, task]);
+  
   return (
     <>
       {showCompletedModal && (
@@ -346,7 +348,7 @@ function Task({ task, goBack }: TaskProps) {
             pad="medium"
             align="center"
             gap="small"
-            width="medium"
+            width="large"
             height="medium"
           >
             <Box
@@ -369,6 +371,11 @@ function Task({ task, goBack }: TaskProps) {
             <Box align="start">
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
               <Text size="medium">Final Accuracy: {Number(dataCurrentAccuracy)} </Text>
+              {isEligibleForOAT && ( 
+                  <Text size='medium'>You are eligible for an OAT on Galxe! 
+                  Claim <a href="https://galxe.com/flock/" target="_blank" rel="noopener noreferrer"> here</a>.
+                  </Text>
+                  )}
             </Box>
           </Box>
         </Layer>
