@@ -248,17 +248,17 @@ function Task({ task, goBack }: TaskProps) {
     switch (step) {
       case 'LOCAL_DATA':
         return (
-          <Box gap="medium">
+          <Box gap="xsmall">
             <Box>
               <Heading level="3" margin="0">
                 Locate local data
               </Heading>
               <Text size="small">
-                Link your local data for training, if you want to join training
+                Link your local data for training, if you want to join training. View the example data schema below.
               </Text>
             </Box>
-            <Box>
-              <ReactJson src={JSON.parse(taskSchema)} theme="monokai" />
+            <Box overflow="auto" height="medium" margin={{ top: 'small' }}>
+              <TextArea value={taskSchema} fill resize={false} />
             </Box>
             <FileInput
               name="file"
