@@ -218,7 +218,7 @@ function Task({ task, goBack }: TaskProps) {
     if (task.schema) {
       loadTaskSchema();
     }
-  }, [task.schema])
+  }, [task.schema]);
 
   const nextStep = () => {
     switch (step) {
