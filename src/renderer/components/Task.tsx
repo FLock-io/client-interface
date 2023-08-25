@@ -40,6 +40,11 @@ import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { useTaskData } from 'renderer/hooks/useTaskData';
 import { TaskType } from './types';
+import { create as ipfsHttpClient } from 'ipfs-http-client';
+import ReactJson from 'react-json-view';
+
+
+const ipfsClient = ipfsHttpClient({ url: 'https://ipfs.flock.io/api/v0' });
 
 interface TaskProps {
   task: TaskType;
@@ -99,6 +104,8 @@ function Task({ task, goBack }: TaskProps) {
   const [showCompletedModal, setShowCompletedModal] = useState<boolean>(false);
   const [showPrevParticipants, setShowPrevParticipants] = useState<number>(0);
   const [numberOfParticipants, setNumberOfParticipants] = useState<number>(0);
+  const [taskSchema, setTaskSchema] = useState<string>('');
+
 
   const isRunning = runningTasks?.includes(task.address);
 
@@ -162,6 +169,20 @@ function Task({ task, goBack }: TaskProps) {
     await writeAsyncApprove?.({ args: [task.address, stake * 10 ** 18] });
   };
 
+  const loadTaskSchema = async () => {
+    try {
+      const chunks = [];
+      for await (const chunk of ipfsClient.cat(task.schema)) {
+        chunks.push(chunk);
+      }
+      const content = Buffer.concat(chunks);
+      const contentString = JSON.parse(content.toString());
+      setTaskSchema(contentString);
+    } catch (error) {
+      console.error('Error fetching data from IPFS:', error);
+    }
+  };
+
   useEffect(() => {
     if (isSuccessApprove) {
       writeStake?.({ args: [stake * 10 ** 18] });
@@ -173,6 +194,12 @@ function Task({ task, goBack }: TaskProps) {
       setIsStaking(false);
     }
   }, [isSuccessStake]);
+
+  useEffect(() => {
+    if (task.schema) {
+      loadTaskSchema();
+    }
+  }, [task.schema])
 
   const nextStep = () => {
     switch (step) {
@@ -210,6 +237,9 @@ function Task({ task, goBack }: TaskProps) {
               <Text size="small">
                 Link your local data for training, if you want to join training
               </Text>
+            </Box>
+            <Box>
+              <ReactJson src={JSON.parse(taskSchema)} theme="monokai" />
             </Box>
             <FileInput
               name="file"
