@@ -95,6 +95,7 @@ function DataDefinitionForm({
             id="schema"
             name="schema"
             fill
+            resize={false}
             placeholder='{
   "type": "array",
   "items": {
