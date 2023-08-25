@@ -39,10 +39,8 @@ import { WalletContext } from 'renderer/context/walletContext';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { useTaskData } from 'renderer/hooks/useTaskData';
-import { TaskType } from './types';
 import { create as ipfsHttpClient } from 'ipfs-http-client';
-import ReactJson from 'react-json-view';
-
+import { TaskType } from './types';
 
 const ipfsClient = ipfsHttpClient({ url: 'https://ipfs.flock.io/api/v0' });
 
@@ -53,8 +51,29 @@ interface TaskProps {
 
 type STEP = 'DETAIL' | 'LOCAL_DATA' | 'STAKE' | 'MONITOR' | 'REPORT';
 
+function getIcon(type: string) {
+  switch (type) {
+    case 'Report':
+      return <Clipboard />;
+    case 'Locate local data':
+      return <Folder />;
+    case 'Monitor':
+      return <Database />;
+    default:
+      return <Money />;
+  }
+}
+
 // eslint-disable-next-line react/require-default-props
-function StepItem({ text, disabled, isCurrent }: { text: string; disabled?: boolean; isCurrent: boolean }) {
+function StepItem({
+  text,
+  disabled,
+  isCurrent,
+}: {
+  text: string;
+  disabled?: boolean;
+  isCurrent: boolean;
+}) {
   return (
     <Box
       pad="xsmall"
@@ -64,16 +83,12 @@ function StepItem({ text, disabled, isCurrent }: { text: string; disabled?: bool
       align="center"
       gap="xsmall"
     >
-      {
-        !disabled
-        ?
-          <StatusGood color={isCurrent ? 'white' : '#757575'} />
-        :
-          getIcon(text)
-      }
-      <Text color={isCurrent ? 'white' : '#757575'}>
-        {text}
-      </Text>
+      {!disabled ? (
+        <StatusGood color={isCurrent ? 'white' : '#757575'} />
+      ) : (
+        getIcon(text)
+      )}
+      <Text color={isCurrent ? 'white' : '#757575'}>{text}</Text>
     </Box>
   );
 }
