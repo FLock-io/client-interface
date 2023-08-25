@@ -13,6 +13,7 @@ import {
   Stack,
   DataTable,
   DataChart,
+  TextArea,
 } from 'grommet';
 import {
   Alert,
@@ -32,7 +33,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
-import { useAccount, useContractWrite, useWaitForTransaction, useContractRead } from 'wagmi';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { WalletContext } from 'renderer/context/walletContext';
@@ -93,19 +94,6 @@ function StepItem({
   );
 }
 
-function getIcon(type: string) {
-  switch (type) {
-    case 'Report':
-      return <Clipboard />;
-    case 'Locate local data':
-      return <Folder />;
-    case 'Monitor':
-      return <Database />;
-    default:
-      return <Money />;
-  }
-}
-
 function Task({ task, goBack }: TaskProps) {
   const navigate = useNavigate();
   const { address } = useAccount();
@@ -120,7 +108,6 @@ function Task({ task, goBack }: TaskProps) {
   const [showPrevParticipants, setShowPrevParticipants] = useState<number>(0);
   const [numberOfParticipants, setNumberOfParticipants] = useState<number>(0);
   const [taskSchema, setTaskSchema] = useState<string>('');
-
 
   const isRunning = runningTasks?.includes(task.address);
 
@@ -769,17 +756,19 @@ function Task({ task, goBack }: TaskProps) {
             </Box>
           </Box>
         </Box>
-        <Box background="white" round="small" pad="medium" gap="medium">
+        <Box
+          background="white"
+          round="small"
+          pad={{ horizontal: 'medium', vertical: 'small' }}
+          gap="small"
+        >
           <Box direction="row" align="center" gap="medium">
-            <StepItem 
-              text="Check model detail" 
-              isCurrent={step === 'DETAIL'} 
-            />
+            <StepItem text="Check model detail" isCurrent={step === 'DETAIL'} />
             <FormNext />
-            <StepItem 
-              text="Locate local data" 
-              disabled={step === 'DETAIL'} 
-              isCurrent={step === 'LOCAL_DATA'} 
+            <StepItem
+              text="Locate local data"
+              disabled={step === 'DETAIL'}
+              isCurrent={step === 'LOCAL_DATA'}
             />
             <FormNext />
             <StepItem
