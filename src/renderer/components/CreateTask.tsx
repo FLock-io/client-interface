@@ -91,7 +91,37 @@ function DataDefinitionForm({
         validateOn="blur"
       >
         <Box height="medium">
-          <TextArea id="schema" name="schema" fill />
+          <TextArea
+            id="schema"
+            name="schema"
+            fill
+            placeholder='{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "instruction": {
+        "type": "string"
+      },
+      "context": {
+        "type": "string"
+      },
+      "response": {
+        "type": "string"
+      },
+      "category": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "instruction",
+      "context",
+      "response",
+      "category"
+    ]
+  }
+}'
+          />
         </Box>
       </FormField>
       <FormField
