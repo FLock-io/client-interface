@@ -58,7 +58,7 @@ function DataDefinitionForm({
   setErrors(value: any): void;
 }) {
   const handleChange = async (nextValue: any) => {
-    if (nextValue.sampleData) {
+    if (nextValue.sampleData[0]) {
       const fileReader = new FileReader();
       fileReader.readAsText(nextValue.sampleData[0], 'UTF-8');
       fileReader.onload = (e) => {
