@@ -23,6 +23,11 @@ import {
   Share,
   UserFemale,
   Document,
+  Money,
+  Clipboard,
+  Folder,
+  Database,
+  StatusGood
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
@@ -44,22 +49,41 @@ interface TaskProps {
 type STEP = 'DETAIL' | 'LOCAL_DATA' | 'STAKE' | 'MONITOR' | 'REPORT';
 
 // eslint-disable-next-line react/require-default-props
-function StepItem({ text, disabled }: { text: string; disabled?: boolean }) {
+function StepItem({ text, disabled, isCurrent }: { text: string; disabled?: boolean; isCurrent: boolean }) {
   return (
     <Box
       pad="xsmall"
-      background={disabled ? '#F8FAFB' : '#6C94EC'}
+      background={isCurrent ? '#6C94EC' : '#F8FAFB'}
       round
       direction="row"
       align="center"
       gap="xsmall"
     >
-      <Checkmark size="small" color={disabled ? '#757575' : 'white'} />
-      <Text size="small" color={disabled ? '#757575' : 'white'}>
+      {
+        !disabled
+        ?
+          <StatusGood color={isCurrent ? 'white' : '#757575'} />
+        :
+          getIcon(text)
+      }
+      <Text color={isCurrent ? 'white' : '#757575'}>
         {text}
       </Text>
     </Box>
   );
+}
+
+function getIcon(type: string) {
+  switch (type) {
+    case 'Report':
+      return <Clipboard />;
+    case 'Locate local data':
+      return <Folder />;
+    case 'Monitor':
+      return <Database />;
+    default:
+      return <Money />;
+  }
 }
 
 function Task({ task, goBack }: TaskProps) {
@@ -697,14 +721,22 @@ function Task({ task, goBack }: TaskProps) {
           </Box>
         </Box>
         <Box background="white" round="small" pad="medium" gap="medium">
-          <Box direction="row" align="center">
-            <StepItem text="Check model detail" />
+          <Box direction="row" align="center" gap="medium">
+            <StepItem 
+              text="Check model detail" 
+              isCurrent={step === 'DETAIL'} 
+            />
             <FormNext />
-            <StepItem text="Locate local data" disabled={step === 'DETAIL'} />
+            <StepItem 
+              text="Locate local data" 
+              disabled={step === 'DETAIL'} 
+              isCurrent={step === 'LOCAL_DATA'} 
+            />
             <FormNext />
             <StepItem
               text="Stake"
               disabled={step === 'DETAIL' || step === 'LOCAL_DATA'}
+              isCurrent={step === 'STAKE'}
             />
             <FormNext />
             <StepItem
@@ -712,6 +744,7 @@ function Task({ task, goBack }: TaskProps) {
               disabled={
                 step === 'DETAIL' || step === 'LOCAL_DATA' || step === 'STAKE'
               }
+              isCurrent={step === 'MONITOR'}
             />
             <FormNext />
             <StepItem
@@ -722,6 +755,7 @@ function Task({ task, goBack }: TaskProps) {
                 step === 'MONITOR' ||
                 step === 'STAKE'
               }
+              isCurrent={step === 'REPORT'}
             />
           </Box>
           {currentStep()}
