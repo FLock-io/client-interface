@@ -191,7 +191,11 @@ function Task({ task, goBack }: TaskProps) {
         chunks.push(chunk);
       }
       const content = Buffer.concat(chunks);
-      const contentString = JSON.parse(content.toString());
+      const contentString = JSON.stringify(
+        JSON.parse(JSON.parse(content.toString() as string)),
+        null,
+        2
+      );
       setTaskSchema(contentString);
     } catch (error) {
       console.error('Error fetching data from IPFS:', error);
