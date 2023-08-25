@@ -795,7 +795,7 @@ function Task({ task, goBack }: TaskProps) {
                 label={step === 'MONITOR' && !isRunning ? 'Restart' : 'Next'}
                 primary
                 disabled={
-                  (step === 'LOCAL_DATA' && !file.path) ||
+                  (step === 'LOCAL_DATA' && !file?.path) ||
                   isRunning ||
                   (step === 'STAKE' &&
                     Number(dataStakedBalance) < stake * 10 ** 18)
