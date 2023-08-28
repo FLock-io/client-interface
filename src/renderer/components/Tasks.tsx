@@ -160,7 +160,7 @@ function Tasks() {
                   header: 'Number of Participants',
                 },
                 {
-                  property: '',
+                  property: 'shortage',
                   header: 'Short of',
                   render: (datum) => (
                     <Text>
@@ -177,7 +177,7 @@ function Tasks() {
                   ),
                 },
                 {
-                  property: '',
+                  property: 'actions',
                   header: 'Actions',
                   render: (datum) => (
                     <Button
