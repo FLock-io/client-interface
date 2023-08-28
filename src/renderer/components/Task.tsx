@@ -28,7 +28,7 @@ import {
   Clipboard,
   Folder,
   Database,
-  StatusGood
+  StatusGood,
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
@@ -40,10 +40,7 @@ import { WalletContext } from 'renderer/context/walletContext';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { useTaskData } from 'renderer/hooks/useTaskData';
-import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { TaskType } from './types';
-
-const ipfsClient = ipfsHttpClient({ url: 'https://ipfs.flock.io/api/v0' });
 
 interface TaskProps {
   task: TaskType;
@@ -107,7 +104,6 @@ function Task({ task, goBack }: TaskProps) {
   const [showCompletedModal, setShowCompletedModal] = useState<boolean>(false);
   const [showPrevParticipants, setShowPrevParticipants] = useState<number>(0);
   const [numberOfParticipants, setNumberOfParticipants] = useState<number>(0);
-  const [taskSchema, setTaskSchema] = useState<string>('');
 
   const isRunning = runningTasks?.includes(task.address);
 
@@ -120,6 +116,7 @@ function Task({ task, goBack }: TaskProps) {
     dataCurrentAccuracy,
     accuracies,
     currentNumberOfParticipants,
+    taskSchema,
   } = useTaskData({
     task,
     participantAddress: address,
@@ -171,24 +168,6 @@ function Task({ task, goBack }: TaskProps) {
     await writeAsyncApprove?.({ args: [task.address, stake * 10 ** 18] });
   };
 
-  const loadTaskSchema = async () => {
-    try {
-      const chunks = [];
-      for await (const chunk of ipfsClient.cat(task.schema)) {
-        chunks.push(chunk);
-      }
-      const content = Buffer.concat(chunks);
-      const contentString = JSON.stringify(
-        JSON.parse(JSON.parse(content.toString() as string)),
-        null,
-        2
-      );
-      setTaskSchema(contentString);
-    } catch (error) {
-      console.error('Error fetching data from IPFS:', error);
-    }
-  };
-
   useEffect(() => {
     if (isSuccessApprove) {
       writeStake?.({ args: [stake * 10 ** 18] });
@@ -200,12 +179,6 @@ function Task({ task, goBack }: TaskProps) {
       setIsStaking(false);
     }
   }, [isSuccessStake]);
-
-  useEffect(() => {
-    if (task.schema) {
-      loadTaskSchema();
-    }
-  }, [task.schema]);
 
   const nextStep = () => {
     switch (step) {
@@ -241,7 +214,8 @@ function Task({ task, goBack }: TaskProps) {
                 Locate local data
               </Heading>
               <Text size="small">
-                Link your local data for training, if you want to join training. View the example data schema below.
+                Link your local data for training, if you want to join training.
+                View the example data schema below.
               </Text>
             </Box>
             <Box overflow="auto" height="medium" margin={{ top: 'small' }}>
@@ -428,7 +402,9 @@ function Task({ task, goBack }: TaskProps) {
             <Heading level="3">Training Complete!</Heading>
             <Box align="start">
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
-              <Text size="medium">Final Accuracy: {Number(dataCurrentAccuracy)} </Text>
+              <Text size="medium">
+                Final Accuracy: {Number(dataCurrentAccuracy)}{' '}
+              </Text>
             </Box>
           </Box>
         </Layer>
@@ -563,10 +539,7 @@ function Task({ task, goBack }: TaskProps) {
                       <Stack anchor="right">
                         {Array.from(
                           {
-                            length: Math.min(
-                              Number(numberOfParticipants),
-                              7
-                            ),
+                            length: Math.min(Number(numberOfParticipants), 7),
                           },
                           (_, i) => (
                             <Box key={i} direction="row">

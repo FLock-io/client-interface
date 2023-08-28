@@ -4,6 +4,9 @@ import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { useContractRead } from 'wagmi';
 import { readContract } from '@wagmi/core';
 import { formatUnits } from 'ethers';
+import { create as ipfsHttpClient } from 'ipfs-http-client';
+
+const ipfsClient = ipfsHttpClient({ url: 'https://ipfs.flock.io/api/v0' });
 
 export const useTaskData = ({
   task,
@@ -27,6 +30,8 @@ export const useTaskData = ({
   const [accuracies, setAccuracies] = useState<
     { round: number; accuracy: number }[]
   >([]);
+
+  const [taskSchema, setTaskSchema] = useState<string>('');
 
   const { data: dataCurrentRound } = useContractRead({
     address: task.address as `0x${string}`,
@@ -64,6 +69,26 @@ export const useTaskData = ({
     functionName: 'getNumberOfParticipants',
     watch: true,
   }) as { data: number };
+
+  const loadTaskSchema = async () => {
+    try {
+      const chunks = [];
+      // eslint-disable-next-line no-restricted-syntax
+      for await (const chunk of ipfsClient.cat(task.schema)) {
+        chunks.push(chunk);
+      }
+
+      const content = Buffer.concat(chunks);
+      const contentString = JSON.stringify(
+        JSON.parse(JSON.parse(content.toString() as string)),
+        null,
+        2
+      );
+      setTaskSchema(contentString);
+    } catch (error) {
+      console.error('Error fetching data from IPFS:', error);
+    }
+  };
 
   const isTrainingCompleted =
     dataHasRoundFinished && Number(dataCurrentRound) === task.rounds - 1; // Training client starts from 0
@@ -140,12 +165,16 @@ export const useTaskData = ({
     loadAccuracies();
   }, [dataCurrentRound]);
 
+  useEffect(() => {
+    loadTaskSchema();
+  }, [task.schema]);
+
   const finalDataForReport = [];
 
   for (let index = 0; index < participantRewardedAmounts.length; index++) {
     const element = participantRewardedAmounts[index];
     let tokenChangePercentage = '0%'; // Default value for the first element and when previous "token" is zero
-    let currentToken = element;
+    const currentToken = element;
     let prevToken = 0n;
     index > 0
       ? (prevToken = participantRewardedAmounts[index - 1])
@@ -180,6 +209,7 @@ export const useTaskData = ({
     dataCurrentAccuracy,
     accuracies,
     currentNumberOfParticipants,
+    taskSchema,
   };
 };
 
