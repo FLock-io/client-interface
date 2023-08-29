@@ -21,6 +21,9 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
+    uploadToIPFS(channel: Channels, ...args: unknown[]): Promise<string[]> {
+      return ipcRenderer.invoke(channel, ...args);
+    },
   },
 };
 
