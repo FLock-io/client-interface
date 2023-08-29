@@ -432,21 +432,32 @@ export function CreateTask({
 
   const handleCreate = async () => {
     setIsProcessing(true);
-    const { path: schemaPath } = await ipfsClient.add(
-      JSON.stringify(value.schema, null, 4)
-    );
+    const res = await window.electron.ipcRenderer
+      .uploadToIPFS('ipc', [
+        'uploadToIPFS',
+        value.schema,
+        value.sampleData[0].path.toString(),
+      ])
+      .then((result: string[]) => {
+        return result;
+      })
+      .catch((e: any) => {
+        console.error(e);
+      });
 
-    const { path: sampleDataPath } = await ipfsClient.add(value.sampleData[0]);
+    value.schema = res ? res[0] : '';
+    value.sampleData = res ? res[1] : '';
 
-    value.sampleData = sampleDataPath;
-    value.schema = schemaPath;
-
-    await writeAsyncApprove?.({
-      args: [
-        FLOCK_TASK_MANAGER_ADDRESS as `0x${string}`,
-        value.rewardPool * 10 ** 18,
-      ],
-    });
+    if (res) {
+      await writeAsyncApprove?.({
+        args: [
+          FLOCK_TASK_MANAGER_ADDRESS as `0x${string}`,
+          value.rewardPool * 10 ** 18,
+        ],
+      });
+    } else {
+      setIsProcessing(false);
+    }
   };
 
   useEffect(() => {
