@@ -4,6 +4,9 @@ import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { useContractRead } from 'wagmi';
 import { readContract } from '@wagmi/core';
 import { formatUnits } from 'ethers';
+import { create as ipfsHttpClient } from 'ipfs-http-client';
+
+const ipfsClient = ipfsHttpClient({ url: 'https://ipfs.flock.io/api/v0' });
 
 export const useTaskData = ({
   task,
@@ -27,6 +30,8 @@ export const useTaskData = ({
   const [accuracies, setAccuracies] = useState<
     { round: number; accuracy: number }[]
   >([]);
+
+  const [taskSchema, setTaskSchema] = useState<string>('');
 
   const { data: dataCurrentRound } = useContractRead({
     address: task.address as `0x${string}`,
@@ -64,6 +69,24 @@ export const useTaskData = ({
     functionName: 'getNumberOfParticipants',
     watch: true,
   }) as { data: number };
+
+  const loadTaskSchema = async () => {
+    const url = `https://flockio.mypinata.cloud/ipfs/${task.schema}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+      });
+
+      const data = await response.json();
+      const contentString = JSON.stringify(data, null, 2);
+      setTaskSchema(contentString);
+    } catch (error) {
+      console.error('Error fetching data from Pinata:', error);
+      setTaskSchema('Error fetching data from Pinata');
+      throw error;
+    }
+  };
 
   const isTrainingCompleted =
     dataHasRoundFinished && Number(dataCurrentRound) === task.rounds - 1; // Training client starts from 0
@@ -141,6 +164,10 @@ export const useTaskData = ({
     loadAccuracies();
   }, [dataCurrentRound]);
 
+  useEffect(() => {
+    loadTaskSchema();
+  }, [task.schema]);
+
   const finalDataForReport = [];
 
   for (let index = 0; index < participantRoundBalance.length; index++) {
@@ -189,6 +216,7 @@ export const useTaskData = ({
     accuracies,
     isEligibleForOAT
     currentNumberOfParticipants,
+    taskSchema,
   };
 };
 

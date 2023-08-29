@@ -13,6 +13,7 @@ import {
   Stack,
   DataTable,
   DataChart,
+  TextArea,
 } from 'grommet';
 import {
   Alert,
@@ -23,11 +24,16 @@ import {
   Share,
   UserFemale,
   Document,
+  Money,
+  Clipboard,
+  Folder,
+  Database,
+  StatusGood,
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
-import { useAccount, useContractWrite, useWaitForTransaction, useContractRead } from 'wagmi';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { WalletContext } from 'renderer/context/walletContext';
@@ -44,21 +50,44 @@ interface TaskProps {
 
 type STEP = 'DETAIL' | 'LOCAL_DATA' | 'STAKE' | 'MONITOR' | 'REPORT';
 
+function getIcon(type: string) {
+  switch (type) {
+    case 'Report':
+      return <Clipboard />;
+    case 'Locate local data':
+      return <Folder />;
+    case 'Monitor':
+      return <Database />;
+    default:
+      return <Money />;
+  }
+}
+
 // eslint-disable-next-line react/require-default-props
-function StepItem({ text, disabled }: { text: string; disabled?: boolean }) {
+function StepItem({
+  text,
+  disabled,
+  isCurrent,
+}: {
+  text: string;
+  disabled?: boolean;
+  isCurrent: boolean;
+}) {
   return (
     <Box
       pad="xsmall"
-      background={disabled ? '#F8FAFB' : '#6C94EC'}
+      background={isCurrent ? '#6C94EC' : '#F8FAFB'}
       round
       direction="row"
       align="center"
       gap="xsmall"
     >
-      <Checkmark size="small" color={disabled ? '#757575' : 'white'} />
-      <Text size="small" color={disabled ? '#757575' : 'white'}>
-        {text}
-      </Text>
+      {!disabled ? (
+        <StatusGood color={isCurrent ? 'white' : '#757575'} />
+      ) : (
+        getIcon(text)
+      )}
+      <Text color={isCurrent ? 'white' : '#757575'}>{text}</Text>
     </Box>
   );
 }
@@ -89,6 +118,7 @@ function Task({ task, goBack }: TaskProps) {
     accuracies,
     isEligibleForOAT
     currentNumberOfParticipants,
+    taskSchema,
   } = useTaskData({
     task,
     participantAddress: address,
@@ -180,14 +210,18 @@ function Task({ task, goBack }: TaskProps) {
     switch (step) {
       case 'LOCAL_DATA':
         return (
-          <Box gap="medium">
+          <Box gap="xsmall">
             <Box>
               <Heading level="3" margin="0">
                 Locate local data
               </Heading>
               <Text size="small">
-                Link your local data for training, if you want to join training
+                Link your local data for training, if you want to join training.
+                View the example data schema below.
               </Text>
+            </Box>
+            <Box overflow="auto" height="medium" margin={{ top: 'small' }}>
+              <TextArea value={taskSchema} fill resize={false} />
             </Box>
             <FileInput
               name="file"
@@ -513,10 +547,7 @@ function Task({ task, goBack }: TaskProps) {
                       <Stack anchor="right">
                         {Array.from(
                           {
-                            length: Math.min(
-                              Number(numberOfParticipants),
-                              7
-                            ),
+                            length: Math.min(Number(numberOfParticipants), 7),
                           },
                           (_, i) => (
                             <Box key={i} direction="row">
@@ -706,15 +737,25 @@ function Task({ task, goBack }: TaskProps) {
             </Box>
           </Box>
         </Box>
-        <Box background="white" round="small" pad="medium" gap="medium">
-          <Box direction="row" align="center">
-            <StepItem text="Check model detail" />
+        <Box
+          background="white"
+          round="small"
+          pad={{ horizontal: 'medium', vertical: 'small' }}
+          gap="small"
+        >
+          <Box direction="row" align="center" gap="medium">
+            <StepItem text="Check model detail" isCurrent={step === 'DETAIL'} />
             <FormNext />
-            <StepItem text="Locate local data" disabled={step === 'DETAIL'} />
+            <StepItem
+              text="Locate local data"
+              disabled={step === 'DETAIL'}
+              isCurrent={step === 'LOCAL_DATA'}
+            />
             <FormNext />
             <StepItem
               text="Stake"
               disabled={step === 'DETAIL' || step === 'LOCAL_DATA'}
+              isCurrent={step === 'STAKE'}
             />
             <FormNext />
             <StepItem
@@ -722,6 +763,7 @@ function Task({ task, goBack }: TaskProps) {
               disabled={
                 step === 'DETAIL' || step === 'LOCAL_DATA' || step === 'STAKE'
               }
+              isCurrent={step === 'MONITOR'}
             />
             <FormNext />
             <StepItem
@@ -732,6 +774,7 @@ function Task({ task, goBack }: TaskProps) {
                 step === 'MONITOR' ||
                 step === 'STAKE'
               }
+              isCurrent={step === 'REPORT'}
             />
           </Box>
           {currentStep()}
@@ -741,7 +784,7 @@ function Task({ task, goBack }: TaskProps) {
                 label={step === 'MONITOR' && !isRunning ? 'Restart' : 'Next'}
                 primary
                 disabled={
-                  (step === 'LOCAL_DATA' && !file.path) ||
+                  (step === 'LOCAL_DATA' && !file?.path) ||
                   isRunning ||
                   (step === 'STAKE' &&
                     Number(dataStakedBalance) < stake * 10 ** 18)

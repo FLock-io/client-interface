@@ -58,7 +58,7 @@ function DataDefinitionForm({
   setErrors(value: any): void;
 }) {
   const handleChange = async (nextValue: any) => {
-    if (nextValue.sampleData) {
+    if (nextValue.sampleData[0]) {
       const fileReader = new FileReader();
       fileReader.readAsText(nextValue.sampleData[0], 'UTF-8');
       fileReader.onload = (e) => {
@@ -91,7 +91,38 @@ function DataDefinitionForm({
         validateOn="blur"
       >
         <Box height="medium">
-          <TextArea id="schema" name="schema" fill />
+          <TextArea
+            id="schema"
+            name="schema"
+            fill
+            resize={false}
+            placeholder='{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "instruction": {
+        "type": "string"
+      },
+      "context": {
+        "type": "string"
+      },
+      "response": {
+        "type": "string"
+      },
+      "category": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "instruction",
+      "context",
+      "response",
+      "category"
+    ]
+  }
+}'
+          />
         </Box>
       </FormField>
       <FormField
@@ -401,21 +432,32 @@ export function CreateTask({
 
   const handleCreate = async () => {
     setIsProcessing(true);
-    const { path: schemaPath } = await ipfsClient.add(
-      JSON.stringify(value.schema, null, 4)
-    );
+    const res = await window.electron.ipcRenderer
+      .uploadToIPFS('ipc', [
+        'uploadToIPFS',
+        value.schema,
+        value.sampleData[0].path.toString(),
+      ])
+      .then((result: string[]) => {
+        return result;
+      })
+      .catch((e: any) => {
+        console.error(e);
+      });
 
-    const { path: sampleDataPath } = await ipfsClient.add(value.sampleData[0]);
+    value.schema = res ? res[0] : '';
+    value.sampleData = res ? res[1] : '';
 
-    value.sampleData = sampleDataPath;
-    value.schema = schemaPath;
-
-    await writeAsyncApprove?.({
-      args: [
-        FLOCK_TASK_MANAGER_ADDRESS as `0x${string}`,
-        value.rewardPool * 10 ** 18,
-      ],
-    });
+    if (res) {
+      await writeAsyncApprove?.({
+        args: [
+          FLOCK_TASK_MANAGER_ADDRESS as `0x${string}`,
+          value.rewardPool * 10 ** 18,
+        ],
+      });
+    } else {
+      setIsProcessing(false);
+    }
   };
 
   useEffect(() => {

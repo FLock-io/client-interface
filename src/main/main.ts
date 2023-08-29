@@ -14,9 +14,16 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import kill from 'tree-kill';
+import Pinata from '@pinata/sdk';
+import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { execPath } from './binaries';
+
+const pinata = new Pinata(
+  '9db9fffc88c7e281b5b2',
+  '5c761fe42f8267832f70a1f00430d9f3d9006fc9624e5bce43a44b7edd79f624'
+);
 
 class AppUpdater {
   constructor() {
@@ -29,57 +36,86 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 let main: ChildProcessWithoutNullStreams;
 
-ipcMain.on('ipc', async (event, arg) => {
-  console.log(`arg: ${arg}`);
-  if (arg[0] === 'join') {
-    main = spawn(
-      execPath,
-      [
-        '--flock-token-address',
-        '0x95c5746A0E7c73b6Af16048d4e79dA294b8b7116',
-        '--task-address',
-        arg[1],
-        '--ipfs',
-        '/dns/ipfs.flock.io/tcp/80/http',
-        '--rpc',
-        'https://polygon-mumbai.g.alchemy.com/v2/2CfDEXaIoLouWbPS1Tw4v9tX5bkKruSa',
-        '--port',
-        '6222',
-        '--private-key',
-        arg[2],
-        '--dataset',
-        arg[3],
-      ],
-      {}
+ipcMain.handle('ipc', async (event, arg) => {
+  if (arg[0] === 'uploadToIPFS') {
+    const { IpfsHash: schemaHash } = await pinata.pinJSONToIPFS(
+      JSON.parse(arg[1])
     );
 
-    main.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
-      event.reply('ipc', [arg[1], data.toString()]);
-    });
+    const fileName = arg[2].split('\\').pop();
+    const fileStream = fs.createReadStream(arg[2]);
 
-    main.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
-      if (
-        data.toString().includes('insufficient funds for gas * price + value')
-      ) {
+    const options = {
+      pinataMetadata: {
+        // @ts-ignore
+        name: fileName,
+      },
+    };
+    const { IpfsHash: fileHash } = await pinata.pinFileToIPFS(
+      fileStream,
+      options
+    );
+    return [schemaHash, fileHash];
+  }
+  return [];
+});
+
+ipcMain.on('ipc', async (event, arg) => {
+  console.log(`arg: ${arg}`);
+  switch (arg[0]) {
+    case 'join':
+      main = spawn(
+        execPath,
+        [
+          '--flock-token-address',
+          '0x95c5746A0E7c73b6Af16048d4e79dA294b8b7116',
+          '--task-address',
+          arg[1],
+          '--ipfs',
+          '/dns/ipfs.flock.io/tcp/80/http',
+          '--rpc',
+          'https://polygon-mumbai.g.alchemy.com/v2/2CfDEXaIoLouWbPS1Tw4v9tX5bkKruSa',
+          '--port',
+          '6222',
+          '--private-key',
+          arg[2],
+          '--dataset',
+          arg[3],
+        ],
+        {}
+      );
+
+      main.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+        event.reply('ipc', [arg[1], data.toString()]);
+      });
+
+      main.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+        if (
+          data.toString().includes('insufficient funds for gas * price + value')
+        ) {
+          event.reply('ipc', [
+            arg[1],
+            'insufficient funds for gas * price + value',
+          ]);
+        }
+      });
+
+      main.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
         event.reply('ipc', [
           arg[1],
-          'insufficient funds for gas * price + value',
+          `client exited with code ${code} (0 is success)`,
         ]);
-      }
-    });
-
-    main.on('close', (code) => {
-      console.log(`child process exited with code ${code}`);
-      event.reply('ipc', [
-        arg[1],
-        `client exited with code ${code} (0 is success)`,
-      ]);
-    });
-  } else if (arg[0] === 'leave') {
-    // @ts-ignore
-    kill(main.pid);
+      });
+      break;
+    case 'leave':
+      // @ts-ignore
+      kill(main.pid);
+      break;
+    default:
+      break;
   }
 });
 
