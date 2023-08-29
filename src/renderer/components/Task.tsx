@@ -241,7 +241,7 @@ function Task({ task, goBack }: TaskProps) {
             ) : (
               <LogViewer
                 hasLineNumbers={false}
-                height={460}
+                height={390}
                 data={logs.get(task.address)}
               />
             )}
@@ -256,35 +256,38 @@ function Task({ task, goBack }: TaskProps) {
                 <Heading level={4}>Rounds and Balance Record</Heading>
               </Box>
 
-              <DataTable
-                columns={[
-                  {
-                    align: 'center',
-                    property: 'round',
-                    header: 'Round',
-                    primary: true,
-                  },
-                  {
-                    align: 'center',
-                    property: 'role',
-                    header: 'Role',
-                    render: (datum) => (
-                      <Text>{datum.role === '1' ? 'Voter' : 'Proposer'} </Text>
-                    ),
-                  },
-                  {
-                    align: 'center',
-                    property: 'token',
-                    header: 'Token Change',
-                  },
-                  {
-                    align: 'center',
-                    property: 'balance',
-                    header: 'Round Balance',
-                  },
-                ]}
-                data={finalDataForReport}
-              />
+              <Box overflow="auto" height="300px">
+                <DataTable
+                  pin
+                  columns={[
+                    {
+                      align: 'center',
+                      property: 'round',
+                      header: 'Round',
+                      primary: true,
+                    },
+                    {
+                      align: 'center',
+                      property: 'role',
+                      header: 'Role',
+                      render: (datum) => (
+                        <Text>{datum.role === '1' ? 'Voter' : 'Proposer'} </Text>
+                      ),
+                    },
+                    {
+                      align: 'center',
+                      property: 'token',
+                      header: 'Token Change',
+                    },
+                    {
+                      align: 'center',
+                      property: 'balance',
+                      header: 'Round Balance',
+                    },
+                  ]}
+                  data={finalDataForReport}
+                />
+              </Box>
             </Box>
             <Box gap="medium">
               <Box>

@@ -84,7 +84,8 @@ export const useTaskData = ({
   };
 
   const totalRewardedAmount = participantRewardedAmounts.reduce(
-    (partialSum, a) => Number(partialSum) + Number(a),
+    (partialSum, a) =>
+      Number(formatUnits(partialSum, 18)) + Number(formatUnits(a, 18)),
     0
   );
 
@@ -128,7 +129,7 @@ export const useTaskData = ({
         args: [i],
       }) as Promise<bigint>;
       // eslint-disable-next-line no-await-in-loop
-      result.push({ round: i, accuracy: Number(await data) });
+      result.push({ round: i + 1, accuracy: Number(await data) / 10000 });
     }
     setAccuracies(result);
   };
@@ -142,14 +143,13 @@ export const useTaskData = ({
 
   const finalDataForReport = [];
 
-  for (let index = 0; index < participantRewardedAmounts.length; index++) {
-    const element = participantRewardedAmounts[index];
+  for (let index = 0; index < participantRoundBalance.length; index++) {
     let tokenChangePercentage = '0%'; // Default value for the first element and when previous "token" is zero
-    let currentToken = element;
+    const currentToken = participantRoundBalance[index];
     let prevToken = 0n;
     index > 0
-      ? (prevToken = participantRewardedAmounts[index - 1])
-      : (prevToken = participantRewardedAmounts[index]);
+      ? (prevToken = participantRoundBalance[index - 1])
+      : (prevToken = participantRoundBalance[index]);
 
     if (prevToken !== 0n) {
       const tokenChange = ((currentToken - prevToken) / prevToken) * 100n;
@@ -164,7 +164,7 @@ export const useTaskData = ({
       token: tokenChangePercentage,
       balance: participantRoundBalance[index]
         ? formatUnits(participantRoundBalance[index], 18)
-        : '',
+        : '0',
     });
   }
 
