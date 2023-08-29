@@ -71,22 +71,20 @@ export const useTaskData = ({
   }) as { data: number };
 
   const loadTaskSchema = async () => {
-    try {
-      const chunks = [];
-      // eslint-disable-next-line no-restricted-syntax
-      for await (const chunk of ipfsClient.cat(task.schema)) {
-        chunks.push(chunk);
-      }
+    const url = `https://flockio.mypinata.cloud/ipfs/${task.schema}`;
 
-      const content = Buffer.concat(chunks);
-      const contentString = JSON.stringify(
-        JSON.parse(JSON.parse(content.toString() as string)),
-        null,
-        2
-      );
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+      });
+
+      const data = await response.json();
+      const contentString = JSON.stringify(data, null, 2);
       setTaskSchema(contentString);
     } catch (error) {
-      console.error('Error fetching data from IPFS:', error);
+      console.error('Error fetching data from Pinata:', error);
+      setTaskSchema('Error fetching data from Pinata');
+      throw error;
     }
   };
 
