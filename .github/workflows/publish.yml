@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-13]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout git repo
@@ -53,9 +53,19 @@ jobs:
           npm run postinstall
           npm run build
 
-      - name: Sign main executable
+      - name: Move main.bin
+        if: runner.os == 'macOS' || runner.os == 'Linux'
         run: |
           mv ./build/main.bin ./build/bin/main.bin
+
+      - name: Move main.exe
+        if: runner.os == 'Windows'
+        run: |
+          mv ./build/main.exe ./build/bin/main.exe
+
+      - name: Sign main executable
+        if: runner.os == 'macOS'
+        run: |
           codesign --deep --options runtime --timestamp --force --verify --verbose --sign "Developer ID Application: FLock.io LTD (35H5QAYP2F)" build/bin/main.bin
 
       - name: Publish releases
@@ -69,4 +79,4 @@ jobs:
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          npm exec electron-builder -- --publish always --win --mac --linux
+          npm exec electron-builder -- --publish always
