@@ -214,7 +214,7 @@ export const useTaskData = ({
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
-    isEligibleForOAT
+    isEligibleForOAT,
     currentNumberOfParticipants,
     taskSchema,
   };

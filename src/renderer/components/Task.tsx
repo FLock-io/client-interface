@@ -116,7 +116,7 @@ function Task({ task, goBack }: TaskProps) {
     finalDataForReport,
     dataCurrentAccuracy,
     accuracies,
-    isEligibleForOAT
+    isEligibleForOAT,
     currentNumberOfParticipants,
     taskSchema,
   } = useTaskData({
