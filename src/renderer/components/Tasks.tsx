@@ -58,7 +58,9 @@ function Tasks() {
   const [tasks, setTasks] = useState<TaskType[]>([] as TaskType[]);
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
-  const [filterMode, setFilterMode] = useState<'all' | 'completed'>('all');
+  const [filterMode, setFilterMode] = useState<'all' | 'completed' | 'active'>(
+    'all'
+  );
 
   const [taskToShow, setTaskToShow] = useState<TaskType>({} as TaskType);
 
@@ -172,6 +174,12 @@ function Tasks() {
                 onClick={() => setFilterMode('completed')}
                 label="Completed"
               />
+              <Button
+                primary={filterMode === 'active'}
+                plain={filterMode !== 'active'}
+                onClick={() => setFilterMode('active')}
+                label="Active"
+              />
             </Box>
             <Box direction="row-responsive" align="center" gap="large">
               <Button
@@ -194,7 +202,10 @@ function Tasks() {
           >
             {tasks
               ?.filter(
-                (task) => filterMode === 'all' || task.isTrainingCompleted
+                (task) =>
+                  filterMode === 'all' ||
+                  (filterMode === 'completed' && task.isTrainingCompleted) ||
+                  (filterMode === 'active' && !task.isTrainingCompleted)
               )
               .map((task: TaskType) => {
                 return (
