@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Checkout client
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: FLock-io/client
           ref: 'main'
