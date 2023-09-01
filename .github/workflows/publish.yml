@@ -21,11 +21,23 @@ jobs:
       - name: Checkout git repo
         uses: actions/checkout@v3
 
+      - name: Checkout client
+        uses: actions/checkout@v2
+        with:
+          repository: FLock-io/client
+          path: './client'
+
       - name: Import Cert
         uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
           p12-password: ${{ secrets.CSC_KEY_PASSWORD }}
+
+      - name: Build main client
+        uses: Nuitka/Nuitka-Action@main
+        with:
+          nuitka-version: main
+          script-name: ./client/main.py
 
       - name: Install Node and NPM
         uses: actions/setup-node@v3
@@ -41,6 +53,7 @@ jobs:
 
       - name: Sign main executable
         run: |
+          mv ./client/main.bin ./build/bin/main.bin
           codesign --deep --options runtime --timestamp --force --verify --verbose --sign "Developer ID Application: FLock.io LTD (35H5QAYP2F)" build/bin/main.bin
 
       - name: Publish releases
