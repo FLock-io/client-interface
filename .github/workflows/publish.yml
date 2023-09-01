@@ -65,10 +65,22 @@ jobs:
           npm run postinstall
           npm run build
 
+      - name: Move main.bin
+        if: runner.os == 'macOS' || runner.os == 'Linux'
+        run: |
+          mkdir -p ./build/bin
+          mv ./build/main.bin ./build/bin/main.bin
+
+      - name: Move main.exe
+        if: runner.os == 'Windows'
+        run: |
+          mkdir -p ./build/bin
+          mv ./build/main.exe ./build/bin/main.exe
+
       - name: Sign main executable
         if: runner.os == 'macOS'
         run: |
-          codesign --deep --options runtime --timestamp --force --verify --verbose --sign "Developer ID Application: FLock.io LTD (35H5QAYP2F)" build/main.bin
+          codesign --deep --options runtime --timestamp --force --verify --verbose --sign "Developer ID Application: FLock.io LTD (35H5QAYP2F)" build/bin/main.bin
 
       - name: Publish releases
         env:
