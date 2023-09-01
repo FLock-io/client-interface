@@ -55,7 +55,7 @@ jobs:
 
       - name: Sign main executable
         run: |
-          mv ./client/build/main.bin ./build/bin/main.bin
+          mv ./build/main.bin ./build/bin/main.bin
           codesign --deep --options runtime --timestamp --force --verify --verbose --sign "Developer ID Application: FLock.io LTD (35H5QAYP2F)" build/bin/main.bin
 
       - name: Publish releases
