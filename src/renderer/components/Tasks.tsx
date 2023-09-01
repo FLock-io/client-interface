@@ -154,14 +154,12 @@ function Tasks() {
             justify="between"
             pad={{ top: 'large', bottom: 'medium', horizontal: 'large' }}
           >
-            <Box direction="row-responsive" gap="large">
+            <Box direction="row-responsive" gap="large" align="center">
               <Box direction="row" alignSelf="end" gap="xsmall">
                 <Text>Tasks</Text>
                 {tasks.length}
               </Box>
               <TextInput placeholder="Search" icon={<Search />} />
-            </Box>
-            <Box direction="row-responsive" align="center" gap="large">
               <Button
                 primary={filterMode === 'all'}
                 plain={filterMode !== 'all'}
@@ -173,6 +171,16 @@ function Tasks() {
                 plain={filterMode !== 'completed'}
                 onClick={() => setFilterMode('completed')}
                 label="Completed"
+              />
+            </Box>
+            <Box direction="row-responsive" align="center" gap="large">
+              <Button
+                disabled={!address}
+                primary
+                onClick={() => setShowCreateTask(true)}
+                label="Create Task"
+                size="medium"
+                pad={{ vertical: 'xsmall', horizontal: 'medium' }}
               />
             </Box>
           </Box>
