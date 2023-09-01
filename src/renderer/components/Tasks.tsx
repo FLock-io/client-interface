@@ -1,7 +1,16 @@
 import { useAccount, useContractRead } from 'wagmi';
-import { Box, Button, DataTable, Layer, Spinner, Text } from 'grommet';
+import { Box, Button, Heading, Layer, Spinner, Text, TextInput } from 'grommet';
 import { useEffect, useState } from 'react';
 import { readContract } from '@wagmi/core';
+import {
+  Chat,
+  CreditCard,
+  Scorecard,
+  Image,
+  UserFemale,
+  Search,
+  StatusGood,
+} from 'grommet-icons';
 import {
   FLOCK_TASK_MANAGER_ABI,
   FLOCK_TASK_MANAGER_ADDRESS,
@@ -11,11 +20,45 @@ import { TaskType } from './types';
 import Task from './Task';
 import { CreateTask } from './CreateTask';
 
+interface TaskCardProps {
+  cardColor: string;
+  // eslint-disable-next-line no-undef
+  cardIcon: JSX.Element;
+}
+
+type CardColors = {
+  [key: string]: TaskCardProps;
+};
+
+const cardColors: CardColors = {
+  'Large Language Model Finetuning': {
+    cardColor: '#A4C0FF',
+    cardIcon: <Chat color="black" size="20px" />,
+  },
+  'NLP': {
+    cardColor: '#E69FBD',
+    cardIcon: <Scorecard color="black" size="20px" />,
+  },
+  'Time series prediction': {
+    cardColor: '#D9D9D9',
+    cardIcon: <CreditCard color="black" size="20px" />,
+  },
+  'Classification': {
+    cardColor: '#BDD4DA',
+    cardIcon: <Image color="black" size="20px" />,
+  },
+  'Finance': {
+    cardColor: '#A4C0FF',
+    cardIcon: <CreditCard color="black" size="20px" />,
+  },
+};
+
 function Tasks() {
   const { address } = useAccount();
   const [tasks, setTasks] = useState<TaskType[]>([] as TaskType[]);
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
+  const [filterMode, setFilterMode] = useState<'all' | 'completed'>('all');
 
   const [taskToShow, setTaskToShow] = useState<TaskType>({} as TaskType);
 
@@ -104,98 +147,176 @@ function Tasks() {
           <Spinner size="medium" />
         </Box>
       ) : (
-        <Box gap="large">
-          <Box direction="row" align="center" justify="end">
-            <Button
-              disabled={!address}
-              primary
-              onClick={() => setShowCreateTask(true)}
-              label="Create Task"
-              margin={{ top: 'medium' }}
-              size="medium"
-              pad={{ vertical: 'xsmall', horizontal: 'medium' }}
-            />
+        <Box>
+          <Box
+            direction="row-responsive"
+            align="center"
+            justify="between"
+            pad={{ top: 'large', bottom: 'medium', horizontal: 'large' }}
+          >
+            <Box direction="row-responsive" gap="large">
+              <Box direction="row" alignSelf="end" gap="xsmall">
+                <Text>Tasks</Text>
+                {tasks.length}
+              </Box>
+              <TextInput placeholder="Search" icon={<Search />} />
+            </Box>
+            <Box direction="row-responsive" align="center" gap="large">
+              <Button
+                primary={filterMode === 'all'}
+                plain={filterMode !== 'all'}
+                onClick={() => setFilterMode('all')}
+                label="All"
+              />
+              <Button
+                primary={filterMode === 'completed'}
+                plain={filterMode !== 'completed'}
+                onClick={() => setFilterMode('completed')}
+                label="Completed"
+              />
+            </Box>
           </Box>
-          <Box>
-            <DataTable
-              sortable
-              columns={[
-                {
-                  property: 'name',
-                  header: 'Name',
-                  primary: true,
-                },
-                {
-                  property: 'description',
-                  header: 'Description',
-                  render: (datum) => (
-                    <Box width="300px">
-                      <Text truncate={true}>{datum.description}</Text>
+          <Box
+            direction="row-responsive"
+            wrap
+            width="100%"
+            align="center"
+            justify="center"
+            gap="small"
+          >
+            {tasks
+              ?.filter(
+                (task) => filterMode === 'all' || task.isTrainingCompleted
+              )
+              .map((task: TaskType) => {
+                return (
+                  <Box
+                    background="#FFFFFF"
+                    key={task.address}
+                    align="start"
+                    justify="center"
+                    round="small"
+                    elevation="large"
+                    pad="medium"
+                    margin={{ top: 'small' }}
+                    height={{ min: 'small' }}
+                    width="400px"
+                    border={{ color: 'black', size: 'small' }}
+                  >
+                    <Box height="60px" overflow="hidden">
+                      <Heading level="3" margin="none">
+                        {task.name}
+                      </Heading>
                     </Box>
-                  ),
-                },
-                {
-                  property: 'minParticipants',
-                  header: 'Min Participants',
-                },
-                {
-                  property: 'maxParticipants',
-                  header: 'Max Participants',
-                },
-                {
-                  property: 'rewardPool',
-                  header: 'Rewards Return Rate',
-                  render: (datum) => (
-                    <Text>
-                      {(
-                        ((datum.rewardPool / datum.rounds) * 100) /
-                        datum.rewardPool
-                      ).toFixed(2)}
-                      %
-                    </Text>
-                  ),
-                },
-                {
-                  property: 'numberOfParticipants',
-                  header: 'Number of Participants',
-                },
-                {
-                  property: 'shortage',
-                  header: 'Short of',
-                  render: (datum) => (
-                    <Text>
-                      {datum.minParticipants -
-                        Number(datum.numberOfParticipants)}
-                    </Text>
-                  ),
-                },
-                {
-                  property: 'isTrainingCompleted',
-                  header: 'Complete',
-                  render: (datum) => (
-                    <Text>{datum.isTrainingCompleted ? 'Yes' : 'No'}</Text>
-                  ),
-                },
-                {
-                  property: 'actions',
-                  header: 'Actions',
-                  render: (datum) => (
-                    <Button
-                      disabled={!address}
-                      primary
-                      onClick={() => {
-                        setTaskToShow(datum);
+                    <Box height="xxsmall" overflow="hidden">
+                      <Text>{task.description}</Text>
+                    </Box>
+                    <Box
+                      direction="row"
+                      width="100%"
+                      align="center"
+                      gap="medium"
+                      pad={{ bottom: 'xsmall', top: 'xsmall' }}
+                    >
+                      <Box
+                        border={{ color: 'black', size: 'small' }}
+                        round="small"
+                        pad="xsmall"
+                        background={cardColors[task.taskType]?.cardColor}
+                        direction="row"
+                        gap="small"
+                        align="center"
+                        width={{ max: '70%' }}
+                      >
+                        {cardColors[task.taskType]?.cardIcon}
+                        <Text weight="bold" truncate>
+                          {task.taskType === 'Large Language Model Finetuning'
+                            ? 'LLM Finetuning'
+                            : task.taskType}
+                        </Text>
+                      </Box>
+                      {task.isTrainingCompleted && <StatusGood color="green" />}
+                    </Box>
+                    <Box
+                      direction="row"
+                      justify="between"
+                      border={{
+                        color: 'black',
+                        size: 'small',
+                        style: 'solid',
+                        side: 'bottom',
                       }}
-                      label="Join"
-                      margin={{ top: 'medium' }}
-                      size="medium"
-                      pad={{ vertical: 'xsmall', horizontal: 'medium' }}
-                    />
-                  ),
-                },
-              ]}
-              data={tasks}
-            />
+                      pad={{ bottom: 'xsmall' }}
+                    >
+                      <Box direction="row" align="center" gap="xsmall">
+                        <Heading level="3" margin="0">
+                          {(
+                            ((task.rewardPool / task.rounds) * 100) /
+                            task.rewardPool
+                          ).toFixed(2)}
+                          %
+                        </Heading>
+                        <Box basis="1/2">
+                          <Text size="small">Rewards Return Rate</Text>
+                        </Box>
+                      </Box>
+                      <Box
+                        direction="row"
+                        align="center"
+                        gap="xsmall"
+                        justify="end"
+                        margin={{ left: 'small' }}
+                        basis="1/2"
+                      >
+                        <Heading level="3" color="#6C94EC" margin="0">
+                          {task.minParticipants}
+                        </Heading>
+                        <Box width="xsmall">
+                          <Text size="small" color="#6C94EC">
+                            Participants Requirements
+                          </Text>
+                        </Box>
+                      </Box>
+                    </Box>
+                    <Box
+                      direction="row"
+                      width="100%"
+                      justify="between"
+                      margin={{ top: 'small' }}
+                    >
+                      <Box direction="row" gap="small" alignSelf="end">
+                        <UserFemale color="brand" />
+                        <Text>Creator Name</Text>
+                      </Box>
+                      <Box align="center">
+                        <Box direction="row" gap="xxsmall" align="center">
+                          <Text size="small" weight="bold">
+                            Short of
+                          </Text>
+                          <Text size="medium" color="#6C94EC" weight="bold">
+                            {task.minParticipants -
+                              Number(task.numberOfParticipants)}
+                          </Text>
+                          <Text size="small" weight="bold">
+                            to start
+                          </Text>
+                        </Box>
+                        <Button
+                          disabled={!address}
+                          primary
+                          onClick={() => {
+                            setTaskToShow(task);
+                          }}
+                          label={task.isTrainingCompleted ? 'View' : 'Join'}
+                          size="medium"
+                          alignSelf="end"
+                          pad={{ vertical: 'xsmall', horizontal: 'medium' }}
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                );
+              })}
           </Box>
         </Box>
       )}
