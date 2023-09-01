@@ -262,7 +262,7 @@
     },
     "extraFiles": [
       {
-        "from": "build/bin",
+        "from": "build",
         "to": "Resources/bin",
         "filter": [
           "**/*"
