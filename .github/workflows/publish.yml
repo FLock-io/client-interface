@@ -30,6 +30,7 @@ jobs:
           path: './client'
 
       - name: Import Cert
+        if: runner.os == 'macOS'
         uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
