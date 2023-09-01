@@ -173,7 +173,7 @@ const createWindow = async () => {
 
   const splash = new BrowserWindow({
     width: 600,
-    height: 338,
+    height: 420,
     movable: true,
     center: true,
     icon: getAssetPath('icon.png'),
@@ -191,7 +191,7 @@ const createWindow = async () => {
     splash.close();
     mainWindow?.center();
     mainWindow?.show();
-  }, 11000);
+  }, 8000);
 
   /*
   mainWindow.on('ready-to-show', () => {
