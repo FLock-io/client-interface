@@ -59,6 +59,16 @@ export default function Faucet() {
             <Paragraph>
               Contract Address: <code>{FLOCK_ADDRESS}</code>
             </Paragraph>
+            <Paragraph>
+              {`To get testnet MATIC on Polygon Mumbai network visit this `}
+              <a
+                href="https://faucet.polygon.technology/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                link
+              </a>
+            </Paragraph>
           </Box>
         </Box>
         <Box
