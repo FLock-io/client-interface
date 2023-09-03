@@ -72,9 +72,9 @@ ipcMain.on('ipc', async (event, arg) => {
           '--task-address',
           arg[1],
           '--ipfs',
-          '/dns/ipfs.flock.io/tcp/80/http',
+          'https://flockio.mypinata.cloud/ipfs/',
           '--rpc',
-          'https://polygon-mumbai.g.alchemy.com/v2/2CfDEXaIoLouWbPS1Tw4v9tX5bkKruSa',
+          'https://polygon-mumbai.g.alchemy.com/v2/O4lTKowPdYQ1XruWzEt5Peb03EzP53P6',
           '--port',
           '6222',
           '--private-key',
@@ -173,7 +173,7 @@ const createWindow = async () => {
 
   const splash = new BrowserWindow({
     width: 600,
-    height: 338,
+    height: 420,
     movable: true,
     center: true,
     icon: getAssetPath('icon.png'),
@@ -191,7 +191,7 @@ const createWindow = async () => {
     splash.close();
     mainWindow?.center();
     mainWindow?.show();
-  }, 11000);
+  }, 8000);
 
   /*
   mainWindow.on('ready-to-show', () => {

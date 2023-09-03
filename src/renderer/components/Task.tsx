@@ -305,7 +305,9 @@ function Task({ task, goBack }: TaskProps) {
                       property: 'role',
                       header: 'Role',
                       render: (datum) => (
-                        <Text>{datum.role === '1' ? 'Voter' : 'Proposer'} </Text>
+                        <Text>
+                          {datum.role === '1' ? 'Voter' : 'Proposer'}{' '}
+                        </Text>
                       ),
                     },
                     {
@@ -372,7 +374,7 @@ function Task({ task, goBack }: TaskProps) {
       setStep('REPORT');
     }
   }, [isTrainingCompleted, address, task]);
-  
+
   return (
     <>
       {showCompletedModal && (
@@ -407,12 +409,23 @@ function Task({ task, goBack }: TaskProps) {
             <Heading level="3">Training Complete!</Heading>
             <Box align="start">
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
-              <Text size="medium">Final Accuracy: {Number(dataCurrentAccuracy)} </Text>
-              {isEligibleForOAT && ( 
-                  <Text size='medium'>You are eligible for an OAT on Galxe! 
-                  Claim <a href="https://galxe.com/flock/" target="_blank" rel="noopener noreferrer"> here</a>.
-                  </Text>
-                  )}
+              <Text size="medium">
+                Final Accuracy: {Number(dataCurrentAccuracy)}{' '}
+              </Text>
+              {isEligibleForOAT && (
+                <Text size="medium">
+                  You are eligible for an OAT on Galxe! Claim{' '}
+                  <a
+                    href="https://galxe.com/flock/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {' '}
+                    here
+                  </a>
+                  .
+                </Text>
+              )}
             </Box>
           </Box>
         </Layer>
@@ -539,8 +552,8 @@ function Task({ task, goBack }: TaskProps) {
                       </Text>
                       <Text weight="bold">
                         participant
-                        {Number(numberOfParticipants) !== 1 && 's'} have
-                        joined the task
+                        {Number(numberOfParticipants) !== 1 && 's'} have joined
+                        the task
                       </Text>
                     </Box>
                     <Box direction="row" align="center">

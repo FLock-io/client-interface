@@ -9,16 +9,47 @@ jobs:
   publish:
     # To enable auto publishing to github, update your electron publisher
     # config in package.json > "build" and remove the conditional below
-    if: ${{ github.repository_owner == 'electron-react-boilerplate' }}
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [macos-13]
+        os: [macos-13, ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v3
+
+      - name: Checkout client
+        uses: actions/checkout@v3
+        with:
+          repository: FLock-io/client
+          token: ${{ secrets.GH_TOKEN }}
+          ref: 'main'
+          path: './client'
+
+      - name: Import Cert
+        if: runner.os == 'macOS'
+        uses: apple-actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.CSC_KEY_PASSWORD }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+          cache: 'pip'
+          cache-dependency-path: |
+            **/requirements*.txt
+
+      - name: Build main client
+        uses: ignas-gustainis/Nuitka-Action@main
+        with:
+          nuitka-version: main
+          script-name: ./client/main.py
+          onefile: true
+          follow-import-to: multiaddr.codecs.idna,multiaddr.codecs.uint16b,eth_hash.backends.pycryptodome,Crypto.Hash
 
       - name: Install Node and NPM
         uses: actions/setup-node@v3
@@ -32,6 +63,23 @@ jobs:
           npm run postinstall
           npm run build
 
+      - name: Move main.bin
+        if: runner.os == 'macOS' || runner.os == 'Linux'
+        run: |
+          mkdir -p ./build/bin
+          mv ./build/main.bin ./build/bin/main.bin
+
+      - name: Move main.exe
+        if: runner.os == 'Windows'
+        run: |
+          mkdir -p ./build/bin
+          mv ./build/main.exe ./build/bin/main.exe
+
+      - name: Sign main executable
+        if: runner.os == 'macOS'
+        run: |
+          codesign --deep --options runtime --timestamp --force --verify --verbose --sign "Developer ID Application: FLock.io LTD (35H5QAYP2F)" build/bin/main.bin
+
       - name: Publish releases
         env:
           # These values are used for auto updates signing
@@ -43,4 +91,4 @@ jobs:
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          npm exec electron-builder -- --publish always --win --mac --linux
+          npm exec electron-builder -- --publish always
