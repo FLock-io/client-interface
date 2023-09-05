@@ -28,10 +28,10 @@ const pinata = new Pinata(
 
 function getIcon() {
   if (process.platform === 'darwin') {
-    return 'icon-macos.svg';
+    return 'icon.icns';
   }
 
-  return 'icon-windows-web.svg';
+  return 'icon.png';
 }
 
 class AppUpdater {
