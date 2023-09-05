@@ -19,11 +19,20 @@ import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { execPath } from './binaries';
+import { platform } from 'os';
 
 const pinata = new Pinata(
   '9db9fffc88c7e281b5b2',
   '5c761fe42f8267832f70a1f00430d9f3d9006fc9624e5bce43a44b7edd79f624'
 );
+
+function getIcon() {
+  if (process.platform === 'darwin') {
+    return 'icon-macos.svg';
+  }
+
+  return 'icon-windows-web.svg';
+}
 
 class AppUpdater {
   constructor() {
@@ -161,11 +170,12 @@ const createWindow = async () => {
     show: false,
     width: 1920,
     height: 1080,
-    icon: getAssetPath('icon.png'),
+    icon: getAssetPath(getIcon()),
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      devTools: false,
     },
   });
 
@@ -176,9 +186,12 @@ const createWindow = async () => {
     height: 420,
     movable: true,
     center: true,
-    icon: getAssetPath('icon.png'),
+    icon: getAssetPath(getIcon()),
     transparent: true,
     frame: false,
+    webPreferences: {
+      devTools: false,
+    },
   });
 
   const splashScreenSrc = app.isPackaged
