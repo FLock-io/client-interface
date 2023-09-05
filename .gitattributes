@@ -4,6 +4,7 @@
 *.jpg   binary
 *.jpeg  binary
 *.ico   binary
+*.gif   binary
 *.icns  binary
 *.eot   binary
 *.otf   binary
