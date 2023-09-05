@@ -10,6 +10,8 @@ import {
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { useEffect, useState } from 'react';
 import Layout from 'renderer/components/Layout';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { FLOCK_ABI, FLOCK_ADDRESS } from '../contracts/flock';
 
 export default function Faucet() {
@@ -32,6 +34,9 @@ export default function Faucet() {
   };
 
   useEffect(() => {
+    if (isSuccess) {
+      toast.success(`Minted ${amount} FLC successfully`);
+    }
     setAmount(0);
   }, [isSuccess]);
 
@@ -110,6 +115,18 @@ export default function Faucet() {
           </Form>
         </Box>
       </Box>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </Layout>
   );
 }

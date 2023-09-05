@@ -40,6 +40,8 @@ import { WalletContext } from 'renderer/context/walletContext';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { useTaskData } from 'renderer/hooks/useTaskData';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { TaskType } from './types';
 import { web3AuthInstance } from '../Web3AuthInstance';
 
@@ -178,6 +180,7 @@ function Task({ task, goBack }: TaskProps) {
 
   useEffect(() => {
     if (isSuccessStake) {
+      toast.success(`Staked ${stake} FLC successfully!`);
       setIsStaking(false);
     }
   }, [isSuccessStake]);
@@ -808,6 +811,18 @@ function Task({ task, goBack }: TaskProps) {
           )}
         </Box>
       </Box>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }
