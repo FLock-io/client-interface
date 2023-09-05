@@ -50,6 +50,7 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      # Build main client
       - name: Build main client
         uses: ignas-gustainis/Nuitka-Action@main
         with:
