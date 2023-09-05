@@ -135,7 +135,7 @@ function Task({ task, goBack }: TaskProps) {
   }, [showPrevParticipants]);
 
   const scaledDataStakedBalance = dataStakedBalance
-    ? Number(formatUnits(dataStakedBalance, 18))
+    ? Math.round(Number(formatUnits(dataStakedBalance, 18)) * 100) / 100
     : 0;
 
   const returnRate =

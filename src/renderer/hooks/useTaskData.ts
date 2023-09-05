@@ -106,11 +106,13 @@ export const useTaskData = ({
     setParticipantRewardedAmounts(await Promise.all(result));
   };
 
-  const totalRewardedAmount = participantRewardedAmounts.reduce(
-    (partialSum, a) =>
-      Number(formatUnits(partialSum, 18)) + Number(formatUnits(a, 18)),
-    0
-  );
+  const totalRewardedAmount =
+    Math.round(
+      participantRewardedAmounts.reduce(
+        (partialSum, a) => partialSum + Number(formatUnits(a, 18)),
+        0
+      ) * 100
+    ) / 100;
 
   const loadRoundParticipantBalance = async () => {
     if (participantAddress === undefined) return;
