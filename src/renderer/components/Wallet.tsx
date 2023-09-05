@@ -6,6 +6,8 @@ import { useAccount, useConnect, useDisconnect, useContractWrite, useWaitForTran
 import { web3AuthInstance } from '../Web3AuthInstance';
 import { getPublicCompressed } from "@toruslabs/eccrypto";
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Wallet() {
   const { address } = useAccount();
@@ -95,6 +97,7 @@ function Wallet() {
 
   useEffect(() => {
     if (isSuccessTransfer) {
+      toast.success(`Transferred ${transferAmount} FLC successfully`);
       setIsTransferLoading(false);
     }
   }, [isSuccessTransfer]);
@@ -177,6 +180,18 @@ function Wallet() {
             />
           </Box>
         </Box>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </Layer>
     );
   }
