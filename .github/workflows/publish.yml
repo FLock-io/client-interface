@@ -48,7 +48,7 @@ jobs:
       # Install dependencies
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r ./client/requirements.txt
 
       # Build main client
       - name: Build main client
