@@ -68,6 +68,7 @@ jobs:
         run: |
           mkdir -p ./build/bin
           mv ./build/main.bin ./build/bin/main.bin
+          chmod +x ./build/bin/main.bin
 
       - name: Move main.exe
         if: runner.os == 'Windows'
