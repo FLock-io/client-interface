@@ -43,6 +43,12 @@ jobs:
           cache-dependency-path: |
             **/requirements*.txt
 
+      # Install dependencies
+      - name: Install Dependencies
+        run: |
+          pip install -r ./client/requirements.txt
+
+      # Build main client
       - name: Build main client
         uses: ignas-gustainis/Nuitka-Action@main
         with:
@@ -68,6 +74,7 @@ jobs:
         run: |
           mkdir -p ./build/bin
           mv ./build/main.bin ./build/bin/main.bin
+          chmod +x ./build/bin/main.bin
 
       - name: Move main.exe
         if: runner.os == 'Windows'
