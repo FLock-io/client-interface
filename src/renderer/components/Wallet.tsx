@@ -1,12 +1,26 @@
-import { Box, Button, Heading, Layer, Text, TextInput } from 'grommet';
+import {
+  Box,
+  Button,
+  Heading,
+  Layer,
+  Text,
+  TextInput,
+  DropButton,
+} from 'grommet';
 import { useContext, useEffect, useState } from 'react';
 import { WalletContext } from 'renderer/context/walletContext';
 import truncateEthAddress from 'truncate-eth-address';
-import { useAccount, useConnect, useDisconnect, useContractWrite, useWaitForTransaction } from 'wagmi';
-import { web3AuthInstance } from '../Web3AuthInstance';
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useContractWrite,
+  useWaitForTransaction,
+} from 'wagmi';
 import { getPublicCompressed } from "@toruslabs/eccrypto";
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { ToastContainer, toast } from 'react-toastify';
+import { web3AuthInstance } from '../Web3AuthInstance';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Wallet() {
@@ -15,11 +29,14 @@ function Wallet() {
   const [transferAmount, setTransferAmount] = useState(0);
   const [transferAddress, setTransferAddress] = useState('');
   const [isTransferLoading, setIsTransferLoading] = useState(false);
+  const [isWalletOpen, setIsWalletOpen] = useState(false);
+  const [showWalletImport, setShowWalletImport] = useState(false);
   const { connectAsync, connectors } = useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
   const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
 
   const handleConnect = async () => {
+    setIsWalletOpen(false);
     await connectAsync({
       connector: connectors[0],
     });
@@ -196,9 +213,60 @@ function Wallet() {
     );
   }
 
+  if (showWalletImport) {
+    return (
+      <Layer onEsc={() => setShowWalletImport(false)} full>
+        <Box
+          align="center"
+          justify="center"
+          height="100vh"
+          pad="large"
+          gap="medium"
+        >
+          <Heading level="3">Import your wallet</Heading>
+
+        </Box>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </Layer>
+    );
+  }
+
   return (
-    <Button
+    <DropButton
       primary
+      open={isWalletOpen}
+      dropAlign={{ top: 'bottom' }}
+      dropContent={
+        <Box direction="row-responsive" gap="xsmall" justify="between">
+          <Box basis="1/2" pad="small">
+            <Button
+              primary
+              label="Social Login"
+              pad="xsmall"
+              onClick={handleConnect}
+            />
+          </Box>
+          <Box basis="1/2" pad="small">
+            <Button
+              primary
+              label="Import Wallet"
+              pad="xsmall"
+              onClick={handleConnect}
+            />
+          </Box>
+        </Box>
+      }
       label={
         !address
           ? 'Connect Wallet'
@@ -206,16 +274,21 @@ function Wallet() {
               flockTokenBalance ? flockTokenBalance.formatted : 0
             } $F) ${truncateEthAddress(address)}`
       }
-      pad="xsmall"
       onClick={
         address
           ? () => {
               setShowWalletSettings(true);
             }
           : () => {
-              handleConnect();
+              setIsWalletOpen(true);
             }
       }
+      dropProps={{
+        background: { color: 'white', opacity: 'strong' },
+        onClickOutside: () => setIsWalletOpen(false),
+        margin: { top: 'xsmall' },
+        round: 'small',
+      }}
     />
   );
 }
