@@ -14,6 +14,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FLOCK_ABI, FLOCK_ADDRESS } from '../contracts/flock';
 
+// interface FilterTagProps {
+//   filter: string[];
+//   filterAction: (item: string) => void;
+// }
+
 export default function Faucet() {
   const { address } = useAccount();
   const [amount, setAmount] = useState(0);
