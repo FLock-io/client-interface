@@ -114,6 +114,7 @@ function Task({ task, goBack }: TaskProps) {
     dataCurrentRound,
     isTrainingCompleted,
     totalRewardedAmount,
+    totalSlashedAmount,
     dataStakedBalance,
     finalDataForReport,
     dataCurrentAccuracy,
@@ -140,13 +141,17 @@ function Task({ task, goBack }: TaskProps) {
     ? Math.round(Number(formatUnits(dataStakedBalance, 18)) * 100) / 100
     : 0;
 
+  const initialBalance =
+    Math.round(
+      (scaledDataStakedBalance - totalRewardedAmount + totalSlashedAmount) * 100
+    ) / 100;
+
   const returnRate =
     scaledDataStakedBalance !== 0
-      ? Math.round((totalRewardedAmount / scaledDataStakedBalance) * 1000) / 10
+      ? Math.round(
+          ((totalRewardedAmount - totalSlashedAmount) / initialBalance) * 1000
+        ) / 10
       : 0;
-
-  const initialBalance =
-    Math.round((scaledDataStakedBalance - totalRewardedAmount) * 100) / 100;
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
@@ -265,8 +270,7 @@ function Task({ task, goBack }: TaskProps) {
             </Box>
             <Box>
               <Heading level="5" margin={{ bottom: '0' }}>
-                Your staked balance:{' '}
-                {dataStakedBalance ? formatUnits(dataStakedBalance, 18) : 0} $F
+                Your staked balance: {scaledDataStakedBalance} $F
               </Heading>
             </Box>
           </Box>

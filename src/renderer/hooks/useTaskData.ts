@@ -19,6 +19,10 @@ export const useTaskData = ({
     bigint[]
   >([]);
 
+  const [participantSlashedAmounts, setParticipantSlashedAmounts] = useState<
+    bigint[]
+  >([]);
+
   const [participantRoundBalance, setParticipantRoundBalance] = useState<
     bigint[]
   >([]);
@@ -106,9 +110,32 @@ export const useTaskData = ({
     setParticipantRewardedAmounts(await Promise.all(result));
   };
 
+  const loadRoundParticipantSlashedAmount = async () => {
+    if (participantAddress === undefined) return;
+    const result: Promise<bigint>[] = [];
+    for (let i = 0; i <= dataCurrentRound; i += 1) {
+      const data = readContract({
+        address: task.address as `0x${string}`,
+        abi: FLOCK_TASK_ABI,
+        functionName: 'roundParticipantSlashedAmount',
+        args: [i, participantAddress],
+      }) as Promise<bigint>;
+      result.push(data);
+    }
+    setParticipantSlashedAmounts(await Promise.all(result));
+  };
+
   const totalRewardedAmount =
     Math.round(
       participantRewardedAmounts.reduce(
+        (partialSum, a) => partialSum + Number(formatUnits(a, 18)),
+        0
+      ) * 100
+    ) / 100;
+
+  const totalSlashedAmount =
+    Math.round(
+      participantSlashedAmounts.reduce(
         (partialSum, a) => partialSum + Number(formatUnits(a, 18)),
         0
       ) * 100
@@ -161,6 +188,7 @@ export const useTaskData = ({
 
   useEffect(() => {
     loadRoundParticipantRewardedAmount();
+    loadRoundParticipantSlashedAmount();
     loadRoundParticipantBalance();
     loadRoundParticipantRole();
     loadAccuracies();
@@ -211,6 +239,7 @@ export const useTaskData = ({
     isTrainingCompleted,
     participantRewardedAmounts,
     totalRewardedAmount,
+    totalSlashedAmount,
     participantRoundBalance,
     participantRoundRole,
     finalDataForReport,
