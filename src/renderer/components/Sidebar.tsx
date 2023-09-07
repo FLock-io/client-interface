@@ -8,9 +8,8 @@ import {
 } from 'grommet';
 import { Home, Money, Tools, Scorecard, Chat, CreditCard } from 'grommet-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
-import logo from './logo.png';
 import { Heading } from 'grommet';
-import { useState } from 'react';
+import logo from './logo.png';
 
 interface FilterTagProps {
   filter: string[];
@@ -28,7 +27,6 @@ function Sidebar({ filter, filterAction }: FilterTagProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
-  const [navStatus, setNavStatus] = useState<string>();
 
   return (
     <GrommetSidebar
@@ -44,10 +42,9 @@ function Sidebar({ filter, filterAction }: FilterTagProps) {
       align="center"
       justify="center"
     >
-      <Nav gap="medium" align="start">
+      <Nav gap="medium" align="start" margin={{ bottom: 'medium' }}>
         <Button
           onClick={() => {
-            setNavStatus('');
             navigate('/');
           }}
           primary={pathname === '/'}
@@ -61,7 +58,6 @@ function Sidebar({ filter, filterAction }: FilterTagProps) {
         />
         <Button
           onClick={() => {
-            setNavStatus('train');
             navigate('/train');
           }}
           primary={pathname === '/train'}
@@ -75,7 +71,6 @@ function Sidebar({ filter, filterAction }: FilterTagProps) {
         />
         <Button
           onClick={() => {
-            setNavStatus('faucet');
             navigate('/faucet');
           }}
           primary={pathname === '/faucet'}
@@ -89,9 +84,9 @@ function Sidebar({ filter, filterAction }: FilterTagProps) {
         />
       </Nav>
 
-      {navStatus === 'train' && (
-        <div style={{ overflow: 'auto' }}>
-          <Box gap="small">
+      {pathname === '/train' && (
+        <Box overflow="auto">
+          <Box gap="small" border="top">
             <Heading level="3">NLP</Heading>
             <Box
               border={{ color: 'black', size: 'small' }}
@@ -178,7 +173,7 @@ function Sidebar({ filter, filterAction }: FilterTagProps) {
               <Text weight="bold">Classification</Text>
             </Box>
           </Box>
-        </div>
+        </Box>
       )}
     </GrommetSidebar>
   );
