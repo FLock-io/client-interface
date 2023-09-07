@@ -42,6 +42,13 @@ function Wallet() {
     });
   };
 
+  const handleImport = async () => {
+    setIsWalletOpen(false);
+    await connectAsync({
+      connector: connectors[1],
+    });
+  };
+
   const handleDisconnect = async () => {
     wagmiDisconnect();
   };
@@ -119,11 +126,11 @@ function Wallet() {
     }
   }, [isSuccessTransfer]);
 
-  useEffect(() => {
-    if (address) {
-      loadUserInfo();
-    }
-  }, [address]);
+  // useEffect(() => {
+  //   if (address) {
+  //     loadUserInfo();
+  //   }
+  // }, [address]);
 
   if (showWalletSettings) {
     return (
@@ -262,7 +269,7 @@ function Wallet() {
               primary
               label="Import Wallet"
               pad="xsmall"
-              onClick={handleConnect}
+              onClick={handleImport}
             />
           </Box>
         </Box>

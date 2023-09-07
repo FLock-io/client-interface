@@ -16,7 +16,8 @@ import Faucet from './pages/Faucet';
 import { CONFIG } from './config';
 import { RunnerContextProvider } from './context/runnerContext';
 import { useEffect, useState } from 'react';
-import { web3AuthInstance } from './Web3AuthInstance'
+import { web3AuthInstance } from './Web3AuthInstance';
+import { CustomConnector } from './CustomConnector';
 
 export default function App() {
   const flockTheme = {
@@ -98,6 +99,7 @@ export default function App() {
           web3AuthInstance,
         },
       }),
+      new CustomConnector({ chains: [polygonMumbai], options: {} }),
     ],
     publicClient,
     webSocketPublicClient,
