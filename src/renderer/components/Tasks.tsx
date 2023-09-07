@@ -35,7 +35,7 @@ const cardColors: CardColors = {
     cardColor: '#A4C0FF',
     cardIcon: <Chat color="black" size="20px" />,
   },
-  'NLP': {
+  NLP: {
     cardColor: '#E69FBD',
     cardIcon: <Scorecard color="black" size="20px" />,
   },
@@ -43,17 +43,21 @@ const cardColors: CardColors = {
     cardColor: '#D9D9D9',
     cardIcon: <CreditCard color="black" size="20px" />,
   },
-  'Classification': {
+  Classification: {
     cardColor: '#BDD4DA',
     cardIcon: <Image color="black" size="20px" />,
   },
-  'Finance': {
+  Finance: {
     cardColor: '#A4C0FF',
     cardIcon: <CreditCard color="black" size="20px" />,
   },
 };
 
-function Tasks() {
+interface TasksProps {
+  sidebarFilters: string[];
+}
+
+function Tasks({ sidebarFilters }: TasksProps) {
   const { address } = useAccount();
   const [tasks, setTasks] = useState<TaskType[]>([] as TaskType[]);
   const [showCreateTask, setShowCreateTask] = useState(false);
@@ -201,12 +205,24 @@ function Tasks() {
             gap="small"
           >
             {tasks
-              ?.filter(
-                (task) =>
+              ?.filter((task) => {
+                const filterModeMatch =
                   filterMode === 'all' ||
                   (filterMode === 'completed' && task.isTrainingCompleted) ||
-                  (filterMode === 'active' && !task.isTrainingCompleted)
-              )
+                  (filterMode === 'active' && !task.isTrainingCompleted);
+
+                if (sidebarFilters.length > 0) {
+                  // Check if the task's taskType is included in sidebarFilters
+                  const sidebarFilterMatch = sidebarFilters.includes(
+                    task.taskType
+                  );
+
+                  // Return true if the task matches either the filter mode or sidebarFilters
+                  return filterModeMatch && sidebarFilterMatch;
+                }
+                // If sidebarFilters is empty, only filter by filterMode
+                return filterModeMatch;
+              })
               .map((task: TaskType) => {
                 return (
                   <Box

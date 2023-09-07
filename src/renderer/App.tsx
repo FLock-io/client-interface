@@ -16,7 +16,7 @@ import Faucet from './pages/Faucet';
 import { CONFIG } from './config';
 import { RunnerContextProvider } from './context/runnerContext';
 import { useEffect, useState } from 'react';
-import { web3AuthInstance } from './Web3AuthInstance'
+import { web3AuthInstance } from './Web3AuthInstance';
 
 export default function App() {
   const flockTheme = {
