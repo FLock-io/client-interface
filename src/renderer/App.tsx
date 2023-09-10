@@ -6,7 +6,6 @@ import { polygonMumbai } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { Web3AuthConnector } from '@web3auth/web3auth-wagmi-connector';
-import { Web3Auth } from '@web3auth/modal';
 import { EthereumPrivateKeyProvider } from '@web3auth/ethereum-provider';
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
 import Dashboard from './pages/Dashboard';
@@ -15,9 +14,8 @@ import { WalletContextProvider } from './context/walletContext';
 import Faucet from './pages/Faucet';
 import { CONFIG } from './config';
 import { RunnerContextProvider } from './context/runnerContext';
-import { useEffect, useState } from 'react';
 import { web3AuthInstance } from './Web3AuthInstance';
-import { CustomConnector } from './CustomConnector';
+import CustomConnector from './CustomConnector';
 
 export default function App() {
   const flockTheme = {

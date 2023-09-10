@@ -20,7 +20,7 @@ export const RunnerContext = createContext<IRunnerContext>(
 export function RunnerContextProvider({
   children,
 }: RunnerContextProviderProps) {
-  const { connectors } = useConnect();
+  const { connector, connectors } = useConnect();
 
   const [runningTasks, setRunningTasks] = useState<string[]>([]);
   const [logs, setLogs] = useState<Map<string, string[]>>(new Map());
@@ -37,10 +37,14 @@ export function RunnerContextProvider({
   const runTask = async (task: TaskType, file: File) => {
     setLogs(new Map(logs.set(task.address, [])));
     // @ts-ignore
-    const privateKey = await connectors[0].web3AuthInstance.provider?.request({
-      method: 'eth_private_key',
-    });
+    let privateKey = await connectors[1].getPrivateKey();
 
+    if (!privateKey) {
+      // @ts-ignore
+      privateKey = await connectors[0].web3AuthInstance.provider?.request({
+        method: 'eth_private_key',
+      });
+    }
     window.electron.ipcRenderer.sendMessage('ipc', [
       'join',
       task.address,

@@ -17,7 +17,7 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from 'wagmi';
-import { getPublicCompressed } from "@toruslabs/eccrypto";
+import { getPublicCompressed } from '@toruslabs/eccrypto';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { ToastContainer, toast } from 'react-toastify';
 import { web3AuthInstance } from '../Web3AuthInstance';
@@ -34,6 +34,7 @@ function Wallet() {
   const { connectAsync, connectors } = useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
   const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
+  const [privateKey, setPrivateKey] = useState('');
 
   const handleConnect = async () => {
     setIsWalletOpen(false);
@@ -44,9 +45,13 @@ function Wallet() {
 
   const handleImport = async () => {
     setIsWalletOpen(false);
+    // @ts-ignore
+    await connectors[1].setPrivateKey(`0x${privateKey}`);
     await connectAsync({
       connector: connectors[1],
     });
+    setPrivateKey('');
+    setShowWalletImport(false);
   };
 
   const handleDisconnect = async () => {
@@ -70,9 +75,9 @@ function Wallet() {
 
   const loadUserInfo = async () => {
     try {
-      const privateKey = await web3AuthInstance.provider?.request({
+      const privateKey = (await web3AuthInstance.provider?.request({
         method: 'eth_private_key',
-      }) as string;
+      })) as string;
 
       const publicKey = getPublicCompressed(
         Buffer.from(privateKey.padStart(64, '0'), 'hex')
@@ -181,7 +186,7 @@ function Wallet() {
               </Box>
 
               <Button
-                alignSelf='center'
+                alignSelf="center"
                 label={isTransferLoading ? 'Transferring...' : 'Transfer'}
                 onClick={handleTransfer}
                 disabled={isTransferLoading}
@@ -231,7 +236,25 @@ function Wallet() {
           gap="medium"
         >
           <Heading level="3">Import your wallet</Heading>
-
+          <TextInput
+            value={privateKey}
+            onChange={(event) => setPrivateKey(event.target.value)}
+          />
+          <Box direction="row" alignSelf="center" gap="small">
+            <Button
+              primary
+              label="Cancel"
+              pad="xsmall"
+              onClick={() => setShowWalletImport(false)}
+            />
+            <Button
+              primary
+              label="Import Wallet"
+              pad="xsmall"
+              disabled={!privateKey}
+              onClick={handleImport}
+            />
+          </Box>
         </Box>
         <ToastContainer
           position="bottom-left"
@@ -269,7 +292,7 @@ function Wallet() {
               primary
               label="Import Wallet"
               pad="xsmall"
-              onClick={handleImport}
+              onClick={() => setShowWalletImport(true)}
             />
           </Box>
         </Box>

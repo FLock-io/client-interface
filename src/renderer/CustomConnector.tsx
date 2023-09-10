@@ -1,25 +1,18 @@
-import {
-  Address,
-  Chain,
-  Connector,
-  ConnectorData,
-  WalletClient,
-} from '@wagmi/core';
-import { Wallet, JsonRpcProvider } from 'ethers'; // or any other library for handling wallets
+import { Chain, Connector, ConnectorData, WalletClient } from '@wagmi/core';
+import { privateKeyToAccount } from 'viem/accounts';
+import { PrivateKeyAccount, createWalletClient, http } from 'viem';
 import { CONFIG } from './config';
 
-export class CustomConnector extends Connector<JsonRpcProvider, any> {
+export default class CustomConnector extends Connector<any, any> {
   readonly id = 'privateKey';
 
   readonly name = 'Private Key Wallet';
 
   readonly ready = true;
 
-  #provider?: JsonRpcProvider;
+  #provider?: any;
 
-  #privateKey?: string;
-
-  #account?: string;
+  #account?: PrivateKeyAccount;
 
   constructor({ chains, options }: { chains?: Chain[]; options: any }) {
     super({ chains, options });
@@ -28,32 +21,42 @@ export class CustomConnector extends Connector<JsonRpcProvider, any> {
   async getProvider() {
     if (!this.#provider) {
       // Initialize the provider with the Ethereum JSON-RPC endpoint
-      this.#provider = new JsonRpcProvider(CONFIG.WEB3_AUTH_RPC);
+      this.#provider = http(CONFIG.WEB3_AUTH_RPC);
     }
     return this.#provider;
   }
 
-  async getPrivateKey() {
-    this.#privateKey = CONFIG.PRIVATE_KEY;
+  async getAccount() {
+    const privateKey = await this.getPrivateKey();
+
+    // Set up the provider with the private key
+    const account = privateKeyToAccount(privateKey);
+    this.#account = account;
+    // return checksum address
+    return account.address;
   }
 
-  async connect({ chainId, privateKey }: { chainId?: number, privateKey?: string } = {}): Promise<
+  async getPrivateKey() {
+    return localStorage.getItem('privateKey');
+  }
+
+  async setPrivateKey(privateKey: string) {
+    localStorage.setItem('privateKey', privateKey);
+  }
+
+  async connect({ chainId }: { chainId?: number } = {}): Promise<
     Required<ConnectorData>
   > {
     try {
-      this.emit("message", {
-        type: "connecting",
+      this.emit('message', {
+        type: 'connecting',
       });
 
       await this.getProvider();
-      await this.getPrivateKey();
-
-      // Set up the provider with the private key
-      const wallet = new Wallet(this.#privateKey, this.#provider);
-      this.#account = wallet.address;
+      await this.getAccount();
 
       return {
-        account: wallet.address,
+        account: this.#account?.address as `0x${string}`,
         chain: {
           id: Number(chainId),
           unsupported: false,
@@ -65,22 +68,35 @@ export class CustomConnector extends Connector<JsonRpcProvider, any> {
     }
   }
 
-  async getWalletClient({ chainId }: { chainId?: number } = {}): Promise<Wallet> {
-    
+  async getWalletClient({
+    chainId,
+  }: { chainId?: number } = {}): Promise<WalletClient> {
     if (!this.#provider) {
-        await this.getProvider();
+      await this.getProvider();
     }
-    if (!this.#privateKey) {
-        await this.getPrivateKey();
-    }
+    await this.getAccount();
 
-    const wallet = new Wallet(this.#privateKey, this.#provider);
-    return wallet;
- }
+    const chain = this.chains.find((x) => x.id === chainId);
+
+    return createWalletClient({
+      account: this.#account,
+      chain,
+      transport: this.#provider,
+    });
+  }
+
+  async isAuthorized() {
+    try {
+      await this.getAccount();
+      return !!this.#account;
+    } catch {
+      return false;
+    }
+  }
 
   async disconnect() {
     // Clear the private key and provider
-    this.#privateKey = undefined;
+    this.setPrivateKey(undefined);
     this.#provider = undefined;
   }
 }
