@@ -14,6 +14,7 @@ import {
   DataTable,
   DataChart,
   TextArea,
+  DropButton,
 } from 'grommet';
 import {
   Alert,
@@ -29,6 +30,7 @@ import {
   Folder,
   Database,
   StatusGood,
+  Copy,
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
@@ -182,6 +184,13 @@ function Task({ task, goBack }: TaskProps) {
   const { isSuccess: isSuccessStake } = useWaitForTransaction({
     hash: dataStake?.hash,
   });
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(
+      `https://testnet.flock.io/train?taskAddress=${task.address}`
+    );
+    toast.success('Copied to clipboard!');
+  };
 
   const handleStake = async () => {
     setIsStaking(true);
@@ -482,7 +491,32 @@ function Task({ task, goBack }: TaskProps) {
               onClick={goBack}
             />
             <Box pad="small" round="small">
-              <Button icon={<Share size="small" />} label="Share" primary />
+              <DropButton
+                label="Share"
+                icon={<Share size="small" />}
+                dropAlign={{ bottom: 'top', right: 'right' }}
+                primary
+                dropContent={
+                  <Box pad="small" gap="small" direction="row" align="center">
+                    <Text size="medium">
+                      Share this task with others: &nbsp;
+                      <a
+                        href={`https://testnet.flock.io/train?taskAddress=${task.address}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        link
+                      </a>
+                    </Text>
+                    <Copy onClick={handleCopy} />
+                  </Box>
+                }
+                dropProps={{
+                  background: { color: 'white', opacity: 'strong' },
+                  margin: { bottom: 'xsmall' },
+                  round: 'small',
+                }}
+              />
             </Box>
           </Box>
           <Box direction="row" justify="between" gap="medium">
