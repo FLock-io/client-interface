@@ -314,7 +314,7 @@ function Wallet() {
             }
       }
       dropProps={{
-        background: { color: 'white', opacity: 'strong' },
+        background: { color: 'white' },
         onClickOutside: () => setIsWalletOpen(false),
         margin: { top: 'xsmall' },
         round: 'small',
