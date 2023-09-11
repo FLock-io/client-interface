@@ -65,6 +65,7 @@ export const useTaskData = ({
     abi: FLOCK_TASK_ABI,
     functionName: 'roundAccuracy',
     args: [dataCurrentRound],
+    watch: true,
   }) as { data: number };
 
   const { data: currentNumberOfParticipants } = useContractRead({
@@ -220,7 +221,9 @@ export const useTaskData = ({
         : '',
       token: tokenChangePercentage,
       balance: participantRoundBalance[index]
-        ? formatUnits(participantRoundBalance[index], 18)
+        ? Math.round(
+            Number(formatUnits(participantRoundBalance[index], 18)) * 100
+          ) / 100
         : '0',
     });
   }
