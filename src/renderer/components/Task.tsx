@@ -153,6 +153,14 @@ function Task({ task, goBack }: TaskProps) {
         ) / 10
       : 0;
 
+  const currentAccuracy = dataCurrentAccuracy
+    ? Number(dataCurrentAccuracy) / 100
+    : 0;
+
+  const accuracyProgress = dataCurrentAccuracy
+    ? Math.round((currentAccuracy / Number(task.accuracy)) * 1000) / 10
+    : 0;
+
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
       address: FLOCK_ADDRESS as `0x${string}`,
@@ -419,9 +427,7 @@ function Task({ task, goBack }: TaskProps) {
             <Heading level="3">Training Complete!</Heading>
             <Box align="start">
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
-              <Text size="medium">
-                Final Accuracy: {Number(dataCurrentAccuracy)}{' '}
-              </Text>
+              <Text size="medium">Final Accuracy: {currentAccuracy}%</Text>
               {isEligibleForOAT && (
                 <Text size="medium">
                   You are eligible for an OAT on Galxe! Claim{' '}
@@ -694,7 +700,7 @@ function Task({ task, goBack }: TaskProps) {
                   Model Accuracy
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {!dataCurrentAccuracy ? 0 : Number(dataCurrentAccuracy) / 100}
+                  {currentAccuracy}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -702,15 +708,7 @@ function Task({ task, goBack }: TaskProps) {
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      {dataCurrentAccuracy
-                        ? Math.round(
-                            (Number(dataCurrentAccuracy) /
-                              100 /
-                              Number(task.accuracy)) *
-                              1000
-                          ) / 10
-                        : 0}
-                      %
+                      {accuracyProgress}%
                     </Text>
                   </Box>
                   <Box direction="row" justify="between">
