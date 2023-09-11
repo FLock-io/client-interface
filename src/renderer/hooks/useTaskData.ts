@@ -215,7 +215,7 @@ export const useTaskData = ({
     }
 
     finalDataForReport.push({
-      round: index,
+      round: index + 1,
       role: participantRoundRole[index]
         ? participantRoundRole[index].toString()
         : '',
