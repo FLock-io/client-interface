@@ -18,8 +18,6 @@ import {
   useWaitForTransaction,
 } from 'wagmi';
 import jose from 'node-jose';
-import * as joseS from 'jose';
-import crypto from 'crypto';
 import { getPublicCompressed } from '@toruslabs/eccrypto';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { ToastContainer, toast } from 'react-toastify';
