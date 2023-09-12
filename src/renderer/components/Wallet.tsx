@@ -71,12 +71,15 @@ function Wallet() {
         }
       );
 
-      const email = await res.json();
-      setUserEmail(email);
-      setShowWalletImport(false);
+      const { email } = await res.json();
+      if (email) {
+        setUserEmail(email);
+        setShowWalletImport(false);
+      } else {
+        setShowEmailImport(true);
+      }
     } catch (error) {
       setShowWalletImport(false);
-      setShowEmailImport(true);
     }
   };
 
@@ -118,7 +121,7 @@ function Wallet() {
           }),
         }
       );
-      setShowEmailImport(true);
+      setShowEmailImport(false);
     } catch (error) {
       console.error('Error importing email:', error);
     }
@@ -364,8 +367,8 @@ function Wallet() {
               primary
               label="Enter"
               pad="xsmall"
-              disabled={!privateKey}
-              onClick={handleImport}
+              disabled={!userEmail}
+              onClick={importEmail}
             />
           </Box>
         </Box>
