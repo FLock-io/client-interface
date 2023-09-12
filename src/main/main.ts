@@ -44,6 +44,7 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 let main: ChildProcessWithoutNullStreams;
+let deeplinkingUrl;
 
 ipcMain.handle('ipc', async (event, arg) => {
   if (arg[0] === 'uploadToIPFS') {
@@ -181,6 +182,12 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
+  // Protocol handler for win32
+  if (process.platform === 'win32') {
+    // Keep only command line / deep linked arguments
+    deeplinkingUrl = process.argv.slice(1);
+  }
+
   const splash = new BrowserWindow({
     width: 600,
     height: 420,
@@ -247,6 +254,12 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+// Protocol handler for osx
+app.on('open-url', (event, url) => {
+  event.preventDefault();
+  deeplinkingUrl = url;
 });
 
 app
