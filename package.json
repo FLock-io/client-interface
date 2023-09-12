@@ -198,6 +198,12 @@
     "appId": "io.Flock",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
+    "protocols": {
+      "name": "electron-deep-linking",
+      "schemes": [
+        "flock"
+      ]
+    },
     "files": [
       "dist",
       "node_modules",
