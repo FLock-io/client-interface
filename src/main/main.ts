@@ -175,7 +175,7 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
-      devTools: false,
+      // devTools: false,
     },
   });
 
@@ -189,9 +189,9 @@ const createWindow = async () => {
     icon: getAssetPath(getIcon()),
     transparent: true,
     frame: false,
-    webPreferences: {
-      devTools: false,
-    },
+    // webPreferences: {
+    //   devTools: false,
+    // },
   });
 
   const splashScreenSrc = app.isPackaged
