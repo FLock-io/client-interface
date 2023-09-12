@@ -17,6 +17,9 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from 'wagmi';
+import jose from 'node-jose';
+import * as joseS from 'jose';
+import crypto from 'crypto';
 import { getPublicCompressed } from '@toruslabs/eccrypto';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { ToastContainer, toast } from 'react-toastify';
@@ -31,10 +34,12 @@ function Wallet() {
   const [isTransferLoading, setIsTransferLoading] = useState(false);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [showWalletImport, setShowWalletImport] = useState(false);
-  const { connectAsync, connectors } = useConnect();
+  const { connectAsync, connectors, pendingConnector } = useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
   const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
   const [privateKey, setPrivateKey] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [showEmailImport, setShowEmailImport] = useState(false);
 
   const handleConnect = async () => {
     setIsWalletOpen(false);
@@ -44,14 +49,81 @@ function Wallet() {
   };
 
   const handleImport = async () => {
-    setIsWalletOpen(false);
     // @ts-ignore
-    await connectors[1].setPrivateKey(`0x${privateKey}`);
-    await connectAsync({
-      connector: connectors[1],
-    });
-    setPrivateKey('');
-    setShowWalletImport(false);
+    setIsWalletOpen(false);
+    try {
+      await connectors[1].setPrivateKey(`0x${privateKey}`);
+      await connectAsync({
+        connector: connectors[1],
+      });
+    } catch (error) {
+      toast.error('Invalid private key');
+    }
+  };
+
+  const loadEmail = async () => {
+    try {
+      const res = await fetch(
+        `https://us-central1-flock-demo-design.cloudfunctions.net/getEmailFromDB?wallet=${address}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const email = await res.json();
+      setUserEmail(email);
+      setShowWalletImport(false);
+    } catch (error) {
+      setShowWalletImport(false);
+      setShowEmailImport(true);
+    }
+  };
+
+  const importEmail = async () => {
+    try {
+      const publicKey = getPublicCompressed(
+        Buffer.from(privateKey.padStart(64, '0'), 'hex')
+      ).toString('hex');
+
+      const payload = {
+        publicKey,
+      };
+
+      const keyStore = jose.JWK.createKeyStore();
+
+      // Create a key object from the private key string
+      const key = await keyStore.add({
+        kty: 'oct',
+        k: privateKey,
+      });
+
+      // Sign the JWT using the key
+      const jwt = await jose.JWS.createSign({ format: 'compact' }, key)
+        .update(JSON.stringify(payload))
+        .final();
+
+      const res = await fetch(
+        'https://us-central1-flock-demo-design.cloudfunctions.net/postEmailToDB',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwt}`,
+          },
+          body: JSON.stringify({
+            pubKey: publicKey,
+            email: userEmail,
+            wallet: address,
+          }),
+        }
+      );
+      setShowEmailImport(true);
+    } catch (error) {
+      console.error('Error importing email:', error);
+    }
   };
 
   const handleDisconnect = async () => {
@@ -75,32 +147,32 @@ function Wallet() {
 
   const loadUserInfo = async () => {
     try {
-      const privateKey = (await web3AuthInstance.provider?.request({
-        method: 'eth_private_key',
-      })) as string;
+      if (pendingConnector?.id === 'web3auth') {
+        const privateKey = (await web3AuthInstance.provider?.request({
+          method: 'eth_private_key',
+        })) as string;
 
-      const publicKey = getPublicCompressed(
-        Buffer.from(privateKey.padStart(64, '0'), 'hex')
-      ).toString('hex');
-      const user = await web3AuthInstance.getUserInfo();
+        const publicKey = getPublicCompressed(
+          Buffer.from(privateKey.padStart(64, '0'), 'hex')
+        ).toString('hex');
+        const user = await web3AuthInstance.getUserInfo();
 
-      const res = await fetch(
-        'https://us-central1-flock-demo-design.cloudfunctions.net/postEmailToDB',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${user.idToken}`,
-          },
-          body: JSON.stringify({
-            pubKey: publicKey,
-            email: user.email,
-            wallet: address,
-          }),
-        }
-      );
-
-      return res.json();
+        const res = await fetch(
+          'https://us-central1-flock-demo-design.cloudfunctions.net/postEmailToDB',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${user.idToken}`,
+            },
+            body: JSON.stringify({
+              pubKey: publicKey,
+              email: user.email,
+              wallet: address,
+            }),
+          }
+        );
+      }
     } catch (error) {
       console.error('Error loading user info:', error);
     }
@@ -131,11 +203,12 @@ function Wallet() {
     }
   }, [isSuccessTransfer]);
 
-  // useEffect(() => {
-  //   if (address) {
-  //     loadUserInfo();
-  //   }
-  // }, [address]);
+  useEffect(() => {
+    if (address) {
+      loadEmail();
+      loadUserInfo();
+    }
+  }, [address]);
 
   if (showWalletSettings) {
     return (
@@ -250,6 +323,48 @@ function Wallet() {
             <Button
               primary
               label="Import Wallet"
+              pad="xsmall"
+              disabled={!privateKey}
+              onClick={handleImport}
+            />
+          </Box>
+        </Box>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </Layer>
+    );
+  }
+
+  if (showEmailImport) {
+    return (
+      <Layer onEsc={() => setShowWalletImport(false)} full>
+        <Box
+          align="center"
+          justify="center"
+          height="100vh"
+          pad="large"
+          gap="medium"
+        >
+          <Heading level="3">Enter your email</Heading>
+          <Text>This email will be used for claiming OAT</Text>
+          <TextInput
+            value={userEmail}
+            onChange={(event) => setUserEmail(event.target.value)}
+          />
+          <Box direction="row" alignSelf="center" gap="small">
+            <Button
+              primary
+              label="Enter"
               pad="xsmall"
               disabled={!privateKey}
               onClick={handleImport}
