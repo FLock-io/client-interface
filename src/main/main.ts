@@ -8,7 +8,7 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import path from 'path';
+import path, { resolve } from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -137,6 +137,16 @@ if (process.env.NODE_ENV === 'production') {
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
+const isDev = process.env.NODE_ENV === 'development';
+
+if (isDev && process.platform === 'win32') {
+  app.setAsDefaultProtocolClient('flock', process.execPath, [
+    resolve(process.argv[1]),
+  ]);
+} else {
+  app.setAsDefaultProtocolClient('flock');
+}
+
 if (isDebug) {
   require('electron-debug')();
 }
@@ -165,6 +175,10 @@ if (gotTheLock) {
     if (process.platform === 'win32') {
       // Keep only command line / deep linked arguments
       deeplinkingUrl = argv.slice(1);
+    }
+    if (process.platform !== 'darwin') {
+      // Find the arg that is our custom protocol url and store it
+      deeplinkingUrl = argv.find((arg) => arg.startsWith('flock://test'));
     }
 
     if (mainWindow) {
@@ -203,12 +217,6 @@ const createWindow = async () => {
   });
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
-
-  // Protocol handler for win32
-  if (process.platform === 'win32') {
-    // Keep only command line / deep linked arguments
-    deeplinkingUrl = process.argv.slice(1);
-  }
 
   const splash = new BrowserWindow({
     width: 600,
