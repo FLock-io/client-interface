@@ -113,6 +113,7 @@
     "grommet": "^2.32.2",
     "grommet-icons": "^4.11.0",
     "ipfs-http-client": "^60.0.1",
+    "node-jose": "^2.2.0",
     "polished": "^4.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
