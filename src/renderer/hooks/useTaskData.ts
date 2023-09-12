@@ -82,9 +82,7 @@ export const useTaskData = ({
       const contentString = JSON.stringify(data, null, 2);
       setTaskSchema(contentString);
     } catch (error) {
-      console.error('Error fetching data from Pinata:', error);
       setTaskSchema('Error fetching data from Pinata');
-      throw error;
     }
   };
 

@@ -145,6 +145,9 @@ function Task({ task, goBack }: TaskProps) {
       ? Math.round((totalRewardedAmount / scaledDataStakedBalance) * 1000) / 10
       : 0;
 
+  const initialBalance =
+    Math.round((scaledDataStakedBalance - totalRewardedAmount) * 100) / 100;
+
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
       address: FLOCK_ADDRESS as `0x${string}`,
@@ -745,7 +748,7 @@ function Task({ task, goBack }: TaskProps) {
                     </Heading>
                     <Heading level="6" margin="0">
                       $F
-                      {scaledDataStakedBalance - totalRewardedAmount}
+                      {initialBalance}
                     </Heading>
                   </Box>
                 </Box>

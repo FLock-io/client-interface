@@ -94,7 +94,7 @@ This new FLock client interface boasts a state-of-the-art graphical user interfa
 - Flexible with any model that implements the required interface
 - Handle training and evaluation of the models
 
-You may download the desktop client of the lastest version [here](https://github.com/FLock-io/client-interface/releases/tag/v0.0.5).
+You may download the desktop client of the lastest version [here](https://github.com/FLock-io/client-interface/releases/tag/v0.0.6).
 
 For more detailed technical explanation of the FLock client, see [here](https://docs.flock.io/core-technologies/flock-client/client-deepdown).
 
