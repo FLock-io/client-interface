@@ -197,6 +197,14 @@ function Wallet() {
     });
   };
 
+  const roundedFLCBalance = flockTokenBalance
+    ? Math.round(Number(flockTokenBalance.formatted) * 100) / 100
+    : 0;
+
+  const roundedMaticBalance = nativeTokenBalance
+    ? Math.round(Number(nativeTokenBalance.formatted) * 10000) / 10000
+    : 0;
+
   useEffect(() => {
     if (isSuccessTransfer) {
       toast.success(`Transferred ${transferAmount} FLC successfully`);
@@ -228,11 +236,11 @@ function Wallet() {
             </Text>
             <Text>
               <b>FLock(FLC) Balance: </b>
-              {flockTokenBalance ? flockTokenBalance.formatted : 0} $F
+              {roundedFLCBalance} $F
             </Text>
             <Text>
               <b>MATIC Balance: </b>
-              {nativeTokenBalance ? nativeTokenBalance.formatted : 0} $MATIC
+              {roundedMaticBalance} $MATIC
             </Text>
             <Box gap="small" margin={{ top: 'small' }}>
               <Text alignSelf="center" weight="bold">
@@ -416,9 +424,7 @@ function Wallet() {
       label={
         !address
           ? 'Connect Wallet'
-          : `(${
-              flockTokenBalance ? flockTokenBalance.formatted : 0
-            } $F) ${truncateEthAddress(address)}`
+          : `(${roundedFLCBalance} $F) ${truncateEthAddress(address)}`
       }
       onClick={
         address
