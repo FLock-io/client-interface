@@ -14,6 +14,7 @@ import {
   DataTable,
   DataChart,
   TextArea,
+  DropButton,
 } from 'grommet';
 import {
   Alert,
@@ -29,6 +30,7 @@ import {
   Folder,
   Database,
   StatusGood,
+  Copy,
 } from 'grommet-icons';
 import { useContext, useEffect, useState } from 'react';
 import { LogViewer } from '@patternfly/react-log-viewer';
@@ -114,6 +116,7 @@ function Task({ task, goBack }: TaskProps) {
     dataCurrentRound,
     isTrainingCompleted,
     totalRewardedAmount,
+    totalSlashedAmount,
     dataStakedBalance,
     finalDataForReport,
     dataCurrentAccuracy,
@@ -140,10 +143,25 @@ function Task({ task, goBack }: TaskProps) {
     ? Math.round(Number(formatUnits(dataStakedBalance, 18)) * 100) / 100
     : 0;
 
+  const initialBalance =
+    Math.round(
+      (scaledDataStakedBalance - totalRewardedAmount + totalSlashedAmount) * 100
+    ) / 100;
+
   const returnRate =
     scaledDataStakedBalance !== 0
-      ? Math.round((totalRewardedAmount / scaledDataStakedBalance) * 1000) / 10
+      ? Math.round(
+          ((totalRewardedAmount - totalSlashedAmount) / initialBalance) * 1000
+        ) / 10
       : 0;
+
+  const currentAccuracy = dataCurrentAccuracy
+    ? Number(dataCurrentAccuracy) / 100
+    : 0;
+
+  const accuracyProgress = dataCurrentAccuracy
+    ? Math.round((currentAccuracy / Number(task.accuracy)) * 1000) / 10
+    : 0;
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
@@ -166,6 +184,13 @@ function Task({ task, goBack }: TaskProps) {
   const { isSuccess: isSuccessStake } = useWaitForTransaction({
     hash: dataStake?.hash,
   });
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(
+      `https://testnet.flock.io/train?taskAddress=${task.address}`
+    );
+    toast.success('Copied to clipboard!');
+  };
 
   const handleStake = async () => {
     setIsStaking(true);
@@ -262,8 +287,7 @@ function Task({ task, goBack }: TaskProps) {
             </Box>
             <Box>
               <Heading level="5" margin={{ bottom: '0' }}>
-                Your staked balance:{' '}
-                {dataStakedBalance ? formatUnits(dataStakedBalance, 18) : 0} $F
+                Your staked balance: {scaledDataStakedBalance} $F
               </Heading>
             </Box>
           </Box>
@@ -412,9 +436,7 @@ function Task({ task, goBack }: TaskProps) {
             <Heading level="3">Training Complete!</Heading>
             <Box align="start">
               <Text size="medium">FLock Reward: {totalRewardedAmount}</Text>
-              <Text size="medium">
-                Final Accuracy: {Number(dataCurrentAccuracy)}{' '}
-              </Text>
+              <Text size="medium">Final Accuracy: {currentAccuracy}%</Text>
               {isEligibleForOAT && (
                 <Text size="medium">
                   You are eligible for an OAT on Galxe! Claim{' '}
@@ -469,7 +491,32 @@ function Task({ task, goBack }: TaskProps) {
               onClick={goBack}
             />
             <Box pad="small" round="small">
-              <Button icon={<Share size="small" />} label="Share" primary />
+              <DropButton
+                label="Share"
+                icon={<Share size="small" />}
+                dropAlign={{ bottom: 'top', right: 'right' }}
+                primary
+                dropContent={
+                  <Box pad="small" gap="small" direction="row" align="center">
+                    <Text size="medium">
+                      Share this task with others: &nbsp;
+                      <a
+                        href={`https://testnet.flock.io/train?taskAddress=${task.address}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        link
+                      </a>
+                    </Text>
+                    <Copy onClick={handleCopy} />
+                  </Box>
+                }
+                dropProps={{
+                  background: { color: 'white', opacity: 'strong' },
+                  margin: { bottom: 'xsmall' },
+                  round: 'small',
+                }}
+              />
             </Box>
           </Box>
           <Box direction="row" justify="between" gap="medium">
@@ -687,7 +734,7 @@ function Task({ task, goBack }: TaskProps) {
                   Model Accuracy
                 </Heading>
                 <Heading level="1" color="#6C94EC" weight="bold">
-                  {!dataCurrentAccuracy ? 0 : Number(dataCurrentAccuracy) / 100}
+                  {currentAccuracy}
                 </Heading>
                 <Box alignSelf="stretch">
                   <Box direction="row" justify="between" border="bottom">
@@ -695,15 +742,7 @@ function Task({ task, goBack }: TaskProps) {
                       Completion Percentage
                     </Text>
                     <Text size="xsmall" alignSelf="end">
-                      {dataCurrentAccuracy
-                        ? Math.round(
-                            (Number(dataCurrentAccuracy) /
-                              100 /
-                              Number(task.accuracy)) *
-                              1000
-                          ) / 10
-                        : 0}
-                      %
+                      {accuracyProgress}%
                     </Text>
                   </Box>
                   <Box direction="row" justify="between">
@@ -745,7 +784,7 @@ function Task({ task, goBack }: TaskProps) {
                     </Heading>
                     <Heading level="6" margin="0">
                       $F
-                      {scaledDataStakedBalance - totalRewardedAmount}
+                      {initialBalance}
                     </Heading>
                   </Box>
                 </Box>

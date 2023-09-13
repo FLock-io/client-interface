@@ -8,7 +8,7 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import path from 'path';
+import path, { resolve } from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -44,6 +44,7 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 let main: ChildProcessWithoutNullStreams;
+let deeplinkingUrl;
 
 ipcMain.handle('ipc', async (event, arg) => {
   if (arg[0] === 'uploadToIPFS') {
@@ -136,6 +137,16 @@ if (process.env.NODE_ENV === 'production') {
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
+const isDev = process.env.NODE_ENV === 'development';
+
+if (isDev && process.platform === 'win32') {
+  app.setAsDefaultProtocolClient('flock', process.execPath, [
+    resolve(process.argv[1]),
+  ]);
+} else {
+  app.setAsDefaultProtocolClient('flock');
+}
+
 if (isDebug) {
   require('electron-debug')();
 }
@@ -152,6 +163,32 @@ const installExtensions = async () => {
     )
     .catch(console.log);
 };
+
+// Force Single Instance Application
+const gotTheLock = app.requestSingleInstanceLock();
+if (gotTheLock) {
+  app.on('second-instance', (e, argv) => {
+    // Someone tried to run a second instance, we should focus our window.
+
+    // Protocol handler for win32
+    // argv: An array of the second instance’s (command line / deep linked) arguments
+    if (process.platform === 'win32') {
+      // Keep only command line / deep linked arguments
+      deeplinkingUrl = argv.slice(1);
+    }
+    if (process.platform !== 'darwin') {
+      // Find the arg that is our custom protocol url and store it
+      deeplinkingUrl = argv.find((arg) => arg.startsWith('flock://test'));
+    }
+
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+} else {
+  app.quit();
+}
 
 const createWindow = async () => {
   if (isDebug) {
@@ -175,7 +212,7 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
-      devTools: false,
+      // devTools: false,
     },
   });
 
@@ -189,9 +226,9 @@ const createWindow = async () => {
     icon: getAssetPath(getIcon()),
     transparent: true,
     frame: false,
-    webPreferences: {
-      devTools: false,
-    },
+    // webPreferences: {
+    //   devTools: false,
+    // },
   });
 
   const splashScreenSrc = app.isPackaged
@@ -247,6 +284,12 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+// Protocol handler for osx
+app.on('open-url', (event, url) => {
+  event.preventDefault();
+  deeplinkingUrl = url;
 });
 
 app

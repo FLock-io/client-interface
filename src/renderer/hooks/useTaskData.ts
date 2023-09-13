@@ -19,6 +19,10 @@ export const useTaskData = ({
     bigint[]
   >([]);
 
+  const [participantSlashedAmounts, setParticipantSlashedAmounts] = useState<
+    bigint[]
+  >([]);
+
   const [participantRoundBalance, setParticipantRoundBalance] = useState<
     bigint[]
   >([]);
@@ -61,6 +65,7 @@ export const useTaskData = ({
     abi: FLOCK_TASK_ABI,
     functionName: 'roundAccuracy',
     args: [dataCurrentRound],
+    watch: true,
   }) as { data: number };
 
   const { data: currentNumberOfParticipants } = useContractRead({
@@ -82,9 +87,7 @@ export const useTaskData = ({
       const contentString = JSON.stringify(data, null, 2);
       setTaskSchema(contentString);
     } catch (error) {
-      console.error('Error fetching data from Pinata:', error);
       setTaskSchema('Error fetching data from Pinata');
-      throw error;
     }
   };
 
@@ -106,9 +109,32 @@ export const useTaskData = ({
     setParticipantRewardedAmounts(await Promise.all(result));
   };
 
+  const loadRoundParticipantSlashedAmount = async () => {
+    if (participantAddress === undefined) return;
+    const result: Promise<bigint>[] = [];
+    for (let i = 0; i <= dataCurrentRound; i += 1) {
+      const data = readContract({
+        address: task.address as `0x${string}`,
+        abi: FLOCK_TASK_ABI,
+        functionName: 'roundParticipantSlashedAmount',
+        args: [i, participantAddress],
+      }) as Promise<bigint>;
+      result.push(data);
+    }
+    setParticipantSlashedAmounts(await Promise.all(result));
+  };
+
   const totalRewardedAmount =
     Math.round(
       participantRewardedAmounts.reduce(
+        (partialSum, a) => partialSum + Number(formatUnits(a, 18)),
+        0
+      ) * 100
+    ) / 100;
+
+  const totalSlashedAmount =
+    Math.round(
+      participantSlashedAmounts.reduce(
         (partialSum, a) => partialSum + Number(formatUnits(a, 18)),
         0
       ) * 100
@@ -161,6 +187,7 @@ export const useTaskData = ({
 
   useEffect(() => {
     loadRoundParticipantRewardedAmount();
+    loadRoundParticipantSlashedAmount();
     loadRoundParticipantBalance();
     loadRoundParticipantRole();
     loadAccuracies();
@@ -186,13 +213,15 @@ export const useTaskData = ({
     }
 
     finalDataForReport.push({
-      round: index,
+      round: index + 1,
       role: participantRoundRole[index]
         ? participantRoundRole[index].toString()
         : '',
       token: tokenChangePercentage,
       balance: participantRoundBalance[index]
-        ? formatUnits(participantRoundBalance[index], 18)
+        ? Math.round(
+            Number(formatUnits(participantRoundBalance[index], 18)) * 100
+          ) / 100
         : '0',
     });
   }
@@ -211,6 +240,7 @@ export const useTaskData = ({
     isTrainingCompleted,
     participantRewardedAmounts,
     totalRewardedAmount,
+    totalSlashedAmount,
     participantRoundBalance,
     participantRoundRole,
     finalDataForReport,
