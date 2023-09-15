@@ -842,7 +842,7 @@ function Task({ task, goBack }: TaskProps) {
                   (step === 'LOCAL_DATA' && !file?.path) ||
                   isRunning ||
                   (step === 'STAKE' &&
-                    Number(dataStakedBalance) < stake * 10 ** 18)
+                    Number(dataStakedBalance) < task.stake * 10 ** 18)
                 }
                 onClick={nextStep}
               />
