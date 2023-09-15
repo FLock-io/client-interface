@@ -44,6 +44,10 @@ export default class CustomConnector extends Connector<any, any> {
     localStorage.setItem('privateKey', privateKey);
   }
 
+  async deletePrivateKey() {
+    localStorage.removeItem('privateKey');
+  }
+
   async connect({ chainId }: { chainId?: number } = {}): Promise<
     Required<ConnectorData>
   > {
@@ -96,7 +100,7 @@ export default class CustomConnector extends Connector<any, any> {
 
   async disconnect() {
     // Clear the private key and provider
-    this.setPrivateKey(undefined);
+    this.deletePrivateKey();
     this.#provider = undefined;
   }
 }
