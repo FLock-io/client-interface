@@ -67,7 +67,7 @@ export default function Faucet() {
             <Paragraph>
               {`To get testnet MATIC on Polygon Mumbai network visit this `}
               <a
-                href="https://faucet.polygon.technology/"
+                href="https://mumbaifaucet.com/"
                 target="_blank"
                 rel="noreferrer"
               >
