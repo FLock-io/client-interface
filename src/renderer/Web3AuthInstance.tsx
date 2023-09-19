@@ -24,7 +24,7 @@ export const web3AuthInstance = new Web3Auth({
   web3AuthNetwork: 'cyan',
   // @ts-ignore
   chainConfig,
-  authMode: 'DAPP',
+  authMode: 'WALLET',
   uiConfig: {
     theme: 'light',
     appName: 'FLock Client',
