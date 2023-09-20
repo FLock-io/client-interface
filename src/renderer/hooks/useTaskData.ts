@@ -3,10 +3,7 @@ import { TaskType } from 'renderer/components/types';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
 import { useContractRead } from 'wagmi';
 import { readContract } from '@wagmi/core';
-import { formatUnits } from 'ethers';
-import { create as ipfsHttpClient } from 'ipfs-http-client';
-
-const ipfsClient = ipfsHttpClient({ url: 'https://ipfs.flock.io/api/v0' });
+import { formatUnits } from 'viem';
 
 export const useTaskData = ({
   task,
