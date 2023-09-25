@@ -23,7 +23,6 @@ import {
   FormPrevious,
   InProgress,
   Share,
-  UserFemale,
   Document,
   Money,
   Clipboard,
@@ -45,7 +44,8 @@ import { useTaskData } from 'renderer/hooks/useTaskData';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TaskType } from './types';
-import { web3AuthInstance } from '../Web3AuthInstance';
+import emoji1 from '../../../emoji1.png';
+import emoji2 from '../../../emoji2.png';
 
 interface TaskProps {
   task: TaskType;
@@ -522,9 +522,7 @@ function Task({ task, goBack }: TaskProps) {
           <Box direction="row" justify="between" gap="medium">
             <Box direction="row" gap="small">
               <Box>
-                <Avatar background="brand">
-                  <UserFemale color="text-strong" />
-                </Avatar>
+                <Avatar src={emoji1} background="brand" size="medium"></Avatar>
               </Box>
               <Box gap="small">
                 <Box>
@@ -614,9 +612,7 @@ function Task({ task, goBack }: TaskProps) {
                           },
                           (_, i) => (
                             <Box key={i} direction="row">
-                              <Avatar background="brand" size="small">
-                                <UserFemale size="small" />
-                              </Avatar>
+                              <Avatar src={emoji2} background="brand" size="medium"></Avatar>
                               {Array.from(
                                 {
                                   length:
