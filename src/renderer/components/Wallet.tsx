@@ -18,6 +18,7 @@ import {
   useWaitForTransaction,
 } from 'wagmi';
 import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
+import { FLOCK_V2_ABI, FLOCK_V2_ADDRESS } from 'renderer/contracts/flockV2';
 import { ToastContainer, toast } from 'react-toastify';
 import { web3AuthInstance } from '../Web3AuthInstance';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,7 +34,8 @@ function Wallet() {
   const { connectAsync, connectors, pendingConnector, isSuccess } =
     useConnect();
   const { disconnect: wagmiDisconnect } = useDisconnect();
-  const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
+  const { nativeTokenBalance, FLCTokenBalance, FLOTokenBalance } =
+    useContext(WalletContext);
   const [privateKey, setPrivateKey] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [showEmailImport, setShowEmailImport] = useState(false);
@@ -162,8 +164,8 @@ function Wallet() {
 
   const { data: dataTransfer, writeAsync: writeAsyncApprove } =
     useContractWrite({
-      address: FLOCK_ADDRESS as `0x${string}`,
-      abi: FLOCK_ABI,
+      address: FLOCK_V2_ADDRESS as `0x${string}`,
+      abi: FLOCK_V2_ABI,
       functionName: 'transfer',
     });
 
@@ -178,8 +180,12 @@ function Wallet() {
     });
   };
 
-  const roundedFLCBalance = flockTokenBalance
-    ? Math.round(Number(flockTokenBalance.formatted) * 100) / 100
+  const roundedFLCBalance = FLCTokenBalance
+    ? Math.round(Number(FLCTokenBalance.formatted) * 100) / 100
+    : 0;
+
+  const roundedFLOBalance = FLOTokenBalance
+    ? Math.round(Number(FLOTokenBalance.formatted) * 100) / 100
     : 0;
 
   const roundedMaticBalance = nativeTokenBalance
@@ -216,6 +222,10 @@ function Wallet() {
               <b>Wallet Address:</b> {address}
             </Text>
             <Text>
+              <b>FLock(FLO) Balance: </b>
+              {roundedFLOBalance} $F
+            </Text>
+            <Text>
               <b>FLock(FLC) Balance: </b>
               {roundedFLCBalance} $F
             </Text>
@@ -225,7 +235,7 @@ function Wallet() {
             </Text>
             <Box gap="small" margin={{ top: 'small' }}>
               <Text alignSelf="center" weight="bold">
-                Transfer FLC tokens
+                Transfer FLO tokens
               </Text>
               <Box direction="row" gap="small">
                 <TextInput
@@ -405,7 +415,7 @@ function Wallet() {
       label={
         !address
           ? 'Connect Wallet'
-          : `(${roundedFLCBalance} $F) ${truncateEthAddress(address)}`
+          : `(${roundedFLOBalance} $F) ${truncateEthAddress(address)}`
       }
       onClick={
         address
