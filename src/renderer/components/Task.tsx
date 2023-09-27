@@ -100,7 +100,8 @@ function Task({ task, goBack }: TaskProps) {
   const navigate = useNavigate();
   const { address } = useAccount();
 
-  const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
+  const { nativeTokenBalance, FLCTokenBalance, FLOTokenBalance } =
+    useContext(WalletContext);
   const { runningTasks, runTask, logs } = useContext(RunnerContext);
   const [file, setFile] = useState<File>({} as File);
   const [step, setStep] = useState<STEP>('DETAIL');
@@ -471,7 +472,7 @@ function Task({ task, goBack }: TaskProps) {
         </Layer>
       )}
       {Number(nativeTokenBalance?.value) !== 0 &&
-        Number(flockTokenBalance?.value) === 0 && (
+        Number(FLCTokenBalance?.value) === 0 && (
           <Layer modal onEsc={goBack} onClickOutside={goBack}>
             <Box pad="large" align="center" gap="medium">
               <Alert size="large" />
