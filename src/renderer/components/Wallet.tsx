@@ -17,7 +17,6 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from 'wagmi';
-import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
 import { FLOCK_V2_ABI, FLOCK_V2_ADDRESS } from 'renderer/contracts/flockV2';
 import { ToastContainer, toast } from 'react-toastify';
 import { web3AuthInstance } from '../Web3AuthInstance';

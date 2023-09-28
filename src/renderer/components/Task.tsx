@@ -37,7 +37,7 @@ import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
-import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
+import { FLOCK_V2_ABI, FLOCK_V2_ADDRESS } from 'renderer/contracts/flockV2';
 import { WalletContext } from 'renderer/context/walletContext';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
@@ -166,8 +166,8 @@ function Task({ task, goBack }: TaskProps) {
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
-      address: FLOCK_ADDRESS as `0x${string}`,
-      abi: FLOCK_ABI,
+      address: FLOCK_V2_ADDRESS as `0x${string}`,
+      abi: FLOCK_V2_ABI,
       functionName: 'approve',
     }
   );

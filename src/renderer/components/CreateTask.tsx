@@ -16,15 +16,12 @@ import {
 } from 'grommet';
 import { DocumentText, SettingsOption, Table } from 'grommet-icons';
 import { useEffect, useState } from 'react';
-import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { createSchema } from 'genson-js/dist';
-import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
+import { FLOCK_V2_ABI, FLOCK_V2_ADDRESS } from 'renderer/contracts/flockV2';
 import {
   FLOCK_TASK_MANAGER_ABI,
   FLOCK_TASK_MANAGER_ADDRESS,
 } from 'renderer/contracts/flockTaskManager';
-
-const ipfsClient = ipfsHttpClient({ url: 'https://ipfs.flock.io/api/v0' });
 
 type FormValues = {
   name: string;
@@ -406,8 +403,8 @@ export function CreateTask({
     isError: isErrorApprove,
     error: errorApprove,
   } = useContractWrite({
-    address: FLOCK_ADDRESS as `0x${string}`,
-    abi: FLOCK_ABI,
+    address: FLOCK_V2_ADDRESS as `0x${string}`,
+    abi: FLOCK_V2_ABI,
     functionName: 'approve',
   });
 
