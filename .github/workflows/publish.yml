@@ -52,7 +52,7 @@ jobs:
       - name: Build main client
         uses: ignas-gustainis/Nuitka-Action@main
         with:
-          nuitka-version: 1.8
+          nuitka-version: main
           script-name: ./client/main.py
           onefile: true
           follow-import-to: multiaddr.codecs.idna,multiaddr.codecs.uint16b,eth_hash.backends.pycryptodome,Crypto.Hash
