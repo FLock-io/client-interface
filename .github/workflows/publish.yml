@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     branches:
-      - try/new-nuitka-version
+      - main
 
 jobs:
   publish:
