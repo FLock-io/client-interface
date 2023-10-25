@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     branches:
-      - main
+      - try/new-nuitka-version
 
 jobs:
   publish:
@@ -52,7 +52,7 @@ jobs:
       - name: Build main client
         uses: FLock-io/Nuitka-Action@main
         with:
-          nuitka-version: main
+          nuitka-version: 1.6.6
           script-name: ./client/main.py
           onefile: true
           follow-import-to: multiaddr.codecs.idna,multiaddr.codecs.uint16b,eth_hash.backends.pycryptodome,Crypto.Hash
