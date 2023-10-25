@@ -52,7 +52,7 @@ jobs:
       - name: Build main client
         uses: FLock-io/Nuitka-Action@main
         with:
-          nuitka-version: 1.8.4
+          nuitka-version: 1.8.1
           script-name: ./client/main.py
           onefile: true
           follow-import-to: multiaddr.codecs.idna,multiaddr.codecs.uint16b,eth_hash.backends.pycryptodome,Crypto.Hash
