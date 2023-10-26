@@ -37,7 +37,7 @@ import { LogViewer } from '@patternfly/react-log-viewer';
 import { RunnerContext } from 'renderer/context/runnerContext';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { FLOCK_TASK_ABI } from 'renderer/contracts/flockTask';
-import { FLOCK_ABI, FLOCK_ADDRESS } from 'renderer/contracts/flock';
+import { FLOCK_V2_ABI, FLOCK_V2_ADDRESS } from 'renderer/contracts/flockV2';
 import { WalletContext } from 'renderer/context/walletContext';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
@@ -100,7 +100,8 @@ function Task({ task, goBack }: TaskProps) {
   const navigate = useNavigate();
   const { address } = useAccount();
 
-  const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
+  const { nativeTokenBalance, FLCTokenBalance, FLOTokenBalance } =
+    useContext(WalletContext);
   const { runningTasks, runTask, logs } = useContext(RunnerContext);
   const [file, setFile] = useState<File>({} as File);
   const [step, setStep] = useState<STEP>('DETAIL');
@@ -165,8 +166,8 @@ function Task({ task, goBack }: TaskProps) {
 
   const { data: dataApprove, writeAsync: writeAsyncApprove } = useContractWrite(
     {
-      address: FLOCK_ADDRESS as `0x${string}`,
-      abi: FLOCK_ABI,
+      address: FLOCK_V2_ADDRESS as `0x${string}`,
+      abi: FLOCK_V2_ABI,
       functionName: 'approve',
     }
   );
@@ -471,7 +472,7 @@ function Task({ task, goBack }: TaskProps) {
         </Layer>
       )}
       {Number(nativeTokenBalance?.value) !== 0 &&
-        Number(flockTokenBalance?.value) === 0 && (
+        Number(FLCTokenBalance?.value) === 0 && (
           <Layer modal onEsc={goBack} onClickOutside={goBack}>
             <Box pad="large" align="center" gap="medium">
               <Alert size="large" />

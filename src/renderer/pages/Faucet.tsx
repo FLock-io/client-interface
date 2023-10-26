@@ -1,78 +1,87 @@
-import {
-  Box,
-  Button,
-  Form,
-  FormField,
-  Heading,
-  Paragraph,
-  TextInput,
-} from 'grommet';
+import { Box, Button, Heading, Paragraph } from 'grommet';
+import { useEffect, useState, useContext } from 'react';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
-import { useEffect, useState } from 'react';
 import Layout from 'renderer/components/Layout';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { FLOCK_ABI, FLOCK_ADDRESS } from '../contracts/flock';
+import {
+  MIGRATE_TOKENS_ABI,
+  MIGRATE_TOKENS_ADDRESS,
+} from '../contracts/migrateTokens';
+import { WalletContext } from '../context/walletContext';
 
-export default function Faucet() {
+export default function FaucetPage() {
   const { address } = useAccount();
-  const [amount, setAmount] = useState(0);
   const [errors, setErrors] = useState<any>({});
+  const [disabled, setDisabled] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { FLCTokenBalance } = useContext(WalletContext);
 
-  const { data, write } = useContractWrite({
+  const { data: dataMigrate, write: writeMigrate } = useContractWrite({
+    address: MIGRATE_TOKENS_ADDRESS as `0x${string}`,
+    abi: MIGRATE_TOKENS_ABI,
+    functionName: 'migrate',
+  });
+
+  const { data: dataApprove, write: writeApprove } = useContractWrite({
     address: FLOCK_ADDRESS as `0x${string}`,
     abi: FLOCK_ABI,
-    functionName: 'mint',
+    functionName: 'approve',
   });
 
-  const { isSuccess, isLoading } = useWaitForTransaction({
-    hash: data?.hash,
+  const { isSuccess: isSuccessMigrate } = useWaitForTransaction({
+    hash: dataMigrate?.hash,
   });
 
-  const handleMint = async () => {
-    write?.({ args: [address, amount * 10 ** 18] });
+  const { isSuccess: isSuccessApprove } = useWaitForTransaction({
+    hash: dataApprove?.hash,
+  });
+
+  const handleApprove = async () => {
+    setIsLoading(true);
+    writeApprove?.({
+      args: [MIGRATE_TOKENS_ADDRESS as `0x${string}`, FLCTokenBalance.value],
+    });
   };
 
   useEffect(() => {
-    if (isSuccess) {
-      toast.success(`Minted ${amount} FLC successfully`);
+    if (isSuccessApprove) {
+      writeMigrate?.();
     }
-    setAmount(0);
-  }, [isSuccess]);
+    if (isSuccessMigrate) {
+      setIsLoading(false);
+    }
+  }, [isSuccessApprove, isSuccessMigrate]);
 
   const hasErrors = Object.keys(errors).length > 0;
 
+  useEffect(() => {
+    setDisabled(!address || hasErrors || isLoading);
+  }, [address, isLoading]);
+
+  const roundedFLCBalance = FLCTokenBalance
+    ? Math.round(Number(FLCTokenBalance.formatted) * 100) / 100
+    : 0;
+
   return (
     <Layout>
-      <Box width="100%" gap="small" pad={{ vertical: 'small' }}>
+      <Box width="100%" gap="large">
         <Box
-          background="white"
-          round="small"
-          direction="row"
+          background="#EEEEEE"
+          direction="row-responsive"
           align="center"
           justify="center"
           width="100%"
-          pad={{ vertical: 'large' }}
+          pad={{ vertical: 'large', horizontal: 'large' }}
         >
           <Box>
-            <Box direction="row" gap="xsmall">
-              <Heading level="2">FLock (FLC) tokens faucet </Heading>
+            <Box direction="row-responsive" gap="xsmall">
+              <Heading level="2">FLock (FLO) tokens faucet </Heading>
             </Box>
             <Paragraph>
-              Mint your FLC tokens for participating in the FLock network.
+              Migrate your FLC to FLO tokens for participating in the FLock network.
             </Paragraph>
             <Paragraph>
-              Contract Address: <code>{FLOCK_ADDRESS}</code>
-            </Paragraph>
-            <Paragraph>
-              {`To get testnet MATIC on Polygon Mumbai network visit this `}
-              <a
-                href="https://faucet.polygon.technology/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                link
-              </a>
+              {roundedFLCBalance} FLC tokens available to migrate.
             </Paragraph>
           </Box>
         </Box>
@@ -84,49 +93,16 @@ export default function Faucet() {
           justify="center"
           round="small"
         >
-          <Form
-            onValidate={(validationResults) => {
-              setErrors(validationResults.errors);
-            }}
-          >
-            <FormField
-              name="amount"
-              htmlFor="amount"
-              label="Amount"
-              required
-              validateOn="blur"
-            >
-              <TextInput
-                type="number"
-                id="amount"
-                name="amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </FormField>
-            <Box direction="row" align="end" justify="end">
-              <Button
-                primary
-                onClick={handleMint}
-                disabled={!address || amount === 0 || hasErrors || isLoading}
-                label={isLoading ? 'Minting...' : 'Mint'}
-              />
-            </Box>
-          </Form>
+          <Box direction="row" align="end" justify="end">
+            <Button
+              primary
+              onClick={handleApprove}
+              disabled={disabled || roundedFLCBalance === 0}
+              label={isLoading ? 'Migrating...' : 'Migrate'}
+            />
+          </Box>
         </Box>
       </Box>
-      <ToastContainer
-        position="bottom-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </Layout>
   );
 }
