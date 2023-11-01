@@ -127,7 +127,7 @@ For more detailed technical explanation of the FLock client, see [here](https://
    ```
 2. Install NPM packages
    ```sh
-   npm install
+   npm install 
    ```
    <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
