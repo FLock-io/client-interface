@@ -35,8 +35,6 @@ function Wallet() {
   const { disconnect: wagmiDisconnect } = useDisconnect();
   const { nativeTokenBalance, flockTokenBalance } = useContext(WalletContext);
   const [privateKey, setPrivateKey] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [showEmailImport, setShowEmailImport] = useState(false);
 
   const handleConnect = async () => {
     setIsWalletOpen(false);
@@ -53,66 +51,9 @@ function Wallet() {
       await connectAsync({
         connector: connectors[1],
       });
+      setShowWalletImport(false);
     } catch (error) {
       toast.error('Invalid private key');
-    }
-  };
-
-  const loadEmail = async () => {
-    try {
-      const res = await fetch(
-        `https://us-central1-flock-demo-design.cloudfunctions.net/getEmailFromDB?wallet=${address}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      const { email } = await res.json();
-      if (email) {
-        setUserEmail(email);
-        setShowWalletImport(false);
-      } else {
-        setShowWalletImport(false);
-        setShowEmailImport(true);
-      }
-    } catch (error) {
-      setShowWalletImport(false);
-    }
-  };
-
-  const importEmail = async () => {
-    try {
-      const response = await fetch(
-        'https://us-central1-flock-demo-design.cloudfunctions.net/postEmailToDB',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: userEmail,
-            wallet: address,
-          }),
-        }
-      );
-      if (response.ok) {
-        setShowEmailImport(false);
-      } else {
-        const data = await response.json();
-        console.log(data);
-        if (
-          data.error.includes(
-            'Unique constraint failed on the fields: (`email`)'
-          )
-        ) {
-          toast.error('Email already exists');
-        }
-      }
-    } catch (error) {
-      console.error('Error importing email:', error);
     }
   };
 
@@ -134,31 +75,6 @@ function Wallet() {
     oAuthIdToken?: string;
     oAuthAccessToken?: string;
   }
-
-  const loadUserInfo = async () => {
-    try {
-      if (pendingConnector?.id === 'web3auth') {
-        const user = await web3AuthInstance.getUserInfo();
-
-        await fetch(
-          'https://us-central1-flock-demo-design.cloudfunctions.net/postEmailToDB',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${user.idToken}`,
-            },
-            body: JSON.stringify({
-              email: user.email,
-              wallet: address,
-            }),
-          }
-        );
-      }
-    } catch (error) {
-      console.error('Error loading user info:', error);
-    }
-  };
 
   const { data: dataTransfer, writeAsync: writeAsyncApprove } =
     useContractWrite({
@@ -192,13 +108,6 @@ function Wallet() {
       setIsTransferLoading(false);
     }
   }, [isSuccessTransfer]);
-
-  useEffect(() => {
-    if (address) {
-      loadEmail();
-      loadUserInfo();
-    }
-  }, [address, isSuccess]);
 
   if (showWalletSettings) {
     return (
@@ -316,48 +225,6 @@ function Wallet() {
               pad="xsmall"
               disabled={!privateKey}
               onClick={handleImport}
-            />
-          </Box>
-        </Box>
-        <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-      </Layer>
-    );
-  }
-
-  if (showEmailImport) {
-    return (
-      <Layer onEsc={() => setShowEmailImport(false)} full>
-        <Box
-          align="center"
-          justify="center"
-          height="100vh"
-          pad="large"
-          gap="medium"
-        >
-          <Heading level="3">Enter your email</Heading>
-          <Text>This email will be used for claiming OAT</Text>
-          <TextInput
-            value={userEmail}
-            onChange={(event) => setUserEmail(event.target.value)}
-          />
-          <Box direction="row" alignSelf="center" gap="small">
-            <Button
-              primary
-              label="Enter"
-              pad="xsmall"
-              disabled={!userEmail}
-              onClick={importEmail}
             />
           </Box>
         </Box>
